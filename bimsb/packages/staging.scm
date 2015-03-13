@@ -21,9 +21,11 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
-  #:use-module (gnu packages compression))
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages bioinformatics))
 
 (define-public bwa
   (package
@@ -71,3 +73,32 @@ the latest, is generally recommended for high-quality queries as it is faster
 and more accurate.  BWA-MEM also has better performance than BWA-backtrack for
 70-100bp Illumina reads.")
     (license license:gpl3)))
+
+(define-public samtools-0
+  (package (inherit samtools)
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "mirror://sourceforge/samtools/"
+                       version "/samtools-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "16js559vg13zz7rxsj4kz2l96gkly8kdk8wgj9jhrqwgdh7jq9iv"))))
+    (arguments
+     (substitute-keyword-arguments `(#:modules ((guix build gnu-build-system)
+                                                (guix build utils)
+                                                (srfi srfi-1)
+                                                (srfi srfi-26))
+                                               ,@(package-arguments samtools))
+       ((#:tests? tests) #f) ;no "check" target
+       ((#:phases phases)
+        `(alist-replace
+          'install
+          (lambda* (#:key outputs #:allow-other-keys)
+            (let ((bin (string-append
+                        (assoc-ref outputs "out") "/bin")))
+            (mkdir-p bin)
+            (copy-file "samtools" (string-append bin "/samtools-" ,version))))
+          (alist-delete 'patch-tests ,phases)))))))
