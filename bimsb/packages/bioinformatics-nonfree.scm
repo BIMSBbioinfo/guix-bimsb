@@ -71,53 +71,6 @@ false discovery rate as a cutoff when two samples have different sequencing
 depths and differentiate reliable RDNPs from the background noise.")
     (license nonfree:artistic1.0)))
 
-(define-public miso
-  (package
-    (name "miso")
-    (version "0.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://pypi.python.org/packages/source/m/misopy/misopy-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "15qhxxjfwh6l9nwr1ckafv5mi1bn5d7kb8csz9wsxfl1w2zkh2gz"))
-              (modules '((guix build utils)))
-              (snippet
-               '(substitute* "setup.py"
-                  (("^defines")
-                   "cc.set_executables(
-compiler='gcc',
-compiler_so='gcc',
-linker_exe='gcc',
-linker_so='gcc -shared'); defines")))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2 ; only Python 2 is supported
-       #:tests? #f)) ; no "test" target
-    (inputs
-     `(("samtools" ,samtools)
-       ("python-numpy" ,python2-numpy)
-       ("python-pysam" ,python2-pysam)
-       ("python-scipy" ,python2-scipy)
-       ;; TODO: confirm if we need python2-mock as well
-       ("python-matplotlib" ,python2-matplotlib)))
-    (native-inputs
-     `(("python-setuptools" ,python2-setuptools)))
-    (home-page "http://genes.mit.edu/burgelab/miso/index.html")
-    (synopsis "Mixture of Isoforms model for RNA-Seq isoform quantitation")
-    (description
-     "MISO (Mixture-of-Isoforms) is a probabilistic framework that quantitates
-the expression level of alternatively spliced genes from RNA-Seq data, and
-identifies differentially regulated isoforms or exons across samples.  By
-modeling the generative process by which reads are produced from isoforms in
-RNA-Seq, the MISO model uses Bayesian inference to compute the probability
-that a read originated from a particular isoform.")
-    ;; The license is declared to be "MIT/BSD", but the sources contain
-    ;; GPL-licensed third-party code.
-    (license license:expat)))
-
 (define-public tophat
   (package
     (name "tophat")
