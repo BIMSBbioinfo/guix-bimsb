@@ -82,7 +82,8 @@ depths and differentiate reliable RDNPs from the background noise.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "17lbf76gkisrxhnjwf8iw4pvinny2376dp9dyrgald2l0ww6s4d9"))))))
+                "17lbf76gkisrxhnjwf8iw4pvinny2376dp9dyrgald2l0ww6s4d9"))
+              (patches (list (search-patch "macs-1.4-fix-parser.patch")))))))
 
 (define-public tophat
   (package
