@@ -22,6 +22,8 @@
   #:use-module ((guix licenses-nonfree) #:prefix nonfree:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix utils)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
@@ -33,7 +35,77 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages python))
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages xml))
+
+(define-public bcl2fastq
+  (package
+    (name "bcl2fastq")
+    (version "2.17.1.14")
+    (source (origin
+              (method url-fetch)
+              ;; Download manually from here:
+              ;; ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/Software/bcl2fastq/bcl2fastq2-v2.17.1.14.tar.gz
+              (uri (string-append "file:///srv/bcl2fastq2-v"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "14s15h8kk9vqqwy0hykdzffz6zlkbqpvg5wnnfiwd2x7cwxizikm"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "-DBCL2FASTQ_VERSION:STRING=" ,version)
+             "-DBCL2FASTQ_NAME_SHORT:STRING=bcl2fastq"
+             "-DBCL2FASTQ_NAME_LONG:STRING=BCL to FASTQ file converter"
+             "-DBCL2FASTQ_COPYRIGHT:STRING=Copyright (c) 2007-2015 Illumina, Inc."
+             (string-append "-DBCL2FASTQ_SOURCE_DIR:STRING=" (getcwd) "/bcl2fastq/src"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'enter-dir (lambda _ (chdir "src") #t))
+         (add-after 'enter-dir 'patch-stuff
+                    (lambda _
+                      ;; Update for boost 1.54 -> 1.56
+                      (substitute* "cxx/lib/io/Xml.cpp"
+                        (("xml_writer_make_settings\\(")
+                         "xml_writer_make_settings<ptree::key_type>("))
+                      ;; Do not use bundled libraries
+                      (substitute* "cmake/cxxConfigure.cmake"
+                        (("\"\\$\\{LIBEXSLT_LIBRARIES\\}\"")
+                         (string-append (assoc-ref %build-inputs "libxslt")
+                                        "/lib/libexslt.so"))
+                        (("find_library_redist\\(LIBXSLT .*")
+                         "bcl2fastq_find_library(LIBXSLT libxslt/xsltconfig.h xslt)\n")
+                        (("find_library_redist\\(LIBXML2 .*")
+                         "bcl2fastq_find_library(LIBXML2 libxml/xpath.h xml2)\n")
+                        (("find_library_redist\\(LIBEXSLT .*")
+                         "bcl2fastq_find_library(LIBEXSLT libexslt/exslt.h exslt)\n")
+                        (("redist_package") "#")
+                        (("^  +\"--prefix=.*") ""))
+                      ;; Work around broken version checking
+                      (substitute* "CMakeLists.txt"
+                        (("BCL2FASTQ_LIBXML2_VERSION 2.7.8")
+                         "BCL2FASTQ_LIBXML2_VERSION 2.9.2")
+                        (("BCL2FASTQ_LIBXSLT_VERSION 1.1.26")
+                         "BCL2FASTQ_LIBXSLT_VERSION 1.1.28"))
+                      #t)))))
+    (inputs
+     `(("boost" ,boost)
+       ("libxml2" ,libxml2)
+       ("libxslt" ,libxslt)
+       ("zlib" ,zlib)))
+    (home-page "http://support.illumina.com/downloads/bcl2fastq_conversion_software.html")
+    (synopsis "Convert files in BCL format to FASTQ")
+    (description
+     "bcl2fastq is conversion software, which can be used to both
+demultiplex data and convert BCL files to FASTQ files.")
+    (license (nonfree:non-free
+              (string-append "http://support.illumina.com/content/dam"
+                             "/illumina-support/documents/documentation"
+                             "/software_documentation/bcl2fastq/"
+                             "bcl2fastq2-v2-16-EULA.pdf")
+              "This is an extremely restrictive license and it would
+be better to avoid using this proprietary program.  I encourage people
+to write a free software alternative rather than using this tool."))))
 
 (define-public dinup
   (package
