@@ -30,6 +30,7 @@
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python))
@@ -107,6 +108,8 @@ depths and differentiate reliable RDNPs from the background noise.")
        ("python" ,python-2)
        ("perl" ,perl)
        ("zlib" ,zlib)))
+    (native-inputs
+     `(("gcc" ,gcc-4.8)))
     (home-page "http://ccb.jhu.edu/software/tophat/index.shtml")
     (synopsis "Spliced read mapper for RNA-Seq")
     (description
