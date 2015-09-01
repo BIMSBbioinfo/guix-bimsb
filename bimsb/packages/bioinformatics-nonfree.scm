@@ -108,6 +108,38 @@ demultiplex data and convert BCL files to FASTQ files.")
 be better to avoid using this proprietary program.  I encourage people
 to write a free software alternative rather than using this tool."))))
 
+(define-public bcl2fastq1
+  (package (inherit bcl2fastq)
+    (name "bcl2fastq1")
+    (version "1.8.4")
+    (source (origin
+              (method url-fetch)
+              ;; Download manually from here:
+              ;; ftp://webdata:webdata@ussd-ftp.illumina.com/Downloads/Software/bcl2fastq/bcl2fastq-1.8.4.tar.bz2
+              (uri (string-append "file:///srv/bcl2fastq-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "14s15h8kk9vqqwy0hykdzffz6zlkbqpvg5wnnfiwd2x7cwxizikm"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'enter-dir (lambda _ (chdir "src") #t))
+         (add-after
+          'enter-dir 'patch-stuff
+          (lambda _
+            ;; Update to boost 1.56
+            (substitute* "c++/lib/demultiplex/BclDemultiplexer.cpp"
+              (("boost::bind\\(\\&fs::path::string, _1\\)")
+               (string-append "boost::bind("
+                              "static_cast< std::string const & "
+                              "(boost::filesystem::path::*)() const >"
+                              "(&boost::filesystem::path::string), _1)")))
+            (substitute* "c++/lib/io/PtreeXml.cpp"
+              (("xml_writer_make_settings\\(")
+               "xml_writer_make_settings<ptree::key_type>("))
+            #t)))))))
+
 (define-public dinup
   (package
     (name "dinup")
