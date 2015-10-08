@@ -282,6 +282,57 @@ read aligner Bowtie, and then analyzes the mapping results to identify splice
 junctions between exons.")
     (license nonfree:artistic1.0)))
 
+(define-public python2-mirnylib
+  (let ((commit "75603b5")
+        (revision "1"))
+    (package
+      (name "python2-mirnylib")
+      (version (string-append "0." revision "." commit))
+      (source (origin
+                (method url-fetch)
+                ;; TODO: the tarball is generated on demand and thus will have
+                ;; changing hashes.  As this is a mercurial repository we
+                ;; cannot use git-fetch here.
+                (uri (string-append "https://bitbucket.org/mirnylab/"
+                                    "mirnylib/get/" commit ".tar.gz"))
+                (file-name (string-append name "-" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "0qyw97ly74gd7n3c8hq4062y0mb8vw4qwzyrdx95jzyisxiaqh9l"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:python ,python-2 ; python2 only
+         #:tests? #f ; tests expect additional test data
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'use-distutils
+            (lambda _
+              (substitute* "setup.py"
+                (("from setuptools import setup")
+                 "from distutils.core import setup"))
+              #t)))))
+      (inputs
+       `(("gcc" ,gcc "lib")    ; libgomp
+         ("hdf5" ,hdf5)))      ; FIXME: probably should be propagated by h5py
+      (propagated-inputs
+       `(("python-biopython" ,python2-biopython)
+         ("python-joblib" ,python2-joblib)
+         ("python-bx-python" ,python2-bx-python)
+         ("python-numpy" ,python2-numpy)
+         ("python-scipy" ,python2-scipy)
+         ("python-pysam" ,python2-pysam)
+         ("python-matplotlib" ,python2-matplotlib)
+         ("python-h5py" ,python2-h5py)))
+      (native-inputs
+       `(("python-cython" ,python2-cython)
+         ("python-setuptools" ,python2-setuptools)))
+      (home-page "https://bitbucket.org/mirnylab/mirnylib")
+      (synopsis "Libraries shared between different mirnylab projects")
+      (description
+       "This package provides assorted libraries used by different mirnylab
+projects.")
+      (license nonfree:undeclared))))
+
 (define-public viennarna
   (package
     (name "viennarna")
