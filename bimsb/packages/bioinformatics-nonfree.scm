@@ -333,6 +333,55 @@ junctions between exons.")
 projects.")
       (license nonfree:undeclared))))
 
+(define-public python2-hiclib
+  (let ((commit "1193891")
+        (revision "1"))
+    (package
+      (name "python2-hiclib")
+      (version (string-append "0." revision "." commit))
+      (source (origin
+                (method url-fetch)
+                ;; TODO: the tarball is generated on demand and thus will have
+                ;; changing hashes.  As this is a mercurial repository we
+                ;; cannot use git-fetch here.
+                (uri (string-append "https://bitbucket.org/mirnylab/"
+                                    "hiclib/get/" commit ".tar.gz"))
+                (file-name (string-append name "-" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "1wapj6lmmxwfsr1d62ddyjhjiy7isrynihp0kb891kfh6mmwxrxq"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:tests? #f ; FIXME: fail because of matplotlib backend
+         #:python ,python-2 ; python2 only
+         #:phases
+         (modify-phases %standard-phases
+           ;;(replace 'check (lambda _ (zero? (system* "nosetests" "-v"))))
+           (add-after 'unpack 'use-distutils
+            (lambda _
+              ;; HOME needs to be set to unpack the Egg archive
+              (setenv "HOME" "/tmp")
+              (substitute* "setup.py"
+                (("from setuptools import setup")
+                 "from distutils.core import setup"))
+              #t)))))
+      (propagated-inputs
+       `(("hdf5" ,hdf5) ; FIXME: probably should be propagated by h5py
+         ("python-biopython" ,python2-biopython)
+         ("python-numpy" ,python2-numpy)
+         ("python-scipy" ,python2-scipy)
+         ("python-matplotlib" ,python2-matplotlib)
+         ("python-pysam" ,python2-pysam)
+         ("python-mirnylib" ,python2-mirnylib)))
+      (native-inputs
+       `(("python-setuptools" ,python2-setuptools)))
+      (home-page "https://bitbucket.org/mirnylab/hiclib")
+      (synopsis "Collection of tools to map, filter and analyze Hi-C data")
+      (description
+       "Hi-C lib is a collection of tools to map, filter and analyze Hi-C
+data.")
+      (license nonfree:undeclared))))
+
 (define-public viennarna
   (package
     (name "viennarna")
