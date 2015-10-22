@@ -143,18 +143,18 @@ to write a free software alternative rather than using this tool."))))
           'install 'wrap-perl-scripts
           (lambda* (#:key inputs outputs #:allow-other-keys)
             ;; Make sure perl scripts finds all perl inputs at runtime.
-            (let* ((out (assoc-ref outputs "out"))
-                   (xml (assoc-ref inputs "perl-xml-simple")))
+            (let ((out (assoc-ref outputs "out")))
               (for-each (lambda (prog)
                           (wrap-program (string-append out "/bin/" prog)
                             `("PERL5LIB" ":" prefix
-                              (,(string-append xml "/lib/perl5/site_perl")))))
+                              (,(getenv "PERL5LIB")))))
                         '("configureBclToFastq.pl"
                           "configureQseqToFastq.pl"
                           "configureValidation.pl"))
               #t))))))
     (inputs
      `(("perl-xml-simple" ,perl-xml-simple)
+       ("perl-xml-parser" ,perl-xml-parser)
        ("perl" ,perl)
        ,@(package-inputs bcl2fastq)))))
 
