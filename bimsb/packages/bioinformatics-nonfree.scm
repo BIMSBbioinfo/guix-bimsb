@@ -352,11 +352,10 @@ projects.")
                   "1wapj6lmmxwfsr1d62ddyjhjiy7isrynihp0kb891kfh6mmwxrxq"))))
       (build-system python-build-system)
       (arguments
-       `(#:tests? #f ; FIXME: fail because of matplotlib backend
+       `(#:tests? #f ; tests depend on unavailable test data
          #:python ,python-2 ; python2 only
          #:phases
          (modify-phases %standard-phases
-           ;;(replace 'check (lambda _ (zero? (system* "nosetests" "-v"))))
            (add-after 'unpack 'use-distutils
             (lambda _
               ;; HOME needs to be set to unpack the Egg archive
@@ -364,7 +363,33 @@ projects.")
               (substitute* "setup.py"
                 (("from setuptools import setup")
                  "from distutils.core import setup"))
-              #t)))))
+              #t))
+           (add-after 'unpack 'set-matplotlib-backend-to-agg
+            (lambda _
+              ;; Set the matplotlib backend to Agg to avoid problems using the
+              ;; GTK backend without a display.
+              (substitute* (find-files "tests" "\\.py")
+                (("import matplotlib\\.pyplot as plt" line)
+                 (string-append "import matplotlib;matplotlib.use('Agg');"
+                                line)))
+              #t))
+           (add-before 'build 'build-binarySearch
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((python-version (string-take (string-take-right
+                                                   (assoc-ref inputs "python") 6) 3))
+                     (path (string-append "lib/python" python-version
+                                          "/site-packages")))
+                (substitute* "setup.py"
+                  (("packages=\\['hiclib'\\],")
+                   (string-append "packages=['hiclib'], "
+                                  "data_files=[('" path "/hiclib', "
+                                  "['binarySearch/fastBinSearch.so'])],")))
+                (with-directory-excursion "binarySearch"
+                  (setenv "CPATH"
+                          (string-append (assoc-ref inputs "python-numpy")
+                                         "/" path "/numpy/core/include/:"
+                                         (getenv "CPATH")))
+                  (zero? (system* "make")))))))))
       (propagated-inputs
        `(("hdf5" ,hdf5) ; FIXME: probably should be propagated by h5py
          ("python-biopython" ,python2-biopython)
@@ -374,7 +399,8 @@ projects.")
          ("python-pysam" ,python2-pysam)
          ("python-mirnylib" ,python2-mirnylib)))
       (native-inputs
-       `(("python-setuptools" ,python2-setuptools)))
+       `(("python-cython" ,python2-cython)
+         ("python-setuptools" ,python2-setuptools)))
       (home-page "https://bitbucket.org/mirnylab/hiclib")
       (synopsis "Collection of tools to map, filter and analyze Hi-C data")
       (description
