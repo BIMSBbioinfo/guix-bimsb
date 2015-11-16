@@ -37,7 +37,8 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages zip))
 
 (define-public bcl2fastq
   (package
@@ -46,12 +47,12 @@
     (source (origin
               (method url-fetch)
               ;; Download manually from here:
-              ;; ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/Software/bcl2fastq/bcl2fastq2-v2.17.1.14.tar.gz
+              ;; ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/Software/bcl2fastq/bcl2fastq2-v2.17.1.14.tar.zip
               (uri (string-append "file:///srv/bcl2fastq2-v"
-                                  version ".tar.gz"))
+                                  version ".tar.zip"))
               (sha256
                (base32
-                "14s15h8kk9vqqwy0hykdzffz6zlkbqpvg5wnnfiwd2x7cwxizikm"))))
+                "09qcz1l5yw46n5crbxsgsj0m9p404s012m81cx1rwqh2pzw6dx9w"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -62,7 +63,13 @@
              (string-append "-DBCL2FASTQ_SOURCE_DIR:STRING=" (getcwd) "/bcl2fastq/src"))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'enter-dir (lambda _ (chdir "src") #t))
+         (replace 'unpack
+          (lambda* (#:key source #:allow-other-keys)
+            (and (zero? (system* "unzip" source))
+                 (zero? (system* "tar" "-xvf"
+                                 (string-append "bcl2fastq2-v"
+                                                ,version ".tar.gz"))))))
+         (add-after 'unpack 'enter-dir (lambda _ (chdir "bcl2fastq/src") #t))
          (add-after 'enter-dir 'patch-stuff
                     (lambda _
                       ;; Update for boost 1.54 -> 1.56
@@ -94,6 +101,8 @@
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
        ("zlib" ,zlib)))
+    (native-inputs
+     `(("unzip" ,unzip)))
     (home-page "http://support.illumina.com/downloads/bcl2fastq_conversion_software.html")
     (synopsis "Convert files in BCL format to FASTQ")
     (description
