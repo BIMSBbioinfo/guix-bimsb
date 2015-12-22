@@ -27,16 +27,20 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages zip))
 
@@ -416,6 +420,81 @@ projects.")
        "Hi-C lib is a collection of tools to map, filter and analyze Hi-C
 data.")
       (license nonfree:undeclared))))
+
+(define-public meme
+  (package
+    (name "meme")
+    (version "4.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://meme-suite.org/meme-software/"
+                                  version "/meme_" version ".tar.gz"))
+              (sha256
+               (base32
+                "0zr3gvz4k30ggx0wqrbxdrr446vcc1v8q25xnjyjbvqn90gq9i2x"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths-to-tools
+           (lambda _
+             (substitute* "src/utils.c"
+               (("\"hostname")
+                (string-append "\"" (which "hostname"))))
+             #t))
+         (add-after 'unpack 'remove-unused-tests
+           (lambda _
+             ;; We don't build the web server stuff, so we don't need
+             ;; to run the tests for that either.
+             (substitute* "tests/scripts/Makefile.in"
+               (("tomtom.test") ""))))
+         (add-before 'configure 'check-perl-dependencies
+           (lambda _
+             (zero? (system* "perl" "./scripts/dependencies.pl")))))))
+    (inputs
+     `(("perl" ,perl)
+       ("perl-html-parser" ,perl-html-parser)
+       ("perl-html-template" ,perl-html-template)
+       ("perl-xml-simple" ,perl-xml-simple)
+       ("perl-xml-compile" ,perl-xml-compile)
+       ("perl-xml-compile-wsdl11" ,perl-xml-compile-wsdl11)
+       ("perl-xml-parser" ,perl-xml-parser)
+       ("python" ,python-2) ;only works with Python 2
+       ("libxml2" ,libxml2)
+       ("libxslt" ,libxslt)
+       ("openmpi" ,openmpi)
+       ("ghostscript" ,ghostscript)
+       ("inetutils" ,inetutils) ;for "hostname"
+       ("zlib" ,zlib)))
+    (propagated-inputs
+     ;; "which" must be propagated because of the weird way it is used
+     ;; in "src/exec_parallel.c".  The buffer "cmd_len" is arranged to
+     ;; be 6 characters longer than the argument, just enough for the
+     ;; string "which ".  I don't want to mess with pointers and
+     ;; buffer lengths just to hardcode a path to the "which"
+     ;; executable.
+     `(("which" ,which)))
+    (home-page "http://www.tbi.univie.ac.at/RNA/index.html")
+    (synopsis "Motif-based sequence analysis tools")
+    (description
+     "The MEME Suite allows the biologist to discover novel motifs in
+collections of unaligned nucleotide or protein sequences, and to
+perform a wide variety of other motif-based analyses.
+
+The MEME Suite supports motif-based analysis of DNA, RNA and protein
+sequences.  It provides motif discovery algorithms using both
+probabilistic and discrete models, which have complementary strengths.
+It also allows discovery of motifs with arbitrary insertions and
+deletions (GLAM2).  In addition to motif discovery, the MEME Suite
+provides tools for scanning sequences for matches to motifs (FIMO,
+MAST and GLAM2Scan), scanning for clusters of motifs (MCAST),
+comparing motifs to known motifs (Tomtom), finding preferred spacings
+between motifs (SpaMo), predicting the biological roles of
+motifs (GOMo), measuring the positional enrichment of sequences for
+known motifs (CentriMo), and analyzing ChIP-seq and other large
+datasets (MEME-ChIP).")
+    (license (nonfree:non-free "http://meme-suite.org/doc/copyright.html"
+                               "license forbids commercial usage"))))
 
 (define-public viennarna
   (package
