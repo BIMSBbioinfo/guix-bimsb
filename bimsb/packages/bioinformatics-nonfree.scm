@@ -40,6 +40,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages zip))
@@ -170,6 +171,46 @@ to write a free software alternative rather than using this tool."))))
        ("perl-xml-parser" ,perl-xml-parser)
        ("perl" ,perl)
        ,@(package-inputs bcl2fastq)))))
+
+(define-public bowtie1
+  (package
+    (inherit bowtie)
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/bowtie-bio/bowtie/"
+                                  version "/bowtie-" version "-src.zip"))
+              (sha256
+               (base32
+                "1bipnvm94nlzbawix09bkfdvig41qr235qyrjccgszi04p4crsdi"))
+              (modules '((guix build utils)))
+              (snippet
+               '(substitute* "Makefile"
+                  ;; replace BUILD_HOST and BUILD_TIME for deterministic build
+                  (("-DBUILD_HOST=.*") "-DBUILD_HOST=\"\\\"guix\\\"\"")
+                  (("-DBUILD_TIME=.*") "-DBUILD_TIME=\"\\\"0\\\"\"")))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ; no "check" target
+       #:make-flags
+       (list "all"
+             "WITH_TBB=1"
+             (string-append "prefix=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (inputs
+     `(("tbb" ,tbb)))
+    (home-page "http://bowtie-bio.sourceforge.net/index.shtml")
+    (synopsis "Fast aligner for short nucleotide sequence reads")
+    (description
+     "Bowtie is a fast, memory-efficient short read aligner.  It aligns short
+DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp
+reads per hour.  Bowtie indexes the genome with a Burrows-Wheeler index to
+keep its memory footprint small: typically about 2.2 GB for the human
+genome (2.9 GB for paired-end).")
+    (supported-systems '("x86_64-linux"))
+    (license nonfree:artistic1.0)))
 
 (define-public dinup
   (package
