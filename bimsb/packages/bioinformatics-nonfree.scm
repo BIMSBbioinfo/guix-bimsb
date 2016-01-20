@@ -337,6 +337,9 @@ research not-for-profit purposes."))))
                (("SAMPROG = samtools_0\\.1\\.18") "")
                (("\\$\\(samtools_0_1_18_SOURCES\\)") "")
                (("am__EXEEXT_1 = samtools_0\\.1\\.18\\$\\(EXEEXT\\)") ""))
+             (substitute* '("src/common.cpp"
+                            "src/tophat.py")
+               (("samtools_0.1.18") (which "samtools")))
              (substitute* '("src/common.h"
                             "src/bam2fastx.cpp")
                (("#include \"bam.h\"") "#include <samtools/bam.h>")
