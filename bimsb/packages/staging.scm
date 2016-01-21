@@ -29,6 +29,13 @@
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages java))
 
+(define-public bedtools/patched
+  (package (inherit bedtools)
+    (version (string-append (package-version bedtools) "-1"))
+    (source
+     (origin (inherit (package-source bedtools))
+       (patches (list (search-patch "bedtools-fix-null-segfault.patch")))))))
+
 (define-public samtools-0
   (package (inherit samtools)
     (version "0.1.8")

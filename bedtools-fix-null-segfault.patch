@@ -1,0 +1,44 @@
+From 788a6b62f2e297afe6a6cbec4b56ddec430257fc Mon Sep 17 00:00:00 2001
+From: arq5x <arq5x@virginia.edu>
+Date: Wed, 9 Sep 2015 20:13:15 -0600
+Subject: [PATCH] handle null record when db is bed6+. affected -wao, -loj,
+ closest.
+
+---
+ src/utils/RecordOutputMgr/RecordOutputMgr.cpp | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/src/utils/RecordOutputMgr/RecordOutputMgr.cpp b/src/utils/RecordOutputMgr/RecordOutputMgr.cpp
+index 5c63238..2f17ae3 100644
+--- a/src/utils/RecordOutputMgr/RecordOutputMgr.cpp
++++ b/src/utils/RecordOutputMgr/RecordOutputMgr.cpp
+@@ -475,7 +475,6 @@ void RecordOutputMgr::null(bool queryType, bool dbType)
+ 	}
+ 	//This is kind of a hack. Need an instance of the correct class of record in order to call it's printNull method.
+ 	Record *dummyRecord = NULL;
+-
+ 	switch (recordType) {
+ 	case FileRecordTypeChecker::BED3_RECORD_TYPE:
+ 		dummyRecord = new Bed3Interval();
+@@ -499,6 +498,10 @@ void RecordOutputMgr::null(bool queryType, bool dbType)
+ 		dummyRecord = new BedPlusInterval();
+ 		(static_cast<BedPlusInterval *>(dummyRecord))->setNumPrintFields((static_cast<ContextIntersect *>(_context))->getMaxNumDatabaseFields());
+ 		break;
++	case FileRecordTypeChecker::BED6_PLUS_RECORD_TYPE:
++		dummyRecord = new BedPlusInterval();
++		(static_cast<BedPlusInterval *>(dummyRecord))->setNumPrintFields((static_cast<ContextIntersect *>(_context))->getMaxNumDatabaseFields());
++		break;
+ 	case FileRecordTypeChecker::VCF_RECORD_TYPE:
+ 		dummyRecord = new VcfRecord();
+ 		(static_cast<VcfRecord *>(dummyRecord))->setNumPrintFields((static_cast<ContextIntersect *>(_context))->getMaxNumDatabaseFields());
+@@ -513,10 +516,8 @@ void RecordOutputMgr::null(bool queryType, bool dbType)
+ 	default:
+ 		break;
+ 	}
+-
+ 	dummyRecord->printNull(_outBuf);
+ 	delete dummyRecord;
+-
+ }
+ 
+ void RecordOutputMgr::printKey(const Record *key, const QuickString & start, const QuickString & end)
