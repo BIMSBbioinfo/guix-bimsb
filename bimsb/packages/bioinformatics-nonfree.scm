@@ -354,6 +354,7 @@ research not-for-profit purposes."))))
 projects.")
       (license nonfree:undeclared))))
 
+;; https://bitbucket.org/mirnylab/hiclib/issues/36/no-license-declaration
 (define-public python2-hiclib
   (let ((commit "1193891")
         (revision "1"))
