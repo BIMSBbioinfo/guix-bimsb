@@ -37,3 +37,18 @@
        (sha256
         (base32
          "1zpxn9nxmfwj8zr8b4gjrx8j81mijgjmagl4prpkghphfbziwraw"))))))
+
+(define-public bedtools-2.23.0
+  (package
+    (inherit bedtools)
+    (version "2.23.0")
+    (name "bedtools")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/arq5x/bedtools2/archive/v"
+                           version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0mk0lg3bl6k7kbn675hinwby3jrb17mml7nms4srikhi3mbamb4x"))))))
