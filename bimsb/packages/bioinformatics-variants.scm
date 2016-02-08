@@ -52,3 +52,16 @@
        (sha256
         (base32
          "0mk0lg3bl6k7kbn675hinwby3jrb17mml7nms4srikhi3mbamb4x"))))))
+
+(define-public samtools-1.1
+  (package
+    (inherit samtools-0.1)
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/samtools/"
+                           version "/samtools-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1y5p2hs4gif891b4ik20275a8xf3qrr1zh9wpysp4g8m0g1jckf2"))))))
