@@ -1,8 +1,33 @@
-# Non-free packages
+# Guix package repository for use at the BIMSB
 
-This project provides package definitions for applications and
+This repository provides Guix package definitions for use at the BIMSB
+in addition to package definitions that come with GNU Guix.  Some of
+these package definitions cannot be added to GNU Guix upstream for
+license reasons, others are specific variants of packages that are of
+limited interest outside of the BIMSB.
+
+
+## Package variants
+
+The module `bioinformatics-variants` contains variants of packages
+that are available in upstream Guix, such as specific legacy versions
+of samtools.
+
+
+## Non-free packages
+
+This project also provides package definitions for applications and
 libraries that have been released under non-free licenses or where the
-license situation is not clear enough to be sure.
+license situation is not clear enough to be sure.  These package
+definitions are restricted to the `bioinformatics-nonfree` module.
+
+You should make sure that your use case is covered under the license
+terms.  We encourage you not to use software that is released under
+non-free licenses.
+
+If you are the author of software listed here as non-free, and you
+think that your software actually qualifies as free software, please
+feel free to contact me via email.
 
 
 # How to use
@@ -13,9 +38,9 @@ variable over those that come with GNU Guix.
 
 Here is an example of how to install a package defined in this
 project, assuming that the contents of this repository are located in
-`~/code/guix-nonfree`:
+`~/code/guix-bimsb`:
 
-    export GUIX_PACKAGE_PATH="~/code/guix-nonfree"
+    export GUIX_PACKAGE_PATH="~/code/guix-bimsb"
     guix package -i dinup
 
 
