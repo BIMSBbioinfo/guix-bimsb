@@ -105,7 +105,7 @@
                 #t))))))
       (native-inputs
        `(("ant" ,ant)
-         ("jdk" ,icedtea7 "jdk")))
+         ("jdk" ,icedtea "jdk")))
       (home-page "http://fureylab.web.unc.edu/software/fseq/")
       (synopsis "Feature density estimator for high-throughput sequence tags")
       (description
