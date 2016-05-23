@@ -45,42 +45,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages zip))
 
-(define-public armatus
-  (package
-    (name "armatus")
-    (version "2.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/kingsfordgroup/armatus"
-                                  "/archive/v" version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0f8an8dmhnwafhf8xiifhsix2mlpc80h6dylp0nwpnr3anjmjrjy"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f  ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; There is no install target
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (install-file "src/armatus" bin))
-             #t)))))
-    (inputs
-     `(("boost" ,boost)
-       ("zlib" ,zlib)))
-    (home-page "http://www.cs.cmu.edu/~ckingsf/software/armatus/")
-    (synopsis "Domain calling for chromosome interaction matrices")
-    (description "Armatus is an implementation of an algorithm that is able to
-capture persistent topological domains that are similar across cell types and
-conserved across species.  It can capture domains across various resolutions
-by adjusting a single scale parameter.")
-    (license nonfree:undeclared)))
-
 (define-public bcl2fastq
   (package
     (name "bcl2fastq")
