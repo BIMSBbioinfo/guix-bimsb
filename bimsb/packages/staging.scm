@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2015, 2016 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -23,11 +23,12 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages bioinformatics)
-  #:use-module (gnu packages java))
+  #:use-module (gnu packages perl))
 
 (define-public bedtools/patched
   (package (inherit bedtools)
@@ -82,30 +83,26 @@
                 (sha256
                  (base32
                   "1rz305g6ikan5w9h7rl4a072qsb6h3371cmgppg9ribjnivqh3v7"))))
-      (build-system gnu-build-system)
+      (build-system ant-build-system)
       (arguments
-       `(#:phases
+       `(#:tests? #f ; no tests included
+         #:phases
          (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'check)
-           (replace 'build
-            (lambda _
-              (setenv "JAVA_HOME" (assoc-ref %build-inputs "jdk"))
-              (zero? (system* "ant"))))
            (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((target (assoc-ref outputs "out"))
-                     (doc (string-append target "/share/doc/f-seq/")))
-                (mkdir-p target)
-                (mkdir-p doc)
-                (system* "tar" "-xvf" "dist~/fseq.tar")
-                (install-file "fseq/README.txt" doc)
-                (copy-recursively "fseq/bin" (string-append target "/bin"))
-                (copy-recursively "fseq/lib" (string-append target "/lib"))
-                #t))))))
-      (native-inputs
-       `(("ant" ,ant)
-         ("jdk" ,icedtea "jdk")))
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((target (assoc-ref outputs "out"))
+                      (doc (string-append target "/share/doc/f-seq/")))
+                 (mkdir-p target)
+                 (mkdir-p doc)
+                 (substitute* "bin/linux/fseq"
+                   (("java") (which "java")))
+                 (install-file "README.txt" doc)
+                 (install-file "bin/linux/fseq" (string-append target "/bin"))
+                 (install-file "build~/fseq.jar" (string-append target "/lib"))
+                 (copy-recursively "lib" (string-append target "/lib"))
+                 #t))))))
+      (inputs
+       `(("perl" ,perl)))
       (home-page "http://fureylab.web.unc.edu/software/fseq/")
       (synopsis "Feature density estimator for high-throughput sequence tags")
       (description
