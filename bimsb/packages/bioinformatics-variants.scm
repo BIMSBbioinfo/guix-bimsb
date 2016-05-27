@@ -54,6 +54,15 @@
         (base32
          "0mk0lg3bl6k7kbn675hinwby3jrb17mml7nms4srikhi3mbamb4x"))))))
 
+;; Patched version of bedtools 2.25.0, which segfaults on some
+;; RCAS/dorina test datasets in Bed6+ format.
+(define-public bedtools/patched
+  (package (inherit bedtools)
+    (version (string-append (package-version bedtools) "-1"))
+    (source
+     (origin (inherit (package-source bedtools))
+       (patches (list (search-patch "bedtools-fix-null-segfault.patch")))))))
+
 (define-public samtools-1.1
   (package
     (inherit samtools-0.1)
@@ -66,6 +75,35 @@
        (sha256
         (base32
          "1y5p2hs4gif891b4ik20275a8xf3qrr1zh9wpysp4g8m0g1jckf2"))))))
+
+(define-public samtools-0
+  (package (inherit samtools)
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "mirror://sourceforge/samtools/"
+                       version "/samtools-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "16js559vg13zz7rxsj4kz2l96gkly8kdk8wgj9jhrqwgdh7jq9iv"))))
+    (arguments
+     (substitute-keyword-arguments `(#:modules ((guix build gnu-build-system)
+                                                (guix build utils)
+                                                (srfi srfi-1)
+                                                (srfi srfi-26))
+                                               ,@(package-arguments samtools))
+       ((#:tests? tests) #f) ;no "check" target
+       ((#:phases phases)
+        `(alist-replace
+          'install
+          (lambda* (#:key outputs #:allow-other-keys)
+            (let ((bin (string-append
+                        (assoc-ref outputs "out") "/bin")))
+            (mkdir-p bin)
+            (copy-file "samtools" (string-append bin "/samtools-" ,version))))
+          (alist-delete 'patch-tests ,phases)))))))
 
 ;; Fixed version of ParDRe for Harm.
 (define-public pardre/fixed
