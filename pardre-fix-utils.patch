@@ -1,0 +1,32 @@
+This patch was forwarded to me by Harm.
+
+From e87b471b04114311a535411921e2a7777d3fce51 Mon Sep 17 00:00:00 2001
+From: Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+Date: Fri, 27 May 2016 14:38:29 +0200
+Subject: [PATCH] fix
+
+---
+ Utils.cpp | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/Utils.cpp b/Utils.cpp
+index f23219e..80038cc 100644
+--- a/Utils.cpp
++++ b/Utils.cpp
+@@ -62,5 +62,12 @@ bool Utils::exists(const char* fileName) {
+ }
+ 
+ uint64_t Utils::popcount(uint64_t v){
+-	return __builtin_popcount(v);
++	uint64_t b = (v & 0x5555555555555555LU) + (v >> 1 & 0x5555555555555555LU);
++	     b = (b & 0x3333333333333333LU) + (b >> 2 & 0x3333333333333333LU);
++	     b = b + (b >> 4) & 0x0F0F0F0F0F0F0F0FLU;
++	     b = b + (b >> 8);
++	     b = b + (b >> 16);
++	     b = b + (b >> 32) & 0x0000007F;
++
++	     return b;
+ }
+-- 
+2.7.3
+

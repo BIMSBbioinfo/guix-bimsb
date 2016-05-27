@@ -24,6 +24,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (gnu packages)
   #:use-module (gnu packages bioinformatics))
 
 ;; A different version of MACS2 for Rebecca
@@ -65,3 +66,10 @@
        (sha256
         (base32
          "1y5p2hs4gif891b4ik20275a8xf3qrr1zh9wpysp4g8m0g1jckf2"))))))
+
+;; Fixed version of ParDRe for Harm.
+(define-public pardre/fixed
+  (package (inherit pardre)
+    (name "pardre-fixed")
+    (source (origin (inherit (package-source pardre))
+                    (patches (search-patches "pardre-fix-utils.patch"))))))
