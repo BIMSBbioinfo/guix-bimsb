@@ -53,7 +53,7 @@
               (method url-fetch)
               ;; Download manually from here:
               ;; ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/Software/bcl2fastq/bcl2fastq2-v2.17.1.14.tar.zip
-              (uri (string-append "file:///srv/bcl2fastq2-v"
+              (uri (string-append "file:///gnu/remote/bcl2fastq2-v"
                                   version ".tar.zip"))
               (sha256
                (base32
@@ -130,7 +130,7 @@ to write a free software alternative rather than using this tool."))))
               (method url-fetch)
               ;; Download manually from here:
               ;; ftp://webdata:webdata@ussd-ftp.illumina.com/Downloads/Software/bcl2fastq/bcl2fastq-1.8.4.tar.bz2
-              (uri (string-append "file:///srv/bcl2fastq-"
+              (uri (string-append "file:///gnu/remote/bcl2fastq-"
                                   version ".tar.bz2"))
               (sha256
                (base32
