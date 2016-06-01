@@ -26,6 +26,7 @@
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
@@ -34,6 +35,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -275,3 +277,52 @@ exon-skipping scanner detection scheme.")
     (home-page "http://compbio.uthscsa.edu/GESS_Web/")
     (license license:bsd-3)))
 
+(define-public python-tables
+  (package
+    (name "python-tables")
+    (version "3.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tables" version))
+       (sha256
+        (base32
+         "117s6w7s3yxafpmf3zz3svana7xfrsviw01va1xp7h8ylx8v6r1m"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "--hdf5="
+                            (assoc-ref %build-inputs "hdf5")))
+       ;; FIXME: python-build-system does not pass configure-flags to "build"
+       ;; or "check", so we must override the build and check phases.
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'build
+           (lambda* (#:key inputs #:allow-other-keys)
+             (zero? (system* "python" "setup.py" "build"
+                             (string-append "--hdf5="
+                                            (assoc-ref inputs "hdf5"))))))
+         (replace 'check
+           (lambda* (#:key inputs #:allow-other-keys)
+             (zero? (system* "python" "setup.py" "check"
+                             (string-append "--hdf5="
+                                            (assoc-ref inputs "hdf5")))))))))
+    (propagated-inputs
+     `(("python-numexpr" ,python-numexpr)
+       ("python-numpy" ,python-numpy)))
+    (native-inputs
+     `(("python-setuptools" ,python-setuptools)
+       ("python-cython" ,python-cython)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("hdf5" ,hdf5)
+       ("bzip2" ,bzip2)
+       ("zlib" ,zlib)))
+    (home-page "http://www.pytables.org/")
+    (synopsis "Hierarchical datasets for Python")
+    (description "PyTables is a package for managing hierarchical datasets and
+designed to efficently cope with extremely large amounts of data.")
+    (license license:bsd-3)))
+
+(define-public python2-tables
+  (package-with-python2 python-tables))
