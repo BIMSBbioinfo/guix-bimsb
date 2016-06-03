@@ -42,7 +42,8 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages zip))
+  #:use-module (gnu packages zip)
+  #:use-module (srfi srfi-1))
 
 ;; This package cannot yet be added to Guix because it bundles an as
 ;; yet unpackaged third-party library, namely "commons-cli-1.1.jar"
@@ -277,6 +278,29 @@ knowledge of gene annotation information.  GESS stands for the graph-based
 exon-skipping scanner detection scheme.")
     (home-page "http://compbio.uthscsa.edu/GESS_Web/")
     (license license:bsd-3)))
+
+(define-public python-numexpr/latest
+  (package (inherit python-numexpr)
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://pypi.python.org/packages/05/cd/"
+                           "8dbb09b835539234bafc6c5fa02452186da9869e44e7489037ef3994471e"
+                           "/numexpr-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0i6iagl2hhbr8q4qzbbjd859v5806vqylq87fq7pi914ps6d6cag"))))))
+
+(define-public python2-numexpr/latest
+  (let ((numexpr (package-with-python2 python-numexpr/latest)))
+    (package (inherit numexpr)
+      ;; Make sure to use special packages for Python 2 instead
+      ;; of those automatically rewritten by package-with-python2.
+      (propagated-inputs
+       `(("python2-numpy" ,python2-numpy)
+         ,@(alist-delete "python-numpy"
+                         (package-propagated-inputs numexpr)))))))
 
 (define-public python-tables
   (package
