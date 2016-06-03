@@ -333,7 +333,7 @@ exon-skipping scanner detection scheme.")
                              (string-append "--hdf5="
                                             (assoc-ref inputs "hdf5")))))))))
     (propagated-inputs
-     `(("python-numexpr" ,python-numexpr)
+     `(("python-numexpr" ,python-numexpr/latest)
        ("python-numpy" ,python-numpy)))
     (native-inputs
      `(("python-setuptools" ,python-setuptools)
@@ -350,7 +350,12 @@ designed to efficently cope with extremely large amounts of data.")
     (license license:bsd-3)))
 
 (define-public python2-tables
-  (package-with-python2 python-tables))
+  (let ((tables (package-with-python2 python-tables)))
+    (package (inherit tables)
+      (propagated-inputs
+       `(("python2-numexpr" ,python2-numexpr/latest)
+         ,@(alist-delete "python-numexpr"
+                         (package-propagated-inputs tables)))))))
 
 (define-public r-bsgenome-mmusculus-ucsc-mm10
   (package
