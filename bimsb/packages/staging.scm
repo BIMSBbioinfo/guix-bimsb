@@ -410,3 +410,31 @@ IDSA and other destinations.  It is modeled after the Log4j Java library,
 staying as close to their API as is reasonable.")
     (home-page "http://log4cpp.sourceforge.net/")
     (license license:lgpl2.1+)))
+
+(define-public gengetopt
+  (package
+    (name "gengetopt")
+    (version "2.22.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/gengetopt/gengetopt-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1xq1kcfs6hri101ss4dhym0jn96z4v6jdvx288mfywadc245mc1h"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-build? #f))           ; not supported
+    (synopsis "Create parsers for command line options")
+    (description
+     "GNU Gengetopt is a program to generate a C/C++ function for parsing
+command-line options using the getopt_long function found in GNU
+libc, removing some of the tedium of this task for large programs
+that accept many options.  The options parsed by the generated
+function may be in both short (e.g., \"-h\") and long (\"--help\")
+formats, as specified by the GNU coding standards.  Additionally, the
+output of the standard options \"--help\" and \"--version\" is generated
+automatically.")
+    (home-page "http://www.gnu.org/software/gengetopt/gengetopt.html")
+    (license license:gpl3+)))
