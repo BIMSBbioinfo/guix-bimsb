@@ -22,6 +22,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix hg-download)
   #:use-module (guix utils)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
@@ -29,6 +30,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages bioinformatics)
@@ -36,10 +38,12 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages zip)
@@ -438,3 +442,74 @@ output of the standard options \"--help\" and \"--version\" is generated
 automatically.")
     (home-page "http://www.gnu.org/software/gengetopt/gengetopt.html")
     (license license:gpl3+)))
+
+(define-public seek
+  ;; There are no release tarballs.  According to the installation
+  ;; instructions at http://seek.princeton.edu/installation.jsp, the latest
+  ;; stable release is identified by this changeset ID.
+  (let ((changeset "2329130")
+        (revision "1"))
+    (package
+      (name "seek")
+      (version (string-append "0-" revision "." changeset))
+      (source (origin
+                (method hg-fetch)
+                (uri (hg-reference
+                      (url "https://bitbucket.org/libsleipnir/sleipnir")
+                      (changeset changeset)))
+                (sha256
+                 (base32
+                  "0qrvilwh18dpbhkf92qvxbmay0j75ra3jg2wrhz67gf538zzphsx"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:modules ((srfi srfi-1)
+                    (guix build gnu-build-system)
+                    (guix build utils))
+         #:phases
+         (let ((dirs '("SeekMiner"
+                       "SeekEvaluator"
+                       "SeekPrep"
+                       "Distancer"
+                       "Data2DB"
+                       "PCL2Bin")))
+           (modify-phases %standard-phases
+             (add-before 'configure 'bootstrap
+               (lambda _
+                 (zero? (system* "bash" "gen_auto"))))
+             (add-after 'build 'build-additional-tools
+               (lambda* (#:key make-flags #:allow-other-keys)
+                 (fold (lambda (dir result)
+                         (with-directory-excursion (string-append "tools/" dir)
+                           (and result
+                                (zero? (apply system*
+                                              `("make" ,@make-flags))))))
+                       #t dirs)))
+             (add-after 'install 'install-additional-tools
+               (lambda* (#:key make-flags #:allow-other-keys)
+                 (fold (lambda (dir result)
+                         (with-directory-excursion (string-append "tools/" dir)
+                           (and result
+                                (zero? (apply system*
+                                              `("make" ,@make-flags "install"))))))
+                       #t dirs)))))))
+      (inputs
+       `(("gsl" ,gsl)
+         ("boost" ,boost)
+         ("libsvm" ,libsvm)
+         ("readline" ,readline)
+         ("gengetopt" ,gengetopt)
+         ("log4cpp" ,log4cpp)))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("automake" ,automake)
+         ("perl" ,perl)))
+      (home-page "http://seek.princeton.edu")
+      (synopsis "Gene co-expression search engine")
+      (description
+       "SEEK is a computational gene co-expression search engine.  SEEK provides
+biologists with a way to navigate the massive human expression compendium that
+now contains thousands of expression datasets.  SEEK returns a robust ranking
+of co-expressed genes in the biological area of interest defined by the user's
+query genes.  It also prioritizes thousands of expression datasets according
+to the user's query of interest.")
+      (license license:cc-by3.0))))
