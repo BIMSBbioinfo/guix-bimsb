@@ -431,3 +431,34 @@ of co-expressed genes in the biological area of interest defined by the user's
 query genes.  It also prioritizes thousands of expression datasets according
 to the user's query of interest.")
       (license license:cc-by3.0))))
+
+(define-public multiqc
+  (package
+    (name "multiqc")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://pypi.python.org/packages/23/d9/95a5e62eea95f220007d7a6683d0da1ee1d9f99e6932bcff793b6601ef15/multiqc-"
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "0avw11h63ldpxy5pizc3wl1wa01ha7q10wb240nggsjz3jaqvyiy"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-jinja2" ,python-jinja2)
+       ("python-simplejson" ,python-simplejson)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-click" ,python-click)
+       ("python-matplotlib" ,python-matplotlib)
+       ("python-numpy" ,python-numpy)))
+    (native-inputs
+     `(("python-setuptools" ,python-setuptools)))
+    (home-page "http://multiqc.info")
+    (synopsis "Aggregate bioinformatics analysis reports")
+    (description
+     "MultiQC is a tool to aggregate bioinformatics results across many
+samples into a single report.  It contains modules for a large number of
+common bioinformatics tools.")
+    (license license:gpl3)))
