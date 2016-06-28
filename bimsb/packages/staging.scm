@@ -361,28 +361,6 @@ designed to efficently cope with extremely large amounts of data.")
          ,@(alist-delete "python-numexpr"
                          (package-propagated-inputs tables)))))))
 
-(define-public log4cpp
-  (package
-    (name "log4cpp")
-    (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/log4cpp/log4cpp-"
-                                  (version-major+minor version) ".x%20%28new%29"
-                                  "/log4cpp-" (version-major+minor version)
-                                  "/log4cpp-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1l5yz5rfzzv6g3ynrj14mxfsk08cp5h1ssr7d74hjs0accrg7arm"))))
-    (build-system gnu-build-system)
-    (synopsis "Log library for C++")
-    (description
-     "Log4cpp is library of C++ classes for flexible logging to files, syslog,
-IDSA and other destinations.  It is modeled after the Log4j Java library,
-staying as close to their API as is reasonable.")
-    (home-page "http://log4cpp.sourceforge.net/")
-    (license license:lgpl2.1+)))
-
 (define-public gengetopt
   (package
     (name "gengetopt")
