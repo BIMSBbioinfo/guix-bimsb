@@ -550,6 +550,43 @@ datasets (MEME-ChIP).")
     (license (nonfree:non-free "http://meme-suite.org/doc/copyright.html"
                                "license forbids commercial usage"))))
 
+(define-public structure
+  (package
+    (name "structure")
+    (version "2.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://pritchardlab.stanford.edu/"
+                           "structure_software/release_versions/v" version
+                           "/structure_kernel_source.tar.gz"))
+       (sha256
+        (base32
+         "0dxvq34lyzicjwgsyrw49b1pmjms7nmc3g8vj8zga555i68jpdzj"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; There are no tests.
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure) ; There is no configure phase.
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+               (mkdir-p bin)
+               (install-file "structure" bin)))))))
+    (home-page "http://pritchardlab.stanford.edu/structure.html")
+    (synopsis "Tool for investigating population structure")
+    (description "Structure is a package for using multi-locus genotype data
+to investigate population structure.  Its uses include inferring the presence
+of distinct populations, assigning individuals to populations, studying hybrid
+zones, identifying migrants and admixed individuals, and estimating population
+allele frequencies in situations where many individuals are migrants or
+admixed.  It can be applied to most of the commonly-used genetic markers,
+including SNPS, microsatellites, RFLPs and AFLPs.")
+    ;; I have asked upstream for information about the license:
+    ;; https://groups.google.com/forum/#!topic/structure-software/1g7bDoN9140
+    (license nonfree:undeclared)))
+
 (define-public viennarna
   (package
     (name "viennarna")
