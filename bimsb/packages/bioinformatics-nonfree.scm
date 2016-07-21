@@ -22,6 +22,7 @@
   #:use-module ((guix licenses-nonfree) #:prefix nonfree:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix hg-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -304,22 +305,19 @@ research not-for-profit purposes."))))
               (patches (list (search-patch "macs-1.4-fix-parser.patch")))))))
 
 (define-public python2-mirnylib
-  (let ((commit "75603b5")
-        (revision "1"))
+  (let ((commit "ccec2e72dfa33eb04fe8b2ebd9bc2d88a1776d63")
+        (revision "2"))
     (package
       (name "python2-mirnylib")
-      (version (string-append "0." revision "." commit))
+      (version (string-append "0-" revision "." (string-take commit 9)))
       (source (origin
-                (method url-fetch)
-                ;; TODO: the tarball is generated on demand and thus will have
-                ;; changing hashes.  As this is a mercurial repository we
-                ;; cannot use git-fetch here.
-                (uri (string-append "https://bitbucket.org/mirnylab/"
-                                    "mirnylib/get/" commit ".tar.gz"))
-                (file-name (string-append name "-" version ".tar.gz"))
+                (method hg-fetch)
+                (uri (hg-reference
+                      (url "https://bitbucket.org/mirnylab/mirnylib")
+                      (changeset commit)))
                 (sha256
                  (base32
-                  "0qyw97ly74gd7n3c8hq4062y0mb8vw4qwzyrdx95jzyisxiaqh9l"))))
+                  "08ac4jg6bz4528x7sbnybkvjhk1w7jigmbl30qh4qlp6jfhf03bk"))))
       (build-system python-build-system)
       (arguments
        `(#:python ,python-2 ; python2 only
