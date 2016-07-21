@@ -355,21 +355,18 @@ projects.")
 ;; https://bitbucket.org/mirnylab/hiclib/issues/36/no-license-declaration
 (define-public python2-hiclib
   (let ((commit "1193891")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "python2-hiclib")
-      (version (string-append "0." revision "." commit))
+      (version (string-append "0-" revision "." commit))
       (source (origin
-                (method url-fetch)
-                ;; TODO: the tarball is generated on demand and thus will have
-                ;; changing hashes.  As this is a mercurial repository we
-                ;; cannot use git-fetch here.
-                (uri (string-append "https://bitbucket.org/mirnylab/"
-                                    "hiclib/get/" commit ".tar.gz"))
-                (file-name (string-append name "-" version ".tar.gz"))
+                (method hg-fetch)
+                (uri (hg-reference
+                      (url "https://bitbucket.org/mirnylab/hiclib")
+                      (changeset commit)))
                 (sha256
                  (base32
-                  "1wapj6lmmxwfsr1d62ddyjhjiy7isrynihp0kb891kfh6mmwxrxq"))))
+                  "1aa58chqwr2j6pmqjr5wgx79znb96612kbhziaa6szrcd1dm574c"))))
       (build-system python-build-system)
       (arguments
        `(#:tests? #f ; tests depend on unavailable test data
@@ -400,6 +397,8 @@ projects.")
                      (path (string-append "lib/python" python-version
                                           "/site-packages")))
                 (substitute* "setup.py"
+                  (("binarySearch/fastBinSearch.pyx")
+                   "binarySearch/fastBinSearch.cpp")
                   (("packages=\\['hiclib'\\],")
                    (string-append "packages=['hiclib'], "
                                   "data_files=[('" path "/hiclib', "
@@ -408,7 +407,7 @@ projects.")
                   (setenv "CPATH"
                           (string-append (assoc-ref inputs "python-numpy")
                                          "/" path "/numpy/core/include/:"
-                                         (getenv "CPATH")))
+                                         (or (getenv "CPATH") "")))
                   (zero? (system* "make")))))))))
       (propagated-inputs
        `(("hdf5" ,hdf5) ; FIXME: probably should be propagated by h5py
