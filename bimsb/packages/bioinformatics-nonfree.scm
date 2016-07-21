@@ -366,7 +366,7 @@ projects.")
                       (changeset commit)))
                 (sha256
                  (base32
-                  "1aa58chqwr2j6pmqjr5wgx79znb96612kbhziaa6szrcd1dm574c"))))
+                  "18y46bic26ya7zna9kakfifgqf6r4q9395nsjwv5hzcclfk755nf"))))
       (build-system python-build-system)
       (arguments
        `(#:tests? #f ; tests depend on unavailable test data
