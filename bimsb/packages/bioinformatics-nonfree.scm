@@ -253,7 +253,7 @@ depths and differentiate reliable RDNPs from the background noise.")
 (define-public kallisto
   (package
     (name "kallisto")
-    (version "0.42.2.1")
+    (version "0.43.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -262,7 +262,7 @@ depths and differentiate reliable RDNPs from the background noise.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1yx126g2yrk5gaw42bcd1cpil1c9xllgbkq14dds9y62zvxibygn"))))
+                "1d9cqf3lz6mm9kmqn47d99c6byn6q9l4ppgcafxrhcnrb2davhv9"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; no "check" target
     (inputs
