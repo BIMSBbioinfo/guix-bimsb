@@ -587,7 +587,7 @@ including SNPS, microsatellites, RFLPs and AFLPs.")
 (define-public viennarna
   (package
     (name "viennarna")
-    (version "2.1.9")
+    (version "2.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -595,7 +595,7 @@ including SNPS, microsatellites, RFLPs and AFLPs.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1swjnfir5gx424srsnggw4sf8x0p8kiqfzgzp5m34zdzvn4nlzrn"))))
+                "0q0xwx58vlj57lg8inyfgrbrxmzcvs6sc6n3rjf3gd23c7583qns"))))
     (build-system gnu-build-system)
     (inputs `(("perl" ,perl)))
     (home-page "http://www.tbi.univie.ac.at/RNA/index.html")
