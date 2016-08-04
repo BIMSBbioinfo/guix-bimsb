@@ -41,6 +41,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
@@ -597,7 +598,11 @@ including SNPS, microsatellites, RFLPs and AFLPs.")
                (base32
                 "0b9h3rrndxjvj3r2wyixf095fghpspgiwx3acbd8hlv3lj6hpi1h"))))
     (build-system gnu-build-system)
-    (inputs `(("perl" ,perl)))
+    (inputs
+     `(("perl" ,perl)
+       ("python" ,python)))
+    (native-inputs
+     `(("swig" ,swig)))
     (home-page "http://www.tbi.univie.ac.at/RNA/index.html")
     (synopsis "Prediction and comparison of RNA secondary structures")
     (description
