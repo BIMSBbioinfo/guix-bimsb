@@ -601,6 +601,12 @@ including SNPS, microsatellites, RFLPs and AFLPs.")
                (base32
                 "0b9h3rrndxjvj3r2wyixf095fghpspgiwx3acbd8hlv3lj6hpi1h"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; Disable link-time optimization because this creates problems
+     ;; when stripping.  Linking with the stripped static library
+     ;; would fail when LTO is enabled.  See the discussion here:
+     ;; https://github.com/s-will/LocARNA/issues/7
+     `(#:configure-flags '("--disable-lto")))
     (inputs
      `(("perl" ,perl)
        ("python" ,python)))
