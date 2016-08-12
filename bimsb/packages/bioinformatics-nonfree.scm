@@ -23,6 +23,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix hg-download)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -44,11 +45,13 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages zip))
+  #:use-module (gnu packages zip)
+  #:use-module (bimsb packages staging))
 
 (define-public bcl2fastq
   (package
@@ -669,3 +672,53 @@ LocARNA performs Sankoff-like alignment and is in particular suited
 for analyzing sets of related RNAs without known common structure.")
     (home-page "http://www.bioinf.uni-freiburg.de/Software/LocARNA/")
     (license license:gpl3)))
+
+(define-public nofold
+  (let ((revision "1")
+        (commit "a3da753118db8310d453669aa01d34a270532a4b"))
+    (package
+      (name "nofold")
+      (version (string-append "0.0.0-"
+                              revision "." (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sarahmid/nofold.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version))
+                (sha256
+                 (base32
+                  "0fq33ra4nrnyjvwd4vc9r2mxrdihkb5imwms7b2kl6dr76vfmy1z"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (delete 'build)
+           (replace 'install
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((target (string-append (assoc-ref outputs "out")
+                                            "/share/nofold")))
+                 (copy-recursively "." target))
+               #t)))))
+      (inputs
+       `(("python" ,python-2)
+         ("locarna" ,locarna)
+         ("infernal" ,infernal-1.0)
+         ("r" ,r)
+         ("r-fastcluster" ,r-fastcluster)))
+      (synopsis "Motif finder for RNA secondary structures")
+      (description
+       "NoFold is an approach for characterizing and clustering RNA
+secondary structures without computational folding or alignment.  It
+works by mapping each RNA sequence of interest to a structural feature
+space, where each coordinate within the space corresponds to the
+probabilistic similarity of the sequence to an empirically defined
+structure model (e.g. Rfam family covariance models).  NoFold provides
+scripts for mapping sequences to this structure space, extracting any
+robust clusters that are formed, and annotating those clusters with
+structural and functional information.")
+      (home-page "http://www.bioinf.uni-freiburg.de/Software/LocARNA/")
+      (license (nonfree:non-free "https://raw.githubusercontent.com/sarahmid/nofold/master/LICENSE"
+                                 "license forbids commercial usage")))))
