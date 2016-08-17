@@ -632,6 +632,24 @@ tree-editing (Shapiro & Zhang 1990).  Finally, an algorithm to design
 sequences with a predefined structure (inverse folding) is provided.")
     (license (nonfree:non-free "TODO" "license forbids commercial usage"))))
 
+(define-public viennarna-1.8
+  (package (inherit viennarna)
+    (version "1.8.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://www.tbi.univie.ac.at/RNA/download/sourcecode/"
+                    "1_8_x/ViennaRNA-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ygcs399xl07igj15ynfg6cd9ifi1amy8n0p6bl6awgpx95xkqpl"))))
+    (arguments
+     `(#:tests? #f ; no tests
+       #:configure-flags
+       (list "--without-perl")))
+    (inputs '())
+    (native-inputs '())))
+
 ;; Although this program is released under the GPL it depends on
 ;; ViennaRNA, which is non-free software.
 (define-public locarna
