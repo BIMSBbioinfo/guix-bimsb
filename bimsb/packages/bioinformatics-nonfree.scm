@@ -45,6 +45,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
@@ -740,3 +741,105 @@ structural and functional information.")
       (home-page "https://github.com/sarahmid/nofold")
       (license (nonfree:non-free "https://raw.githubusercontent.com/sarahmid/nofold/master/LICENSE"
                                  "license forbids commercial usage")))))
+
+;; This software is released under the GPL but depends on the non-free
+;; ViennaRNA, so we cannot add it to Guix upstream.
+(define-public ensembleclust
+  (package
+    (name "ensembleclust")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://bpla-kernel.dna.bio.keio.ac.jp"
+                                  "/clustering/EnsembleClust-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "11jfbqkyvk2agq7q9lvblqif299pwwc8lvn6d33jd9gy1hcrwzjr"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "BOOST_LIBS=-lboost_system")
+       #:make-flags
+       ;; This program was written for an older version of Boost.
+       '("CPPFLAGS=-DBOOST_SPIRIT_USE_OLD_NAMESPACE -fpermissive")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-boost-includes
+           (lambda _
+             (substitute* '("src/similarity/common/fa.h"
+                            "src/similarity/common/fa.cpp"
+                            "src/similarity/common/maf.h"
+                            "src/similarity/common/maf.cpp"
+                            "src/similarity/common/aln.h"
+                            "src/similarity/common/aln.cpp"
+                            "src/similarity/bpla_kernel/data.h")
+               (("boost/spirit/")
+                "boost/spirit/home/classic/"))
+             (substitute* "src/similarity/bpla_kernel/main.cpp"
+               ((" _1")
+                " boost::lambda::_1"))
+             #t))
+         (add-after 'patch-boost-includes 'chdir
+           (lambda _ (chdir "src/similarity") #t))
+         (add-after 'install 'chdir-wpgma
+           (lambda _ (chdir "../../src/wpgma") #t))
+         (add-after 'chdir-wpgma 'configure-wpgma
+           (lambda* (#:key configure-flags
+                     #:allow-other-keys #:rest args)
+             (let* ((configure (assoc-ref %standard-phases 'configure)))
+               (apply configure
+                      (append args
+                              (list #:configure-flags
+                                    configure-flags))))))
+         (add-after 'configure-wpgma 'build-wpgma
+           (lambda* (#:key make-flags
+                     #:allow-other-keys #:rest args)
+             (let* ((build (assoc-ref %standard-phases 'build)))
+               (apply build
+                      (append args
+                              (list #:make-flags make-flags))))))
+         (add-after 'build-wpgma 'install-wpgma
+           (lambda* (#:key make-flags
+                     #:allow-other-keys #:rest args)
+             (let* ((install (assoc-ref %standard-phases 'install)))
+               (apply install
+                      (append args
+                              (list #:make-flags make-flags))))))
+         (add-after 'install-wpgma 'install-scripts
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share/ensembleclust"))
+                    (bin (string-append out "/bin")))
+               (mkdir-p share)
+               (copy-recursively "../script" share)
+               (mkdir-p bin)
+
+               ;; Generate wrapper script.  We cannot use the script
+               ;; that comes with the sources because the paths are
+               ;; all wrong.
+               (call-with-output-file (string-append bin "/cluster")
+                 (lambda (port)
+                   (display (string-append
+                             "#!" (which "sh")
+                             bin "/bpla_kernel result/$3.mat +1 $1\n"
+                             share "/mat2dist.rb result/$3.mat > result/$3.dist\n"
+                             bin "/pgma $2 result/$3.dist > result/$3.tree\n")
+                            port)))
+               (chmod (string-append bin "/cluster") #o755)
+               #t))))))
+    (inputs
+     `(("ruby" ,ruby)
+       ("boost" ,boost)
+       ("viennarna" ,viennarna-1.8)))
+    (synopsis "Clustering of non-coding RNAs")
+    (description
+     "EnsembleClust provides tools for fast and accurate clustering of
+non-coding RNAs.  This is achieved by means of a new similarity
+measure for the hierarchical clustering of ncRNAs.  The idea is that
+the reliability of approximate algorithms can be improved by utilizing
+the information of suboptimal solutions in their dynamic programming
+frameworks.  EnsembleClust utilizes all possible sequence alignments
+and all possible secondary structures.")
+    (home-page "http://bpla-kernel.dna.bio.keio.ac.jp/clustering/")
+    (license license:gpl2+)))
