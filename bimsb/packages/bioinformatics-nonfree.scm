@@ -737,6 +737,6 @@ structure model (e.g. Rfam family covariance models).  NoFold provides
 scripts for mapping sequences to this structure space, extracting any
 robust clusters that are formed, and annotating those clusters with
 structural and functional information.")
-      (home-page "http://www.bioinf.uni-freiburg.de/Software/LocARNA/")
+      (home-page "https://github.com/sarahmid/nofold")
       (license (nonfree:non-free "https://raw.githubusercontent.com/sarahmid/nofold/master/LICENSE"
                                  "license forbids commercial usage")))))
