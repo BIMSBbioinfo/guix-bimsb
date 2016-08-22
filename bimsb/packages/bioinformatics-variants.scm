@@ -57,10 +57,19 @@
 ;; Patched version of bedtools 2.25.0, which segfaults on some
 ;; RCAS/dorina test datasets in Bed6+ format.
 (define-public bedtools/patched
-  (package (inherit bedtools)
-    (version (string-append (package-version bedtools) "-1"))
+  (package
+    (inherit bedtools)
+    (name "bedtools")
+    (version "2.25.0")
     (source
-     (origin (inherit (package-source bedtools))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/arq5x/bedtools2/archive/v"
+                           version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1ywcy3yfwzhl905b51l0ffjia55h75vv3mw5xkvib04pp6pj548m"))
        (patches (list (search-patch "bedtools-fix-null-segfault.patch")))))))
 
 (define-public samtools-1.1
