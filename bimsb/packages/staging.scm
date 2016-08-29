@@ -536,6 +536,28 @@ assays and test for differential expression based on a model using the
 negative binomial distribution.")
     (license license:lgpl3+)))
 
+(define-public r-matrix
+  (package
+    (name "r-matrix")
+    (version "1.2-7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Matrix" version))
+       (sha256
+        (base32
+         "18x3mdq5cdhbk1lw5cj7vbr41lk8w9p4i5kzh8wslgq6p3d9ac3c"))))
+    (properties `((upstream-name . "Matrix")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-lattice" ,r-lattice)))
+    (home-page "http://Matrix.R-forge.R-project.org/")
+    (synopsis "Sparse and dense matrix classes and methods")
+    (description
+     "This package provides classes and methods for dense and sparse
+matrices and operations on them using LAPACK and SuiteSparse.")
+    (license license:gpl2+)))
+
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
