@@ -400,6 +400,45 @@ classification, regression and survival trees.")
      "This package provides functions for plotting genomic data.")
     (license license:artistic2.0)))
 
+(define-public r-hmisc
+  (package
+    (name "r-hmisc")
+    (version "3.17-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Hmisc" version))
+       (sha256
+        (base32
+         "1hr2kycpm0h3li9gnlbx9pl6h13das7g2wqfk6cip1kx6lv00ypw"))))
+    (properties `((upstream-name . "Hmisc")))
+    (build-system r-build-system)
+    (native-inputs
+     `(("gfortran" ,gfortran)))
+    (propagated-inputs
+     `(("r-acepack" ,r-acepack)
+       ("r-cluster" ,r-cluster)
+       ("r-data-table" ,r-data-table)
+       ("r-foreign" ,r-foreign)
+       ("r-formula" ,r-formula)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-gridextra" ,r-gridextra)
+       ("r-gtable" ,r-gtable)
+       ("r-lattice" ,r-lattice)
+       ("r-latticeextra" ,r-latticeextra)
+       ("r-nnet" ,r-nnet)
+       ("r-rpart" ,r-rpart)))
+    (home-page "http://biostat.mc.vanderbilt.edu/Hmisc")
+    (synopsis "Miscellaneous data analysis and graphics functions")
+    (description
+     "This package contains many functions useful for data analysis,
+high-level graphics, utility operations, functions for computing
+sample size and power, importing and annotating datasets, imputing
+missing values, advanced table making, variable clustering, character
+string manipulation, conversion of R objects to LaTeX code, and
+recoding variables.")
+    (license license:gpl2+)))
+
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
