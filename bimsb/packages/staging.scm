@@ -337,6 +337,25 @@ primary sequence.")
 output R objects in HTML format.")
     (license license:lgpl2.1+)))
 
+(define-public r-rjson
+  (package
+    (name "r-rjson")
+    (version "0.2.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rjson" version))
+       (sha256
+        (base32
+         "1vzjyvf57k1fjizlk28rby65y5lsww5qnfvgnhln74qwda7hvl3p"))))
+    (build-system r-build-system)
+    (home-page "http://cran.r-project.org/web/packages/rjson")
+    (synopsis "JSON library for R")
+    (description
+     "This package provides functions to convert R objects into JSON
+objects and vice-versa.")
+    (license license:gpl2+)))
+
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
