@@ -318,6 +318,25 @@ primary sequence.")
     (home-page "http://eddylab.org/infernal/")
     (license license:bsd-3)))
 
+(define-public r-hwriter
+  (package
+    (name "r-hwriter")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "hwriter" version))
+       (sha256
+        (base32
+         "0arjsz854rfkfqhgvpqbm9lfni97dcjs66isdsfvwfd2wz932dbb"))))
+    (build-system r-build-system)
+    (home-page "http://cran.r-project.org/web/packages/hwriter")
+    (synopsis "Output R objects in HTML format")
+    (description
+     "This package provides easy-to-use and versatile functions to
+output R objects in HTML format.")
+    (license license:lgpl2.1+)))
+
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
