@@ -985,6 +985,37 @@ infrastructure.")
 data.")
     (license license:gpl3+)))
 
+(define-public r-txdb-hsapiens-ucsc-hg19-knowngene
+  (package
+    (name "r-txdb-hsapiens-ucsc-hg19-knowngene")
+    (version "3.2.2")
+    (source (origin
+              (method url-fetch)
+              ;; We cannot use bioconductor-uri here because this tarball is
+              ;; located under "data/annotation/" instead of "bioc/".
+              (uri (string-append "http://bioconductor.org/packages/"
+                                  "release/data/annotation/src/contrib"
+                                  "/TxDb.Hsapiens.UCSC.hg19.knownGene_"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1sajhcqqwazgz2lqbik7rd935i7kpnh08zxbp2ra10j72yqy4g86"))))
+    (properties
+     `((upstream-name . "TxDb.Hsapiens.UCSC.hg19.knownGene")))
+    (build-system r-build-system)
+    ;; As this package provides little more than a very large data file it
+    ;; doesn't make sense to build substitutes.
+    (arguments `(#:substitutable? #f))
+    (propagated-inputs
+     `(("r-genomicfeatures" ,r-genomicfeatures)))
+    (home-page
+     "http://bioconductor.org/packages/TxDb.Hsapiens.UCSC.hg19.knownGene/")
+    (synopsis "Annotation package for TxDb objects")
+    (description
+     "This package provides annotation databases generated from UCSC
+data by exposing them as @code{TxDb} objects.")
+    (license license:artistic2.0)))
+
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
