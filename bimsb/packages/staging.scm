@@ -1073,6 +1073,38 @@ The width of the stack is proportional to the fraction of valid
 symbols in that position.")
     (license license:bsd-3)))
 
+;; This exact version of OpenFST is required by MEDICC
+;; Move this to machine-learning.scm
+(define-public openfst
+  (package
+    (name "openfst")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.openfst.org/twiki/pub/"
+                           "FST/FstDownload/openfst-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "00j647hsgldpn3dagpqlfalj48f739hh2krzy5fg3bjldi7jw72f"))))
+    (build-system gnu-build-system)
+    (home-page "http://www.openfst.org/")
+    (synopsis "Library for handling finite-state transducers (FST)")
+    (description
+     "OpenFst is a library for constructing, combining, optimizing,
+and searching weighted finite-state transducers (FSTs).  Weighted
+finite-state transducers are automata where each transition has an
+input label, an output label, and a weight.  The more familiar
+finite-state acceptor is represented as a transducer with each
+transition's input and output label equal.  Finite-state acceptors are
+used to represent sets of strings (specifically, regular or rational
+sets); finite-state transducers are used to represent binary relations
+between pairs of strings (specifically, rational transductions).  The
+weights can be used to represent the cost of taking a particular
+transition.")
+    (license license:asl2.0)))
+
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
