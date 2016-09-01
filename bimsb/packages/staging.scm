@@ -1105,6 +1105,43 @@ weights can be used to represent the cost of taking a particular
 transition.")
     (license license:asl2.0)))
 
+(define-public phylip
+  (package
+    (name "phylip")
+    (version "3.696")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://evolution.gs.washington.edu/phylip/"
+                           "download/phylip-" version ".tar.gz"))
+       (sha256
+        (base32
+         "01jar1rayhr2gba2pgbw49m56rc5z4p5wn3ds0m188hrlln4a2nd"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no check target
+       #:make-flags (list "-f" "Makefile.unx" "install")
+       #:parallel-build? #f ; not supported
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'enter-dir
+           (lambda _ (chdir "src") #t))
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((target (string-append (assoc-ref outputs "out")
+                                          "/bin")))
+               (mkdir-p target)
+               (for-each (lambda (file)
+                           (install-file file target))
+                         (find-files "../exe" ".*")))
+             #t)))))
+    (home-page "http://evolution.genetics.washington.edu/phylip/")
+    (synopsis "Tools for inferring phylogenies")
+    (description "PHYLIP (the PHYLogeny Inference Package) is a
+package of programs for inferring phylogenies (evolutionary trees).")
+    (license license:bsd-2)))
+
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
