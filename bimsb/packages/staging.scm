@@ -35,6 +35,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
@@ -1015,6 +1016,62 @@ data.")
      "This package provides annotation databases generated from UCSC
 data by exposing them as @code{TxDb} objects.")
     (license license:artistic2.0)))
+
+;; This version of WebLogo is required by MEDICC.
+(define-public weblogo-3.3
+  (package
+    (name "weblogo")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/WebLogo/weblogo/archive/"
+                           version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0sxrrr0ybp22zdy0ii5qa89pryxryiavgbfxc6zi5hr7wr31wwv8"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2
+       #:tests? #f ; there is no test target
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'replace-svn-variables
+           (lambda _
+             (substitute* "corebio/_version.py"
+               (("date =.*") "date = \"Guix\"\n")
+               (("revision =.*") ""))
+             (substitute* "weblogolib/__init__.py"
+               (("release_build = .*") "")
+               (("release_date =.*") "release_date = \"Guix\"\n"))
+             #t)))))
+    (propagated-inputs
+     `(("python2-numpy" ,python2-numpy)))
+    (inputs
+     `(;; TODO: ("pdf2svg" ,pdf2svg)
+       ("ghostscript" ,ghostscript)))
+    (home-page "http://weblogo.threeplusone.com/")
+    (synopsis "Generate nucleotide sequence logos")
+    (description
+     "WebLogo is an application designed to make the generation of
+nucleotide sequence logos easy.  It can create output in several
+common graphics formats, including the bitmap formats GIF and PNG,
+suitable for on-screen display, and the vector formats EPS and PDF,
+more suitable for printing, publication, and further editing.
+Additional graphics options include bitmap resolution, titles,
+optional axis, and axis labels, antialiasing, error bars, and
+alternative symbol formats.
+
+A sequence logo is a graphical representation of an amino acid or
+nucleic acid multiple sequence alignment.  Each logo consists of
+stacks of symbols, one stack for each position in the sequence.  The
+overall height of the stack indicates the sequence conservation at
+that position, while the height of symbols within the stack indicates
+the relative frequency of each amino or nucleic acid at that position.
+The width of the stack is proportional to the fraction of valid
+symbols in that position.")
+    (license license:bsd-3)))
 
 (define-public r-fastcluster
   (package
