@@ -132,3 +132,18 @@
               (sha256
                (base32
                 "1gbq54l0nlqyjxxhq6nrqjfdx98x039akcxxrr5y3j7ccjw47wm2"))))))
+
+(define-public infernal-1.0
+  (package (inherit infernal)
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://eddylab.org/software/infernal/"
+                                  "infernal-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ba3av8xg4309dpy1ls73nxk2v7ri0yp0ix6ad5b1j35x319my64"))))
+    (arguments
+     ;; We need to disable tests because we don't seem to have
+     ;; getopts.pl.
+     `(#:tests? #f))))
