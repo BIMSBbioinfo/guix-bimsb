@@ -120,3 +120,15 @@
     (name "pardre-fixed")
     (source (origin (inherit (package-source pardre))
                     (patches (search-patches "pardre-fix-utils.patch"))))))
+
+;; This is needed for MEDICC
+(define-public python2-biopython-1.62
+  (package
+    (inherit python2-biopython)
+    (version "1.62")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "biopython" version))
+              (sha256
+               (base32
+                "1gbq54l0nlqyjxxhq6nrqjfdx98x039akcxxrr5y3j7ccjw47wm2"))))))
