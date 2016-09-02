@@ -1089,6 +1089,10 @@ symbols in that position.")
         (base32
          "00j647hsgldpn3dagpqlfalj48f739hh2krzy5fg3bjldi7jw72f"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "--enable-pdt"
+             "--enable-far")))
     (home-page "http://www.openfst.org/")
     (synopsis "Library for handling finite-state transducers (FST)")
     (description
