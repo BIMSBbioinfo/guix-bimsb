@@ -1141,31 +1141,6 @@ clustering of vector data, which go beyond what the existing packages
 provide.")
     (license license:bsd-2)))
 
-(define-public r-rhtslib
-  (package
-    (name "r-rhtslib")
-    (version "1.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "Rhtslib" version))
-       (sha256
-        (base32
-         "1wgpn9x8abjj7fc087pdavqc3fz0pl5xdh231mgjila18irwlhb3"))))
-    (properties `((upstream-name . "Rhtslib")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-zlibbioc" ,r-zlibbioc)))
-    (inputs
-     `(("zlib" ,zlib)))
-    (home-page "https://github.com/nhayden/Rhtslib")
-    (synopsis "High-throughput sequencing library as an R package")
-    (description
-     "This package provides the HTSlib C library for high-throughput
-sequence analysis.  The package is primarily useful to developers of
-other R packages who wish to make use of HTSlib.")
-    (license license:lgpl2.0+)))
-
 (define-public r-bamsignals
   (package
     (name "r-bamsignals")
