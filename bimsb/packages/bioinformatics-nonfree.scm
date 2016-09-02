@@ -52,7 +52,8 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages zip)
-  #:use-module (bimsb packages staging))
+  #:use-module (bimsb packages staging)
+  #:use-module (bimsb packages bioinformatics-variants))
 
 (define-public bcl2fastq
   (package
@@ -843,3 +844,108 @@ frameworks.  EnsembleClust utilizes all possible sequence alignments
 and all possible secondary structures.")
     (home-page "http://bpla-kernel.dna.bio.keio.ac.jp/clustering/")
     (license license:gpl2+)))
+
+;; This package looks terrible because it doesn't have a build system
+;; and depends on many outdated packages.
+(define-public medicc
+  (let ((commit "e440c3a2a4751b4c33fd2709844b751d1b545ea1")
+        (revision "1"))
+    (package
+      (name "medicc")
+      (version (string-append "0.0.0-" revision "."
+                              (string-take commit 7)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://bitbucket.org/rfs/medicc.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version))
+                (sha256
+                 (base32
+                  "0pky33bij6pi7z6473r8i8116vyyyv10wra5ki6kk1m6gpar9lcb"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:modules ((srfi srfi-26)
+                    (guix build python-build-system)
+                    (guix build utils))
+         #:python ,python-2
+         #:tests? #f ; there are no tests
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'prepare-compilation
+             (lambda* (#:key inputs #:allow-other-keys)
+               (copy-recursively (assoc-ref inputs "fstframework-sources")
+                                 "lib/fstframework")
+               ;; The "fstfar" library is in a subdirectory of the
+               ;; openfst output.
+               (setenv "LIBRARY_PATH"
+                       (string-append (assoc-ref inputs "openfst")
+                                      "/lib/fst:"
+                                      (getenv "LIBRARY_PATH")))
+               #t))
+           (replace 'build
+             (lambda _
+               (with-directory-excursion "lib/fstframework/cExtensions"
+                 (zero? (system* "make")))))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out     (assoc-ref outputs "out"))
+                      (share   (string-append out "/share/medicc"))
+                      (bin     (string-append out "/bin"))
+                      (scripts '("cnv_find_loh_events.py"
+                                 "cnv_find_precursor.py"
+                                 "create_cnv_fst.py"
+                                 "get_sequence_from_tree.py"
+                                 "medicc_phase.py"
+                                 "medicc.py"
+                                 "medicc_segment.py"
+                                 "medicc_snpphase.py")))
+                 ;; Ensure that the non-standard directories are part
+                 ;; of PYTHONPATH so that the "wrap" phase can do its
+                 ;; work properly.
+                 (setenv "PYTHONPATH"
+                         (string-append share ":"
+                                        share "/lib:"
+                                        share "/lib/fstframework:"
+                                        (or (getenv "PYTHONPATH") "")))
+                 (mkdir-p share)
+                 (mkdir-p bin)
+                 (copy-recursively "." share)
+                 (for-each (lambda (prog)
+                             ;; Not all scripts are actually executable.
+                             (chmod prog #o755)
+                             (install-file prog bin)
+                             (delete-file (string-append share "/" prog)))
+                           scripts))
+               #t)))))
+      (inputs
+       `(("python2-biopython" ,python2-biopython-1.62)
+         ("python2-numpy" ,python2-numpy)
+         ("python2-scipy" ,python2-scipy)))
+      (native-inputs
+       `(("fstframework-sources"
+          ,(let ((commit "c371e4481183630229c99c24b747ce3d6b2b265f")
+                 (revision "1"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://bitbucket.org/rfs/fstframework.git")
+                     (commit commit)))
+               (file-name (string-append "fstframework-"
+                                         "0.0.0-" revision "."
+                                         (string-take commit 7)))
+               (sha256
+                (base32
+                 "0s1483vz14fz1b7l8cs0hll70wn55dpfmdswmy7fqfq6w20q4lwl")))))))
+      ;; FIXME: it would be better to patch the sources such that the
+      ;; external executables are referenced by their full path.
+      (propagated-inputs
+       `(("phylip" ,phylip)
+         ("openfst" ,openfst)
+         ("weblogo" ,weblogo-3.3)))
+      (synopsis "Minimum event distance for intra-tumour copy number comparisons")
+      (description
+       "MEDICC stands for \"Minimum Event Distance for Intra-tumour
+Copy number Comparisons\".  No idea what this means.")
+      (home-page "https://bitbucket.org/rfs/medicc")
+      (license nonfree:undeclared))))
