@@ -975,3 +975,34 @@ sequences greater than 1000 nt in length.")
     (home-page "http://www.e-rna.org/cofold/")
     (license (package-license viennarna-1.8))))
 
+;; This is non-free because it contains ViennaRNA code, which is
+;; released under a non-free license.
+(define-public mafft-extensions
+  (package (inherit mafft)
+    (version (package-version mafft))
+    (name "mafft-extensions")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://mafft.cbrc.jp/alignment/software/mafft-"
+                                  version "-with-extensions-src.tgz"))
+              (sha256
+               (base32
+                "1lglkzi26czw5wrl6viv99xyavjl70vx6d85i99fdpqy17bwpz16"))))
+    (arguments
+     `(#:tests? #f ; no tests included
+       #:make-flags
+       (let ((out (assoc-ref %outputs "out")))
+         (list (string-append "PREFIX=" out)
+               (string-append "BINDIR=" out "/bin")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'enter-dir
+           (lambda _ (chdir "extensions") #t))
+         (delete 'configure))))
+    (synopsis "Extensions for the MAFFT multiple sequence alignment package")
+    (description
+     "The extensions code includes code of the ViennaRNA package,
+MXSCARNA and ProbConsRNA.")
+    ;; FIXME: this is probably inaccurate.
+    (license (package-license viennarna))))
+
