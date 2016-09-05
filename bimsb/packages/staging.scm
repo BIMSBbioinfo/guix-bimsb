@@ -1208,3 +1208,41 @@ analysis of RNA secondary structure and comparative analysis in R.")
     (home-page "http://www.e-rna.org/r-chie/index.cgi")
     (license license:gpl3+)))
 
+(define-public transat
+  (package
+    (name "transat")
+    (version "2.0")
+    (source
+     (origin
+       (method url-fetch/tarbomb)
+       ;; FIXME: without this field "url-fetch/tarbomb" fails
+       (file-name (string-append name "-" version ".tgz"))
+       (uri (string-append "http://www.e-rna.org/transat/download/"
+                           "transat_v" version ".tgz"))
+       (sha256
+        (base32
+         "0z754slkl6ijz3g8d7wjyqwaq1gb4cx3csfx4gyrvlg14wagjpm6"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f                      ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'change-dir
+           (lambda _ (chdir "src") #t))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (mkdir-p bin)
+               (install-file "Transat" bin)
+               #t))))))
+    (home-page "http://www.e-rna.org/transat/")
+    (synopsis "Detect conserved helices of functional RNA structures")
+    (description "Transat detects conserved helices of high
+statistical significance in functional RNA, including pseudo-knotted,
+transient and alternative structures.  Given a multiple sequence
+alignment, Transat will recover all possible helices and determine the
+statistical probability of the helix existing based on its
+phylogeny-based evolutionary likelihood.")
+    (license license:gpl3+)))
+
