@@ -1246,3 +1246,43 @@ statistical probability of the helix existing based on its
 phylogeny-based evolutionary likelihood.")
     (license license:gpl3+)))
 
+(define-public rnadecoder
+  (package
+    (name "rnadecoder")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       ;; FIXME: there are no versioned tarballs
+       (uri (string-append "http://www.e-rna.org/rnadecoder/download/"
+                           "rnadecoder.tar.bz2"))
+       (sha256
+        (base32
+         "1ml1bbil0gm2w9knx85kvkjwm7598313a5jy9fmavbsmwx7p3v0j"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'patch-source-shebangs)
+         (delete 'configure)
+         (delete 'build)
+         (delete 'patch-shebangs)
+         (add-after 'unpack 'change-dir
+           (lambda _ (chdir "bin") #t))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let*  ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin")))
+               (mkdir-p bin)
+               (install-file "RNA-decoder" bin)
+               #t))))))
+    (home-page "http://www.e-rna.org/rnadecoder/")
+    (synopsis "Find and fold RNA secondary structures in protein-coding regions")
+    (description "RNA-Decoder is a comparative method to find and fold
+RNA secondary structures in protein-coding regions.  It explicitly
+takes the known protein-coding context of an RNA-sequence alignment
+into account in order to predict evolutionarily conserved
+secondary-structure elements, which may span both coding and
+non-coding regions.")
+    (license license:gpl3+)))
