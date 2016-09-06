@@ -313,6 +313,57 @@ research not-for-profit purposes."))))
                 "17lbf76gkisrxhnjwf8iw4pvinny2376dp9dyrgald2l0ww6s4d9"))
               (patches (list (search-patch "macs-1.4-fix-parser.patch")))))))
 
+(define-public fstitch
+  (let ((commit "7c65fd973f1d04d83cd48dd5561c4e40c14dd8c6")
+        (revision "1"))
+    (package
+      (name "fstitch")
+      (version (string-append "0-" revision "." (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/azofeifa/FStitch.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version))
+                (sha256
+                 (base32
+                  "0g00hdc73w68big3prym0llx0nl7w7xhbfp6g405yfn7dghc8v8c"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin
+                    ;; Delete pre-built binaries
+                    (delete-file "FastReadStitcher/src/FStitch")
+                    (for-each delete-file
+                              (find-files "FastReadStitcher/src/" "\\.o$"))
+                    #t))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ; no tests included
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'enter-dir
+             (lambda _
+               (chdir "FastReadStitcher/src/")
+               (substitute* "Makefile"
+                 (("\\$\\{PWD\\}/") ""))
+               #t))
+           (delete 'configure)
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((bin (string-append (assoc-ref outputs "out")
+                                         "/bin")))
+                 (mkdir-p bin)
+                 (install-file "FStitch" bin)
+                 #t))))))
+      (home-page "https://github.com/azofeifa/FStitch/")
+      (synopsis "Detect nascent RNA transcription in GRO-seq and ChIP-seq")
+      (description
+       "FStitch was written primarily for scientists looking to
+identify putative nascent transcripts de novo in Global Run-On
+sequencing data.  However, users may also find this package useful as
+a ChIP-seq peak caller.")
+      (license nonfree:undeclared))))
+
 (define-public python2-mirnylib
   (let ((commit "ccec2e72dfa33eb04fe8b2ebd9bc2d88a1776d63")
         (revision "2"))
