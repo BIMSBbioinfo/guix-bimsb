@@ -253,6 +253,29 @@ web browser.")
 missing features present in other programming languages.")
     (license license:gpl3+)))
 
+(define-public r-tibble
+  (package
+    (name "r-tibble")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tibble" version))
+       (sha256
+        (base32
+         "011i352ylq9b4xfcj7h10h7qsqd9qkc1rzc0pr1gf8qjb788p2pd"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-assertthat" ,r-assertthat)
+       ("r-lazyeval" ,r-lazyeval)
+       ("r-rcpp" ,r-rcpp)))
+    (home-page "https://github.com/hadley/tibble")
+    (synopsis "Simple data frames")
+    (description
+     "This package provides a @code{tbl_df} class that offers better
+checking and printing capabilities than traditional data frames.")
+    (license license:expat)))
+
 (define-public gess
   (package
     (name "gess")
