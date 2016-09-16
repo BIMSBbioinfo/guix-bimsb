@@ -99,6 +99,55 @@ density estimation allowing identification of biologically meaningful sites
 whose output can be displayed directly in the UCSC Genome Browser.")
       (license license:gpl3+))))
 
+(define-public r-rcas
+  (package
+    (name "r-rcas")
+    (version "0.99.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/BIMSBbioinfo/RCAS/archive/v"
+                                  version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1s6afz61fppvyxmgm9dbc6riyc879797frfs4cffjj0fd9fn6qhz"))))
+    (build-system r-build-system)
+    (native-inputs
+     `(("r-roxygen2" ,r-roxygen2)
+       ("r-knitr" ,r-knitr)))
+    (propagated-inputs
+     `(("r-data-table" ,r-data-table)
+       ("r-biomart" ,r-biomart)
+       ("r-org-hs-eg-db" ,r-org-hs-eg-db)
+       ("r-org-ce-eg-db" ,r-org-ce-eg-db)
+       ("r-org-dm-eg-db" ,r-org-dm-eg-db)
+       ("r-org-mm-eg-db" ,r-org-mm-eg-db)
+       ("r-bsgenome-hsapiens-ucsc-hg19"
+        ,r-bsgenome-hsapiens-ucsc-hg19)
+       ("r-bsgenome-mmusculus-ucsc-mm9"
+        ,r-bsgenome-mmusculus-ucsc-mm9)
+       ("r-bsgenome-celegans-ucsc-ce6"
+        ,r-bsgenome-celegans-ucsc-ce6)
+       ("r-bsgenome-dmelanogaster-ucsc-dm3"
+        ,r-bsgenome-dmelanogaster-ucsc-dm3)
+       ("r-topgo" ,r-topgo)
+       ("r-dt" ,r-dt)
+       ("r-plotly" ,r-plotly)
+       ("r-doparallel" ,r-doparallel)
+       ("r-motifrg" ,r-motifrg)
+       ("r-genomation" ,r-genomation)
+       ("r-genomicfeatures" ,r-genomicfeatures)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-rmarkdown" ,r-rmarkdown)))
+    (synopsis "RNA-centric annotation system")
+    (description
+     "RCAS aims to be a standalone RNA-centric annotation system
+that provides intuitive reports and publication-ready graphics.  This
+package provides the R library implementing most of the pipeline's
+features.")
+    (home-page "https://github.com/BIMSBbioinfo/RCAS")
+    (license license:expat)))
+
 (define-public rstudio
   (package
     (name "rstudio")
