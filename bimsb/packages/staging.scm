@@ -36,6 +36,7 @@
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
@@ -147,6 +148,49 @@ package provides the R library implementing most of the pipeline's
 features.")
     (home-page "https://github.com/BIMSBbioinfo/RCAS")
     (license license:expat)))
+
+(define-public rcas-web
+  (package
+    (name "rcas-web")
+    (version "0.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/BIMSBbioinfo/rcas-web/"
+                           "releases/download/v" version "-alpha/"
+                           "rcas-web-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1l9ai80fjdd6fg50kwazgb5s8wgz6p266zpbqpp3m517an8wdf9s"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-executable
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (json   (assoc-ref inputs "guile-json"))
+                    (redis  (assoc-ref inputs "guile-redis"))
+                    (path   (string-append
+                             json  "/share/guile/site/2.2:"
+                             redis "/share/guile/site/2.2")))
+               (wrap-program (string-append out "/bin/rcas-web")
+                 `("GUILE_LOAD_PATH" ":" = (,path))
+                 `("GUILE_LOAD_COMPILED_PATH" ":" = (,path))))
+             #t)))))
+    (inputs
+     `(("r" ,r)
+       ("r-rcas" ,r-rcas)
+       ("guile-next" ,guile-next)
+       ("guile-json" ,guile2.2-json)
+       ("guile-redis" ,guile2.2-redis)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (home-page "https://github.com/BIMSBbioinfo/rcas-web")
+    (synopsis "Web interface for RNA-centric annotation system (RCAS)")
+    (description "This package provides a simple web interface for the
+@dfn{RNA-centric annotation system} (RCAS).")
+    (license license:agpl3+)))
 
 (define-public rstudio
   (package
