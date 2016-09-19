@@ -161,7 +161,7 @@ features.")
                            "rcas-web-" version ".tar.gz"))
        (sha256
         (base32
-         "12f990gf915lqdw2155fzl2zb17zsmrhd6s45gvb8yk2xi382q9k"))))
+         "1v6pn63zaj8gb30h6pxjlgn7qjbcgnsg66vksg405yn7bn4mbp50"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
