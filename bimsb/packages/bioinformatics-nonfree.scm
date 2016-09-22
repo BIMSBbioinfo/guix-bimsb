@@ -1057,3 +1057,14 @@ MXSCARNA and ProbConsRNA.")
     ;; FIXME: this is probably inaccurate.
     (license (package-license viennarna))))
 
+(define-public viennarna-2.2.10
+  (package (inherit viennarna)
+    (version "2.2.10")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://www.tbi.univie.ac.at/RNA/download/sourcecode/2_2_x/ViennaRNA-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0mycxjqci462d1zmcdhhc47360np1xcrdf2f3yrhhzbn5blwiwwl"))))))
