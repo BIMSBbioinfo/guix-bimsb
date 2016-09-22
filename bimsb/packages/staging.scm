@@ -1411,7 +1411,7 @@ scripts that accept short and long flag/options.")
         (base32
          "1p0i78wh76jfgmn9jphbwwaz6yy6pipzfg08xs54cxavxg2j81p5"))))
     (build-system r-build-system)
-    (inputs
+    (propagated-inputs
      `(("r-optparse" ,r-optparse)
        ("r-rcolorbrewer" ,r-rcolorbrewer)))
     (synopsis "Analysis framework for RNA secondary structure")
