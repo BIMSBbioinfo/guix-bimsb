@@ -115,7 +115,8 @@ whose output can be displayed directly in the UCSC Genome Browser.")
     (build-system r-build-system)
     (native-inputs
      `(("r-roxygen2" ,r-roxygen2)
-       ("r-knitr" ,r-knitr)))
+       ("r-knitr" ,r-knitr)
+       ("r-testthat" ,r-testthat)))
     (propagated-inputs
      `(("r-data-table" ,r-data-table)
        ("r-biomart" ,r-biomart)
@@ -127,8 +128,8 @@ whose output can be displayed directly in the UCSC Genome Browser.")
         ,r-bsgenome-hsapiens-ucsc-hg19)
        ("r-bsgenome-mmusculus-ucsc-mm9"
         ,r-bsgenome-mmusculus-ucsc-mm9)
-       ("r-bsgenome-celegans-ucsc-ce6"
-        ,r-bsgenome-celegans-ucsc-ce6)
+       ("r-bsgenome-celegans-ucsc-ce10"
+        ,r-bsgenome-celegans-ucsc-ce10)
        ("r-bsgenome-dmelanogaster-ucsc-dm3"
         ,r-bsgenome-dmelanogaster-ucsc-dm3)
        ("r-topgo" ,r-topgo)
