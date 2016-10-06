@@ -116,7 +116,10 @@ whose output can be displayed directly in the UCSC Genome Browser.")
     (native-inputs
      `(("r-roxygen2" ,r-roxygen2)
        ("r-knitr" ,r-knitr)
-       ("r-testthat" ,r-testthat)))
+       ("r-testthat" ,r-testthat)
+       ;; During vignette building knitr checks that "pandoc-citeproc"
+       ;; is in the PATH.
+       ("ghc-pandoc-citeproc" ,ghc-pandoc-citeproc)))
     (propagated-inputs
      `(("r-data-table" ,r-data-table)
        ("r-biomart" ,r-biomart)
