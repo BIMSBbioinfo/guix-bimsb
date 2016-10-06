@@ -174,16 +174,16 @@ features.")
 (define-public rcas-web
   (package
     (name "rcas-web")
-    (version "0.0.0")
+    (version "0.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/BIMSBbioinfo/rcas-web/"
-                           "releases/download/v" version "-alpha/"
-                           "rcas-web-" version ".tar.gz"))
+                           "releases/download/v" version
+                           "/rcas-web-" version ".tar.gz"))
        (sha256
         (base32
-         "1v6pn63zaj8gb30h6pxjlgn7qjbcgnsg66vksg405yn7bn4mbp50"))))
+         "1g27f455qdl54si1zca4wvawqhq692wkqvk0q1ixnlzs2zmcxk9y"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -203,7 +203,7 @@ features.")
              #t)))))
     (inputs
      `(("r" ,r)
-       ("r-rcas" ,r-rcas)
+       ("r-rcas" ,r-rcas-devel)
        ("guile-next" ,guile-next)
        ("guile-json" ,guile2.2-json)
        ("guile-redis" ,guile2.2-redis)))
