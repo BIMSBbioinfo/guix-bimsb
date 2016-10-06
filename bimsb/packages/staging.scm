@@ -153,6 +153,24 @@ features.")
     (home-page "https://github.com/BIMSBbioinfo/RCAS")
     (license license:expat)))
 
+(define-public r-rcas-devel
+  (let ((commit "a3a3dbc74bd7d95151d8dfb899f33a430a442eb6")
+        (revision "1"))
+    (package
+      (inherit r-rcas)
+      (name "r-rcas-devel")
+      (version (string-append "0.99.4-" revision
+                              (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/BIMSBbioinfo/RCAS.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version))
+                (sha256
+                 (base32
+                  "1ffxvmn55xwxlr3qwfbsg5z3h9h01c110sxmsv4g02yvglpl7q1i")))))))
+
 (define-public rcas-web
   (package
     (name "rcas-web")
