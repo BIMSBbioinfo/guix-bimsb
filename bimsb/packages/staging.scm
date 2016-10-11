@@ -176,7 +176,7 @@ features.")
 (define-public rcas-web
   (package
     (name "rcas-web")
-    (version "0.0.1")
+    (version "0.0.2")
     (source
      (origin
        (method url-fetch)
@@ -185,7 +185,7 @@ features.")
                            "/rcas-web-" version ".tar.gz"))
        (sha256
         (base32
-         "1g27f455qdl54si1zca4wvawqhq692wkqvk0q1ixnlzs2zmcxk9y"))))
+         "0jdxwdd5s36rwvyxmk2rzkzv7n9cmrdgz1p88wich1wwx9w81da9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
