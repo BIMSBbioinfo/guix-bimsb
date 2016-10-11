@@ -45,6 +45,7 @@
   #:use-module (gnu packages logging)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -886,3 +887,52 @@ into account in order to predict evolutionarily conserved
 secondary-structure elements, which may span both coding and
 non-coding regions.")
     (license license:gpl3+)))
+
+(define-public lammps
+  (package
+    (name "lammps")
+    (version "r15407")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/lammps/lammps/archive/"
+                           version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1z2h7ja6h8m5q2vd8six4m6iv1nk2i2vrhfpdv20b53cjxpinfsz"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no check target
+       #:make-flags (list "CC=mpicc" "mpi")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda _
+             (substitute* "MAKE/Makefile.mpi"
+               (("SHELL =.*")
+                (string-append "SHELL=" (which "bash") "\n"))
+               (("cc ") "mpicc "))
+             (substitute* "Makefile"
+               (("SHELL =.*")
+                (string-append "SHELL=" (which "bash") "\n")))
+             ;; Configure to include all standard modules.
+             (and (zero? (system* "make" "yes-standard"))
+                  (zero? (system* "make" "no-kim")))))
+         (add-after 'unpack 'enter-dir
+           (lambda _ (chdir "src") #t)))))
+    (inputs
+     `(("python" ,python-2)
+       ("gfortran" ,gfortran)
+       ("openmpi" ,openmpi)))
+    (native-inputs
+     `(("bc" ,bc)))
+    (home-page "http://lammps.sandia.gov/")
+    (synopsis "Classical molecular dynamics simulator")
+    (description "LAMMPS is a classical molecular dynamics simulator
+designed to run efficiently on parallel computers.  LAMMPS has
+potentials for solid-state materials (metals, semiconductors), soft
+matter (biomolecules, polymers), and coarse-grained or mesoscopic
+systems.  It can be used to model atoms or, more generically, as a
+parallel particle simulator at the atomic, meso, or continuum scale.")
+    (license license:gpl2+)))
