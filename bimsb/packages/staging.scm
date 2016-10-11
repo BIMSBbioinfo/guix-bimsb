@@ -155,8 +155,8 @@ features.")
     (license license:expat)))
 
 (define-public r-rcas-devel
-  (let ((commit "a3a3dbc74bd7d95151d8dfb899f33a430a442eb6")
-        (revision "1"))
+  (let ((commit "03f047b2dc364f8b8c09544e2888c912c0627b6f")
+        (revision "2"))
     (package
       (inherit r-rcas)
       (name "r-rcas-devel")
@@ -170,7 +170,7 @@ features.")
                 (file-name (string-append name "-" version))
                 (sha256
                  (base32
-                  "1ffxvmn55xwxlr3qwfbsg5z3h9h01c110sxmsv4g02yvglpl7q1i")))))))
+                  "02f8f10hggw9lixck0iwspql3gdqcrgyzfqwyrq6vzlg3p53j0bq")))))))
 
 (define-public rcas-web
   (package
