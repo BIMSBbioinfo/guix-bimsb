@@ -155,28 +155,10 @@ features.")
     (home-page "https://github.com/BIMSBbioinfo/RCAS")
     (license license:expat)))
 
-(define-public r-rcas-devel
-  (let ((commit "03f047b2dc364f8b8c09544e2888c912c0627b6f")
-        (revision "2"))
-    (package
-      (inherit r-rcas)
-      (name "r-rcas-devel")
-      (version (string-append "0.99.4-" revision
-                              (string-take commit 9)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/BIMSBbioinfo/RCAS.git")
-                      (commit commit)))
-                (file-name (string-append name "-" version))
-                (sha256
-                 (base32
-                  "02f8f10hggw9lixck0iwspql3gdqcrgyzfqwyrq6vzlg3p53j0bq")))))))
-
 (define-public rcas-web
   (package
     (name "rcas-web")
-    (version "0.0.2")
+    (version "0.0.3")
     (source
      (origin
        (method url-fetch)
@@ -185,7 +167,7 @@ features.")
                            "/rcas-web-" version ".tar.gz"))
        (sha256
         (base32
-         "0jdxwdd5s36rwvyxmk2rzkzv7n9cmrdgz1p88wich1wwx9w81da9"))))
+         "0d3my0g8i7js59n184zzzjdki7hgmhpi4rhfvk7i6jsw01ba04qq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -205,7 +187,7 @@ features.")
              #t)))))
     (inputs
      `(("r" ,r)
-       ("r-rcas" ,r-rcas-devel)
+       ("r-rcas" ,r-rcas)
        ("guile-next" ,guile-next)
        ("guile-json" ,guile2.2-json)
        ("guile-redis" ,guile2.2-redis)))
