@@ -105,7 +105,7 @@ whose output can be displayed directly in the UCSC Genome Browser.")
 (define-public r-rcas
   (package
     (name "r-rcas")
-    (version "0.99.4")
+    (version "0.99.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/RCAS/archive/v"
@@ -113,7 +113,7 @@ whose output can be displayed directly in the UCSC Genome Browser.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1s6afz61fppvyxmgm9dbc6riyc879797frfs4cffjj0fd9fn6qhz"))))
+                "1ljgl2b4r6w2n0i9i04d9xaphajsvhfkjdj2i2z830nha4m3w8f0"))))
     (build-system r-build-system)
     (native-inputs
      `(("r-roxygen2" ,r-roxygen2)
