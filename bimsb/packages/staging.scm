@@ -898,11 +898,22 @@ non-coding regions.")
              (substitute* "Makefile"
                (("SHELL =.*")
                 (string-append "SHELL=" (which "bash") "\n")))
-             ;; Configure to include all standard modules.
-             (and (zero? (system* "make" "yes-standard"))
-                  (zero? (system* "make" "no-kim")))))
+             #t
+             ;; FIXME: don't build any of the standard modules for
+             ;; now, because this fails.
+             ;; ;; Configure to include all standard modules.
+             ;; (and (zero? (system* "make" "yes-standard"))
+             ;;      (zero? (system* "make" "no-kim")))
+             ))
          (add-after 'unpack 'enter-dir
-           (lambda _ (chdir "src") #t)))))
+           (lambda _ (chdir "src") #t))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let*  ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin")))
+               (mkdir-p bin)
+               (install-file "lmp_mpi" bin)
+               #t))))))
     (inputs
      `(("python" ,python-2)
        ("gfortran" ,gfortran)
