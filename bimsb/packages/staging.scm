@@ -39,6 +39,7 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages zip)
   #:use-module (srfi srfi-1))
@@ -886,7 +888,10 @@ non-coding regions.")
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no check target
-       #:make-flags (list "CC=mpicc" "mpi")
+       #:make-flags (list "CC=mpicc" "mpi"
+                          "LMP_INC=-DLAMMPS_GZIP \
+-DLAMMPS_JPEG -DLAMMPS_PNG -DLAMMPS_FFMPEG -DLAMMPS_MEMALIGN=64"
+                          "LIB=-gz -ljpeg -lpng -lavcodec")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
@@ -917,7 +922,11 @@ non-coding regions.")
     (inputs
      `(("python" ,python-2)
        ("gfortran" ,gfortran)
-       ("openmpi" ,openmpi)))
+       ("openmpi" ,openmpi)
+       ("ffmpeg" ,ffmpeg)
+       ("libpng" ,libpng)
+       ("libjpeg" ,libjpeg)
+       ("gzip" ,gzip)))
     (native-inputs
      `(("bc" ,bc)))
     (home-page "http://lammps.sandia.gov/")
