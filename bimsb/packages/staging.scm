@@ -904,6 +904,46 @@ secondary-structure elements, which may span both coding and
 non-coding regions.")
     (license license:gpl3+)))
 
+(define-public nucleoatac
+  (package
+  (name "nucleoatac")
+  (version "0.3.1")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append "https://github.com/GreenleafLab/NucleoATAC/"
+                          "archive/v" version ".tar.gz"))
+      (file-name (string-append name "-" version ".tar.gz"))
+      (sha256
+       (base32
+        "1r2r4f5c9mhl722gkyxq0yb1pmk7jqgvjqn8bwlcr7jbbys51afh"))))
+  (build-system python-build-system)
+  (arguments
+   `(#:python ,python-2
+     #:phases
+     (modify-phases %standard-phases
+       (add-before 'check 'set-HOME
+         ;; The tests need a valid HOME directory
+         (lambda _ (setenv "HOME" (getcwd)) #t)))))
+  (inputs
+   `(("python-pandas" ,python2-pandas)
+     ("python-numpy" ,python2-numpy)
+     ("python-scipy" ,python2-scipy)
+     ("python-matplotlib" ,python2-matplotlib)
+     ("python-pysam" ,python2-pysam)))
+  (native-inputs
+   `(("python-setuptools" ,python2-setuptools)
+     ("python-pytz" ,python2-pytz)
+     ("python-mock" ,python2-mock)
+     ("python-cython" ,python2-cython)))
+  (home-page "https://github.com/GreenleafLab/NucleoATAC")
+  (synopsis "Nucleosome calling using ATAC-seq data")
+  (description "This package provides tools for calling nucleosomes
+using ATAC-Seq data.  It also includes general scripts for working
+with paired-end ATAC-Seq data (or potentially other paired-end
+data).")
+  (license license:expat)))
+
 (define-public lammps
   (package
     (name "lammps")
