@@ -976,7 +976,7 @@ data).")
              (substitute* "Makefile"
                (("SHELL =.*")
                 (string-append "SHELL=" (which "bash") "\n")))
-             #t
+             (zero? (system* "make" "molecule" "user-h5md"))
              ;; FIXME: don't build any of the standard modules for
              ;; now, because this fails.
              ;; ;; Configure to include all standard modules.
