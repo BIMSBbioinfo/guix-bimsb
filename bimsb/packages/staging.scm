@@ -687,6 +687,33 @@ library's @code{cmd} module.")
 (define-public python2-cmd2
   (package-with-python2 python-cmd2))
 
+(define-public python-sortedcontainers
+  (package
+    (name "python-sortedcontainers")
+    (version "1.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sortedcontainers" version))
+       (sha256
+        (base32
+         "1fyg7dwhyka53gzizxbq9w4bib9irkk40n4njpgpywxm70qdhdgp"))))
+    (build-system python-build-system)
+    ;; Tests require python-tox, but running the tests fails because
+    ;; there is no configuration file for tox.
+    (arguments `(#:tests? #f))
+    (native-inputs
+     `(("python-setuptools" ,python-setuptools)))
+    (home-page "http://www.grantjenks.com/docs/sortedcontainers/")
+    (synopsis "Sorted container types for Python")
+    (description
+     "This package provides sorted container types for Python,
+including @code{SortedList}, @{SortedDict}, and @code{SortedSet}")
+    (license license:asl2.0)))
+
+(define-public python2-sortedcontainers
+  (package-with-python2 python-sortedcontainers))
+
 (define-public r-spams
   (package
     (name "r-spams")
