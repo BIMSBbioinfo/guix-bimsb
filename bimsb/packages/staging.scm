@@ -661,6 +661,32 @@ transition.")
 package of programs for inferring phylogenies (evolutionary trees).")
     (license license:bsd-2)))
 
+(define-public python-cmd2
+  (package
+    (name "python-cmd2")
+    (version "0.6.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cmd2" version))
+       (sha256
+        (base32
+         "0a5k7d5lxd8vmcgzkfpkmcpvyi68lkgg90bdvd237hfvj5f782gg"))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("python-setuptools" ,python-setuptools)))
+    (propagated-inputs
+     `(("python-pyparsing" ,python-pyparsing)))
+    (home-page "http://packages.python.org/cmd2/")
+    (synopsis "Extra features for Python's cmd module")
+    (description
+     "This package provides extra features for the Python standard
+library's @code{cmd} module.")
+    (license license:expat)))
+
+(define-public python2-cmd2
+  (package-with-python2 python-cmd2))
+
 (define-public r-spams
   (package
     (name "r-spams")
