@@ -773,6 +773,56 @@ providing a visual cue that processing is underway.")
 (define-public python2-progressbar
   (package-with-python2 python-progressbar))
 
+(define-public python2-parcel
+  (package
+    (name "python2-parcel")
+    (version "0.2.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/LabAdvComp/parcel/"
+                           "archive/v" version ".tar.gz"))
+       (file-name (string-append "python2-parcel-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1k9wy7dx7frxz9cliahxri74nfc19lh97iqlwsgbq469bd8iai73"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               ;; TODO: make this robust!
+               (("0.6.8") ,(package-version python2-cmd2))
+               (("2.0.4") ,(package-version python2-intervaltree))
+               (("2.5.1") ,(package-version python2-requests)))
+             #t))
+         (add-before 'build 'set-HOME
+           (lambda _
+             ;; This is needed to build the parcel library, which is
+             ;; placed in $HOME/.parcel/lib.
+             (setenv "HOME" "/tmp")
+             #t)))))
+    (propagated-inputs
+     `(("python2-cmd2" ,python2-cmd2)
+       ("python2-intervaltree" ,python2-intervaltree)
+       ("python2-flask" ,python2-flask)
+       ("python2-progressbar" ,python2-progressbar)
+       ("python2-requests" ,python2-requests)
+       ("python2-termcolor" ,python2-termcolor)))
+    (native-inputs
+     `(("python2-setuptools" ,python2-setuptools)))
+    (home-page "https://github.com/LabAdvComp/parcel")
+    (synopsis "HTTP download client with the speed of UDP")
+    (description "Parcel is a high performance HTTP download client
+that leverages the speed of UDP without sacrificing reliability.
+Parcel is written on top of the UDT protocol and bound to a Python
+interface.  Parcel's software is comprised of a @code{parcel-server}
+and a @{parcel} client.")
+    (license license:asl2.0)))
+
 (define-public r-spams
   (package
     (name "r-spams")
