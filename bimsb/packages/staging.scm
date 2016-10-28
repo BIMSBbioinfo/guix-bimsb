@@ -748,6 +748,31 @@ structures.")
 (define-public python2-intervaltree
   (package-with-python2 python-intervaltree))
 
+(define-public python-progressbar
+  (package
+    (name "python-progressbar")
+    (version "2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "progressbar" version))
+       (sha256
+        (base32
+         "0m0j93yfvbd8pw8cz2vdb9hyk9d0zkkd509k69jrw545jxr8mlxj"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-setuptools" ,python-setuptools)))
+    (home-page "http://code.google.com/p/python-progressbar")
+    (synopsis "Text progress bar library for Python")
+    (description "The @code{ProgressBar} class manages the current
+progress of a long running operation, and the format of a line
+providing a visual cue that processing is underway.")
+    ;; Either license may be used.
+    (license (list license:lgpl2.1+ license:bsd-3))))
+
+(define-public python2-progressbar
+  (package-with-python2 python-progressbar))
+
 (define-public r-spams
   (package
     (name "r-spams")
