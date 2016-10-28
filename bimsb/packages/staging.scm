@@ -823,6 +823,61 @@ interface.  Parcel's software is comprised of a @code{parcel-server}
 and a @{parcel} client.")
     (license license:asl2.0)))
 
+(define python2-parcel-for-gdc-client
+  (let ((commit "fddae5c09283ee5058fb9f43727a97a253de31fb")
+        (revision "1"))
+    (package
+      (inherit python2-parcel)
+      (version (string-append "0.1.13-" revision "."
+                              (string-take commit 9)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/LabAdvComp/parcel.git")
+               (commit commit)))
+         (file-name (string-append (package-name python2-parcel) "-" version))
+         (sha256
+          (base32
+           "0z1jnbdcyn571b1md51z13ivyl7l5mypwdkbjxk0klk70dskrs7i")))))))
+
+(define-public gdc-client
+  (package
+    (name "gdc-client")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/NCI-GDC/gdc-client/"
+                           "archive/v" version ".tar.gz"))
+       (file-name (string-append "gdc-client-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0i24zlj764r16rn6jw82l9cffndm2ixw7d91s780vk5ihrmmwd3h"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               ;; TODO: make this robust!
+               (("19.2") ,(package-version python2-setuptools))
+               (("3.5.0b1") ,(package-version python2-lxml)))
+             #t)))))
+    (inputs
+     `(("python2-parcel" ,python2-parcel-for-gdc-client)
+       ("python2-jsonschema" ,python2-jsonschema)
+       ("python2-pyyaml" ,python2-pyyaml)
+       ("python2-lxml" ,python2-lxml)
+       ("python2-functools32" ,python2-functools32)
+       ("python2-setuptools" ,python2-setuptools)))
+    (home-page "TODO")
+    (synopsis "TODO")
+    (description "TODO")
+    (license license:asl2.0)))
+
 (define-public r-spams
   (package
     (name "r-spams")
