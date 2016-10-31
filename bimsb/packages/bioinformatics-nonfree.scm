@@ -204,13 +204,11 @@ to write a free software alternative rather than using this tool."))))
      '(#:tests? #f ; no "check" target
        #:make-flags
        (list "all"
-             "WITH_TBB=1"
+             "WITH_TBB=0" ; doesn't build with the latest TBB
              (string-append "prefix=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
-    (inputs
-     `(("tbb" ,tbb)))
     (home-page "http://bowtie-bio.sourceforge.net/index.shtml")
     (synopsis "Fast aligner for short nucleotide sequence reads")
     (description
