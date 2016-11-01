@@ -616,6 +616,71 @@ problems in a user-friendly way.")
     (license (list license:lgpl2.1+
                    license:gpl3+))))
 
+(define-public tadbit
+  ;; There have been no proper releases.
+  (let ((commit "8e548124b5a7dbd2b754f8187b4ac64a6387b7a3")
+        (revision "1"))
+    (package
+      (name "tadbit")
+      (version (string-append "0-" revision (string-take commit 9)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/3DGenomes/TADbit.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "0ndypmhir0jnq03ajcv6ypj11cznxmll4ygiyk5dympvb8v5y3dp"))))
+      (build-system python-build-system)
+      (arguments
+       `(;; Tests are included and must be run after installation, but
+         ;; they are incomplete and thus cannot be run.
+         #:tests? #f
+         #:python ,python-2
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-problems-with-setup.py
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; setup.py opens these files for writing
+               (chmod "_pytadbit/_version.py" #o664)
+               (chmod "README.rst" #o664)
+
+               ;; Don't attempt to install the bash completions to
+               ;; the home directory.
+               (rename-file "extras/.bash_completion"
+                            "extras/tadbit")
+               (substitute* "setup.py"
+                 (("\\(path.expanduser\\('~'\\)")
+                  (string-append "(\""
+                                 (assoc-ref outputs "out")
+                                 "/etc/bash_completion.d\""))
+                 (("extras/\\.bash_completion")
+                  "extras/tadbit"))
+               #t)))))
+      (native-inputs
+       `(("python2-setuptools" ,python2-setuptools)))
+      (inputs
+       ;; TODO: add Chimera for visualization
+       `(("imp" ,imp)
+         ("mcl" ,mcl)
+         ("python2-scipy" ,python2-scipy)
+         ("python2-numpy" ,python2-numpy)
+         ("python2-matplotlib" ,python2-matplotlib)
+         ("python2-pysam" ,python2-pysam)))
+      (home-page "http://3dgenomes.github.io/TADbit/")
+      (synopsis "Analyze, model, and explore 3C-based data")
+      (description
+       "TADbit is a complete Python library to deal with all steps to
+analyze, model, and explore 3C-based data.  With TADbit the user can
+map FASTQ files to obtain raw interaction binned matrices (Hi-C like
+matrices), normalize and correct interaction matrices, identify adn
+compare the so-called @dfn{Topologically Associating Domains} (TADs),
+build 3D models from the interaction matrices, and finally, extract
+structural properties from the models.  TADbit is complemented by
+TADkit for visualizing 3D models.")
+      (license license:gpl3+))))
+
 (define-public python-cmd2
   (package
     (name "python-cmd2")
