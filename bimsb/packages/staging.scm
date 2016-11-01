@@ -584,10 +584,9 @@ package of programs for inferring phylogenies (evolutionary trees).")
     (arguments
      `(#:tests? #f
        #:configure-flags
-       ;; FIXME: Libraries are placed in an architecture-specific
+       ;; Do not place libraries in an architecture-specific
        ;; directory.
-       (list (string-append "-DCMAKE_INSTALL_RPATH="
-                            (assoc-ref %outputs "out") "/lib64"))))
+       (list "-DCMAKE_INSTALL_LIBDIR=lib")))
     (inputs
      `(("boost" ,boost)
        ("gsl" ,gsl)
