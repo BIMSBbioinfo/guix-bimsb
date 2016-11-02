@@ -106,10 +106,10 @@ density estimation allowing identification of biologically meaningful sites
 whose output can be displayed directly in the UCSC Genome Browser.")
       (license license:gpl3+))))
 
-(define-public rstudio
+(define-public rstudio-server
   (package
-    (name "rstudio")
-    (version "0.99.1201")
+    (name "rstudio-server")
+    (version "1.0.115")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -117,7 +117,7 @@ whose output can be displayed directly in the UCSC Genome Browser.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0b3nipdmxrfq5fhwyy0x9hhf54yqmvdkniyj6x3kmhcha0c33l8n"))
+                "09vmfpcp7gv78qjpzdq339zg8srlk7khdd5s62hqr5f0nf8aw2ai"))
               (file-name (string-append name "-" version ".tar.gz"))))
     (build-system cmake-build-system)
     (arguments
@@ -133,7 +133,8 @@ whose output can be displayed directly in the UCSC Genome Browser.")
            (lambda _
              ;; Disable checks for bundled dependencies.  We take care of them by other means.
              (substitute* "src/cpp/session/CMakeLists.txt"
-               (("if\\(NOT EXISTS \"\\$\\{RSTUDIO_DEPENDENCIES_DIR\\}/common/rmarkdown\"\\)") "if (FALSE)"))
+               (("if\\(NOT EXISTS \"\\$\\{RSTUDIO_DEPENDENCIES_DIR\\}/common/rmarkdown\"\\)") "if (FALSE)")
+               (("if\\(NOT EXISTS \"\\$\\{RSTUDIO_DEPENDENCIES_DIR\\}/common/rsconnect\"\\)") "if (FALSE)"))
              #t))
          (add-after 'unpack 'copy-clang
            (lambda* (#:key inputs #:allow-other-keys)
@@ -160,8 +161,8 @@ whose output can be displayed directly in the UCSC Genome Browser.")
          (add-after 'unpack 'unpack-mathjax
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "dependencies/common"
-               (mkdir "mathjax-23")
-               (zero? (system* "unzip" "-qd" "mathjax-23"
+               (mkdir "mathjax-26")
+               (zero? (system* "unzip" "-qd" "mathjax-26"
                                (assoc-ref inputs "mathjax"))))))
          (add-after 'unpack 'unpack-gin
            (lambda* (#:key inputs #:allow-other-keys)
@@ -204,9 +205,9 @@ whose output can be displayed directly in the UCSC Genome Browser.")
        ("mathjax"
         ,(origin
            (method url-fetch)
-           (uri "https://s3.amazonaws.com/rstudio-buildtools/mathjax-23.zip")
+           (uri "https://s3.amazonaws.com/rstudio-buildtools/mathjax-26.zip")
            (sha256
-            (base32 "16fnq4jsifbldjcvrri3g6d7zhbh22k3jas2jpigmmphnmgd6hjj"))))
+            (base32 "0wbcqb9rbfqqvvhqr1pbqax75wp8ydqdyhp91fbqfqp26xzjv6lk"))))
        ("dictionaries"
         ,(origin
            (method url-fetch)
@@ -216,6 +217,7 @@ whose output can be displayed directly in the UCSC Genome Browser.")
     (inputs
      `(("r" ,r)
        ("r-rmarkdown" ,r-rmarkdown) ; TODO: must be linked to another location
+       ;;("r-rsconnect" ,r-rsconnect) ; TODO: must be linked to another location
        ("clang" ,clang-3.5)
        ("boost" ,boost)
        ("libuuid" ,util-linux)
