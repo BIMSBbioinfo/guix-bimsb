@@ -1308,31 +1308,30 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
   (package (inherit lammps)
     (name "lammps-serial")
     (arguments
-     `(#:tests? #f ; no check target
-       #:make-flags (list "CC=gcc" "serial"
-                          "LMP_INC=-DLAMMPS_GZIP \
+     (substitute-keyword-arguments (package-arguments lammps)
+       ((#:make-flags flags)
+        `(list "CC=gcc" "serial"
+               "LMP_INC=-DLAMMPS_GZIP \
 -DLAMMPS_JPEG -DLAMMPS_PNG -DLAMMPS_FFMPEG -DLAMMPS_MEMALIGN=64"
-                          "LIB=-gz -ljpeg -lpng -lavcodec")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (substitute* "MAKE/Makefile.serial"
-               (("SHELL =.*")
-                (string-append "SHELL=" (which "bash") "\n"))
-               (("cc ") "mpicc "))
-             (substitute* "Makefile"
-               (("SHELL =.*")
-                (string-append "SHELL=" (which "bash") "\n")))
-             #t))
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir "src") #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let*  ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (install-file "lmp_serial" bin)
-               #t))))))
+               "LIB=-gz -ljpeg -lpng -lavcodec"))
+       ((#:phases phases)
+        `(modify-phases  ,phases
+           (replace 'configure
+             (lambda _
+               (substitute* "MAKE/Makefile.serial"
+                 (("SHELL =.*")
+                  (string-append "SHELL=" (which "bash") "\n"))
+                 (("cc ") "gcc "))
+               (substitute* "Makefile"
+                 (("SHELL =.*")
+                  (string-append "SHELL=" (which "bash") "\n")))
+               #t))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let*  ((out (assoc-ref outputs "out"))
+                       (bin (string-append out "/bin")))
+                 (mkdir-p bin)
+                 (install-file "lmp_serial" bin)
+                 #t)))))))
     (inputs
      (alist-delete "openmpi" (package-inputs lammps)))))
