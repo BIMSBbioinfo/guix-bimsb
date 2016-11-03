@@ -1267,13 +1267,13 @@ data).")
              (substitute* "Makefile"
                (("SHELL =.*")
                 (string-append "SHELL=" (which "bash") "\n")))
-             (zero? (system* "make" "molecule" "user-h5md"))
-             ;; FIXME: don't build any of the standard modules for
-             ;; now, because this fails.
-             ;; ;; Configure to include all standard modules.
-             ;; (and (zero? (system* "make" "yes-standard"))
-             ;;      (zero? (system* "make" "no-kim")))
-             ))
+             #t))
+         (add-after 'configure 'configure-modules
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "../lib/h5md"
+               (system* "make" (string-append "HDF5_PATH="
+                                              (assoc-ref inputs "hdf5"))))
+             (zero? (system* "make" "yes-molecule" "yes-user-h5md"))))
          (add-after 'unpack 'enter-dir
            (lambda _ (chdir "src") #t))
          (replace 'install
@@ -1290,6 +1290,7 @@ data).")
        ("ffmpeg" ,ffmpeg)
        ("libpng" ,libpng)
        ("libjpeg" ,libjpeg)
+       ("hdf5" ,hdf5)
        ("gzip" ,gzip)))
     (native-inputs
      `(("bc" ,bc)))
