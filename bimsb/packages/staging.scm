@@ -1273,7 +1273,10 @@ data).")
              (with-directory-excursion "../lib/h5md"
                (system* "make" (string-append "HDF5_PATH="
                                               (assoc-ref inputs "hdf5"))))
-             (zero? (system* "make" "yes-molecule" "yes-user-h5md"))))
+             (zero? (system* "make"
+                             "yes-molecule"
+                             "yes-user-h5md"
+                             "yes-user-misc"))))
          (add-after 'unpack 'enter-dir
            (lambda _ (chdir "src") #t))
          (replace 'install
