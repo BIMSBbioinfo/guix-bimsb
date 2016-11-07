@@ -52,6 +52,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
@@ -237,6 +238,34 @@ file); full support for authoring Sweave and TeX documents.  RStudio can also
 be run as a server, enabling multiple users to access the RStudio IDE using a
 web browser.")
     (license license:agpl3+)))
+
+(define-public rstudio
+  (package (inherit rstudio-server)
+    (name "rstudio")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rstudio-server)
+       ((#:configure-flags flags)
+        '(list "-DRSTUDIO_TARGET=Desktop"
+               (string-append "-DQT_QMAKE_EXECUTABLE="
+                              (assoc-ref %build-inputs "qtbase")
+                              "/bin/qmake")))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'relax-qt-version
+             (lambda _
+               (substitute* "src/cpp/desktop/CMakeLists.txt"
+                 (("5\\.4") "5.7"))
+               #t))))))
+    (inputs
+     `(("qtbase" ,qtbase)
+       ("qtdeclarative" ,qtdeclarative)
+       ("qtlocation" ,qtlocation)
+       ("qtsvg" ,qtsvg)
+       ("qtsensors" ,qtsensors)
+       ("qtxmlpatterns" ,qtxmlpatterns)
+       ("qtwebkit" ,qtwebkit)
+       ,@(package-inputs rstudio-server)))
+    (synopsis "Integrated development environment (IDE) for R (desktop version)")))
 
 (define-public r-purrr
   (package
