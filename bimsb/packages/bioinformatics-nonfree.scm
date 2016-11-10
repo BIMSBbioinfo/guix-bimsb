@@ -58,23 +58,24 @@
 (define-public bcl2fastq
   (package
     (name "bcl2fastq")
-    (version "2.17.1.14")
+    (version "2.18.0.12")
     (source (origin
               (method url-fetch)
-              ;; Download manually from here:
-              ;; ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/Software/bcl2fastq/bcl2fastq2-v2.17.1.14.tar.zip
-              (uri (string-append "file:///gnu/remote/bcl2fastq2-v"
-                                  version ".tar.zip"))
+              (uri (string-append "http://support.illumina.com/content/"
+                                  "dam/illumina-support/documents/downloads/"
+                                  "software/bcl2fastq/bcl2fastq2-v"
+                                  (string-join (string-split version #\.) "-")
+                                  "-tar.zip"))
               (sha256
                (base32
-                "09qcz1l5yw46n5crbxsgsj0m9p404s012m81cx1rwqh2pzw6dx9w"))))
+                "0anshb1qvpzm373q338qgr0gs1bjpw4ssyysl4gh7nfwidzmca25"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        (list (string-append "-DBCL2FASTQ_VERSION:STRING=" ,version)
              "-DBCL2FASTQ_NAME_SHORT:STRING=bcl2fastq"
              "-DBCL2FASTQ_NAME_LONG:STRING=BCL to FASTQ file converter"
-             "-DBCL2FASTQ_COPYRIGHT:STRING=Copyright (c) 2007-2015 Illumina, Inc."
+             "-DBCL2FASTQ_COPYRIGHT:STRING=Copyright (c) 2007-2016 Illumina, Inc."
              (string-append "-DBCL2FASTQ_SOURCE_DIR:STRING=" (getcwd) "/bcl2fastq/src"))
        #:phases
        (modify-phases %standard-phases
@@ -107,9 +108,11 @@
                       ;; Work around broken version checking
                       (substitute* "CMakeLists.txt"
                         (("BCL2FASTQ_LIBXML2_VERSION 2.7.8")
-                         "BCL2FASTQ_LIBXML2_VERSION 2.9.2")
+                         ,(string-append "BCL2FASTQ_LIBXML2_VERSION "
+                                         (package-version libxml2)))
                         (("BCL2FASTQ_LIBXSLT_VERSION 1.1.26")
-                         "BCL2FASTQ_LIBXSLT_VERSION 1.1.28"))
+                         ,(string-append "BCL2FASTQ_LIBXSLT_VERSION "
+                                         (package-version libxslt))))
                       #t)))))
     (inputs
      `(("boost" ,boost)
