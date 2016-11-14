@@ -25,7 +25,8 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
-  #:use-module (gnu packages bioinformatics))
+  #:use-module (gnu packages bioinformatics)
+  #:use-module (gnu packages statistics))
 
 ;; A different version of MACS2 for Rebecca
 (define-public macs/rebecca
@@ -147,3 +148,27 @@
      ;; We need to disable tests because we don't seem to have
      ;; getopts.pl.
      `(#:tests? #f))))
+
+(define-public r-3.3.1
+  (package (inherit r)
+    (version "3.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cran/src/base/R-"
+                                  (version-prefix version 1) "/R-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1qm9znh8akfy9fkzzi6f1vz2w1dd0chsr6qn7kw80lqzhgjrmi9x"))))))
+
+(define-public r-3.3.2
+  (package (inherit r)
+    (version "3.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cran/src/base/R-"
+                                  (version-prefix version 1) "/R-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0k2i9qdd83g09fcpls2198q4ykxkii5skczb514gnx7mx4hsv56j"))))))
