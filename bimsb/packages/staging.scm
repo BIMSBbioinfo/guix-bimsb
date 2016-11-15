@@ -36,11 +36,14 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages bioinformatics)
+  #:use-module (gnu packages docbook)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -51,17 +54,21 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages zip)
-  #:use-module (srfi srfi-1))
+  #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 ;; This package cannot yet be added to Guix because it bundles an as
 ;; yet unpackaged third-party library, namely "commons-cli-1.1.jar"
@@ -1547,3 +1554,89 @@ scheme is called a @dfn{Hierarchical Graph FM index} (HGFM).")
          (replace 'install
            (lambda* (#:key outputs make-flags #:allow-other-keys)
              (zero? (apply system* "./b2" "install" make-flags)))))))))
+
+(define-public rapidstorm
+  (package
+    (name "rapidstorm")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://idefix.biozentrum.uni-wuerzburg.de/"
+                           "software/rapidSTORM/source/rapidstorm-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1kp0z7xllx3krdph5ch23grh25133sj7vhf18shpxnia3fyh6y0a"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags (list "XSLT_FLAGS=--nonet --novalid"
+                          "BIB2XML=touch")
+       #:configure-flags
+       (list "--enable-documentation=no")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'build-guilabels
+           (lambda _
+             (with-directory-excursion "doc"
+               (zero? (system "xsltproc --nonet --novalid --path .: --xinclude -o guilabels.h rapidstorm_guilabels.xsl ./rapidstorm.xml")))))
+         (add-after 'unpack 'fix-doc
+           (lambda _
+             ;; TODO: something's wrong with entities.  Not sure what,
+             ;; so I'll just remove them for now.
+             (substitute* '("doc/rapidstorm.xml"
+                            "doc/ui.xml"
+                            "doc/usage-examples.xml"
+                            "doc/input-options.xml"
+                            "doc/engine_options.xml"
+                            "doc/output-options.xml"
+                            "doc/fundamentals.xml")
+               (("%version;") "")
+               (("&marketingversion;") "TODO")
+               (("&publicationyear;") "2016")
+               (("&publicationdate;") "2016")
+               (("&auml;") "a")
+               (("&uuml;") "u")
+               (("&eacute;") "e")
+               (("%isopub;") "")
+               (("%isonum;") "")
+               (("%isogrk1;") "")
+               (("%isolat1;") "")
+               (("&lgr;") "l")
+               (("&mgr;") "m")
+               (("&Dgr;") "D")
+               (("&sgr;") "s")
+               (("&ohgr;") "oh")
+               (("&hellip;") "...")
+               (("&middot;") ""))
+             #t)))))
+    (inputs
+     `(("boost" ,boost-1.55)
+       ;; FIXME: the build fails when protobuf is used:
+       ;; tsf/Output.cpp: In member function ?virtual dStorm::output::Output::RunRequirements dStorm::tsf::{anonymous}::Output::announce_run(const dStorm::output::Output::RunAnnouncement&)?:
+       ;; tsf/Output.cpp:85:56: error: variable ?google::protobuf::io::CodedOutputStream coded_output? has initializer but incomplete type
+       ;;   google::protobuf::io::CodedOutputStream coded_output(file.get());
+       ;;("protobuf" ,protobuf)
+       ("eigen" ,eigen)
+       ("gsl" ,gsl)
+       ("tinyxml" ,tinyxml)
+       ("libtiff" ,libtiff)
+       ("wxwidgets" ,wxwidgets-2)
+       ("graphicsmagick" ,graphicsmagick)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ;; For documentation
+       ("docbook-xml" ,docbook-xml-4.2)
+       ("docbook-xsl" ,docbook-xsl)
+       ;;("doxygen" ,doxygen)
+       ("libxslt" ,libxslt)
+       ("texlive" ,texlive-minimal)
+       ("zip" ,zip)))
+    (home-page "http://www.super-resolution.biozentrum.uni-wuerzburg.de/research_topics/rapidstorm/")
+    (synopsis "")
+    (description "")
+    ;; Documentation is under fdl1.3+, most of rapidstorm is released
+    ;; under GPL; parts are released under LGPL.
+    (license (list license:gpl3+
+                   license:lgpl3+
+                   license:fdl1.3+))))
