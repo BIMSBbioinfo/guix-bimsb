@@ -247,6 +247,29 @@ be run as a server, enabling multiple users to access the RStudio IDE using a
 web browser.")
     (license license:agpl3+)))
 
+(define-public rstudio-server-bimsb
+  (let ((commit "1.0.44---rsession-override")
+        (revision "1"))
+    (package
+      (inherit rstudio-server)
+      (name "rstudio-server-bimsb")
+      (version "1.0.44")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BIMSBbioinfo/rstudio.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "1149ambzsb5dzckymzy9y75wi2bhhkcqaa1ba45dvjfa1zvi7k47"))))
+      (description
+       "This is the BIMSB fork of RStudio Server, a web IDE for the R
+programming language.  The fork adds a single feature: it allows users
+to switch R versions by placing a script in
+@code{~/.rstudio/rsession-wrapper} which preloads a different version
+of the @code{libR} shared library."))))
+
 (define-public rstudio
   (package (inherit rstudio-server)
     (name "rstudio")
