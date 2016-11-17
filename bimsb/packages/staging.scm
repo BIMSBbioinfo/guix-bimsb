@@ -1399,6 +1399,28 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
     (inputs
      (alist-delete "openmpi" (package-inputs lammps)))))
 
+(define-public r-dynamictreecut
+  (package
+    (name "r-dynamictreecut")
+    (version "1.63-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dynamicTreeCut" version))
+       (sha256
+        (base32
+         "1fadbql7g5r2vvlkr89nlrjxwp4yx4xrdqmv077qvmnx9vv0f4w3"))))
+    (properties
+     `((upstream-name . "dynamicTreeCut")))
+    (build-system r-build-system)
+    (home-page
+     "http://www.genetics.ucla.edu/labs/horvath/CoexpressionNetwork/BranchCutting/")
+    (synopsis "Detect clusters in hierarchical clustering dendrograms")
+    (description
+     "This package contains methods for the detection of clusters in
+hierarchical clustering dendrograms.")
+    (license license:gpl2+)))
+
 (define-public hisat2
   (package
     (name "hisat2")
