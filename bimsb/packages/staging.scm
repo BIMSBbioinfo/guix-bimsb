@@ -1497,6 +1497,28 @@ utility functions for data manipulation and visualization.")
 Statistik ETH Zurich, including many that are related to graphics.")
     (license license:gpl2+)))
 
+(define-public r-kernlab
+  (package
+    (name "r-kernlab")
+    (version "0.9-25")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "kernlab" version))
+       (sha256
+        (base32
+         "0qnaq9x3j2xc6jrmmd98wc6hkzch487s4p3a9lnc00xvahkhgpmr"))))
+    (build-system r-build-system)
+    (home-page "http://cran.r-project.org/web/packages/kernlab")
+    (synopsis "Kernel-based machine learning tools")
+    (description
+     "This package provides kernel-based machine learning methods for
+classification, regression, clustering, novelty detection, quantile
+regression and dimensionality reduction.  Among other methods
+@code{kernlab} includes Support Vector Machines, Spectral Clustering,
+Kernel PCA, Gaussian Processes and a QP solver.")
+    (license license:gpl2)))
+
 (define-public hisat2
   (package
     (name "hisat2")
