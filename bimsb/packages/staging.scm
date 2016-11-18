@@ -1335,6 +1335,7 @@ data).")
                                               (assoc-ref inputs "hdf5"))))
              (zero? (system* "make"
                              "yes-molecule"
+                             "yes-granular"
                              "yes-user-h5md"
                              "yes-user-misc"))))
          (add-after 'unpack 'enter-dir
