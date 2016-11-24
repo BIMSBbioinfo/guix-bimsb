@@ -298,31 +298,6 @@ of the @code{libR} shared library."))))
        ,@(package-inputs rstudio-server)))
     (synopsis "Integrated development environment (IDE) for R (desktop version)")))
 
-(define-public r-purrr
-  (package
-    (name "r-purrr")
-    (version "0.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "purrr" version))
-       (sha256
-        (base32
-         "0lss8q733nv7s154wargm6vnxq55qygnxakib8xdj4jv0y86sxc3"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-bh" ,r-bh)
-       ("r-dplyr" ,r-dplyr)
-       ("r-lazyeval" ,r-lazyeval)
-       ("r-magrittr" ,r-magrittr)
-       ("r-rcpp" ,r-rcpp)))
-    (home-page "https://github.com/hadley/purrr")
-    (synopsis "Functional programming tools")
-    (description
-     "This package completes R's functional programming tools with
-missing features present in other programming languages.")
-    (license license:gpl3+)))
-
 (define-public r-rematch
   (package
     (name "r-rematch")
