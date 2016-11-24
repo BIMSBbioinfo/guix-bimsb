@@ -1037,27 +1037,6 @@ help option and usage, support for default values, positional argument
 support, etc.")
     (license license:gpl2+)))
 
-(define-public r-optparse
-  (package
-    (name "r-optparse")
-    (version "1.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "optparse" version))
-       (sha256
-        (base32 "1g8as89r91xxi5j5azsd6vrfrhg84mnfx2683j7pacdp8s33radw"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-getopt" ,r-getopt)))
-    (home-page "https://github.com/trevorld/optparse")
-    (synopsis "Command line option parser")
-    (description
-     "This package provides a command line parser inspired by Python's
-@code{optparse} library to be used with Rscript to write shebang
-scripts that accept short and long flag/options.")
-    (license license:gpl2+)))
-
 (define-public r-r4rna
   (package
     (name "r-r4rna")
