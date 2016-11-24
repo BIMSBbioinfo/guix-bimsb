@@ -1014,29 +1014,6 @@ clustering of vector data, which go beyond what the existing packages
 provide.")
     (license license:bsd-2)))
 
-(define-public r-getopt
-  (package
-    (name "r-getopt")
-    (version "1.20.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "getopt" version))
-       (sha256
-        (base32
-         "00f57vgnzmg7cz80rjmjz1556xqcmx8nhrlbbhaq4w7gl2ibl87r"))))
-    (build-system r-build-system)
-    (home-page "https://github.com/trevorld/getopt")
-    (synopsis "C-like getopt behavior")
-    (description
-     "This package is designed to be used with Rscript to write
-shebang scripts that accept short and long flags/options.  Many users
-will prefer using instead the packages @code{optparse} or
-@code{argparse} which add extra features like automatically generated
-help option and usage, support for default values, positional argument
-support, etc.")
-    (license license:gpl2+)))
-
 (define-public r-r4rna
   (package
     (name "r-r4rna")
