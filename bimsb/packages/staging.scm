@@ -2080,3 +2080,32 @@ The resulting longer reads can significantly improve genome
 assemblies.  They can also improve transcriptome assembly when FLASH
 is used to merge RNA-seq data.")
     (license license:gpl3+)))
+
+(define-public python-argparse
+  (package
+    (name "python-argparse")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "argparse" version))
+       (sha256
+        (base32
+         "1r6nznp64j68ih1k537wms7h57nvppq0szmwsaf99n71bfjqkc32"))))
+    (properties `((python2-variant . ,(delay python2-argparse))))
+    (build-system python-build-system)
+    (home-page "https://pypi.python.org/pypi/argparse/")
+    (synopsis "Command-line parsing library")
+    (description "The @code{argparse} module makes it easy to write
+user friendly command line interfaces.  The program defines what
+arguments it requires, and @code{argparse} will figure out how to
+parse those out of @code{sys.argv}.  The @code{argparse} module also
+automatically generates help and usage messages and issues errors when
+users give the program invalid arguments.")
+    (license (package-license python))))
+
+(define-public python2-argparse
+  (package (inherit (package-with-python2
+                     (strip-python2-variant python-argparse)))
+    (native-inputs
+     `(("python2-setuptools" ,python2-setuptools)))))
