@@ -2109,3 +2109,75 @@ users give the program invalid arguments.")
                      (strip-python2-variant python-argparse)))
     (native-inputs
      `(("python2-setuptools" ,python2-setuptools)))))
+
+(define-public crispresso
+  (let ((commit "9c53ef0af863833013b88592d0c7118c5d5d5c33")
+        (revision "1"))
+    (package
+      (name "crispresso")
+      (version (string-append "0-" revision "." (string-take commit 9)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lucapinello/CRISPResso.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "0lbsrwkmnwcix3yvy234js4gkfv236g0kdsnm02q3v0n865hf1j7"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:python ,python-2
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'do-not-install-dependencies
+             (lambda _
+               (substitute* "setup.py"
+                 (("=='install'") "=='skip_this'"))
+               #t))
+           (add-after 'unpack 'use-full-paths-to-tools
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "CRISPResso/CRISPRessoCORE.py"
+                 (("'flash %s")
+                  (string-append "'" (which "flash") " %s"))
+                 ((" needle -")
+                  (string-append " " (which "needle") " -"))
+                 (("'java -")
+                  (string-append "'" (which "java") " -"))
+                 (("^check_program\\(" line)
+                  (string-append "#" line)))
+               #t)))))
+      ;; FIXME: this package includes the trimmomatic binary (jar)
+      (inputs
+       `(("emboss" ,emboss)
+         ("flash" ,flash)
+         ("jre" ,icedtea)
+         ("python2-numpy" ,python2-numpy)
+         ("python2-pandas" ,python2-pandas)
+         ("python2-matplotlib" ,python2-matplotlib)
+         ("python2-biopython" ,python2-biopython)
+         ("python2-argparse" ,python2-argparse)))
+      (native-inputs
+       `(("python2-setuptools" ,python2-setuptools)
+         ("python2-mock" ,python2-mock)
+         ("python2-pytz" ,python2-pytz)))
+      (home-page "https://github.com/lucapinello/CRISPResso")
+      (synopsis "Analysis tool for CRISPR-Cas9 genome editing outcomes")
+      (description "CRISPResso is a software pipeline for the analysis
+of targeted CRISPR-Cas9 sequencing data.  This algorithm allows for
+the quantification of both @dfn{non-homologous end joining} (NHEJ) and
+@dfn{homologous directed repair} (HDR) occurrences.
+
+CRISPResso automatizes and performs the following steps:
+
+@itemize
+@item filters low quality reads,
+@item trims adapters,
+@item aligns the reads to a reference amplicon,
+@item quantifies the proportion of HDR and NHEJ outcomes,
+@item quantifies frameshift/inframe mutations (if applicable) and
+ identifies affected splice sites,
+@item produces a graphical report to visualize and quantify the indels
+ distribution and position.
+@end itemize\n")
+      (license license:agpl3+))))
