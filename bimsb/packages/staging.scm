@@ -1159,28 +1159,6 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
     (inputs
      (alist-delete "openmpi" (package-inputs lammps)))))
 
-(define-public r-kernlab
-  (package
-    (name "r-kernlab")
-    (version "0.9-25")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "kernlab" version))
-       (sha256
-        (base32
-         "0qnaq9x3j2xc6jrmmd98wc6hkzch487s4p3a9lnc00xvahkhgpmr"))))
-    (build-system r-build-system)
-    (home-page "http://cran.r-project.org/web/packages/kernlab")
-    (synopsis "Kernel-based machine learning tools")
-    (description
-     "This package provides kernel-based machine learning methods for
-classification, regression, clustering, novelty detection, quantile
-regression and dimensionality reduction.  Among other methods
-@code{kernlab} includes Support Vector Machines, Spectral Clustering,
-Kernel PCA, Gaussian Processes and a QP solver.")
-    (license license:gpl2)))
-
 (define-public r-gtools
   (package
     (name "r-gtools")
