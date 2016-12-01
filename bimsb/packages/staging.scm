@@ -865,29 +865,6 @@ and a @{parcel} client.")
     (description "TODO")
     (license license:asl2.0)))
 
-(define-public r-r4rna
-  (package
-    (name "r-r4rna")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://www.e-rna.org/r-chie/files/R4RNA_"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "1p0i78wh76jfgmn9jphbwwaz6yy6pipzfg08xs54cxavxg2j81p5"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-optparse" ,r-optparse)
-       ("r-rcolorbrewer" ,r-rcolorbrewer)))
-    (synopsis "Analysis framework for RNA secondary structure")
-    (description
-     "The R4RNA package aims to be a general framework for the
-analysis of RNA secondary structure and comparative analysis in R.")
-    (home-page "http://www.e-rna.org/r-chie/index.cgi")
-    (license license:gpl3+)))
-
 (define-public umi-tools
   (package
   (name "umi-tools")
