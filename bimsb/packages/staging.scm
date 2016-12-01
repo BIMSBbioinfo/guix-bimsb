@@ -1159,25 +1159,6 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
     (inputs
      (alist-delete "openmpi" (package-inputs lammps)))))
 
-(define-public r-sfsmisc
-  (package
-    (name "r-sfsmisc")
-    (version "1.1-0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "sfsmisc" version))
-       (sha256
-        (base32
-         "0580piv4n1nispl3pa8nfjjfnb8iwaqky2dzdy0aqnxrxgrhqhvz"))))
-    (build-system r-build-system)
-    (home-page "http://cran.r-project.org/web/packages/sfsmisc")
-    (synopsis "Utilities from \"Seminar fuer Statistik\" ETH Zurich")
-    (description
-     "This package provides useful utilities from Seminar fuer
-Statistik ETH Zurich, including many that are related to graphics.")
-    (license license:gpl2+)))
-
 (define-public r-kernlab
   (package
     (name "r-kernlab")
