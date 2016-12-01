@@ -1159,27 +1159,6 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
     (inputs
      (alist-delete "openmpi" (package-inputs lammps)))))
 
-(define-public r-preprocesscore
-  (package
-    (name "r-preprocesscore")
-    (version "1.36.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "preprocessCore" version))
-       (sha256
-        (base32
-         "1n8y12q7145f385gm2k3c6y3vwvin7jlb47la4mnl7mar6pq9kmp"))))
-    (properties
-     `((upstream-name . "preprocessCore")))
-    (build-system r-build-system)
-    (home-page "https://github.com/bmbolstad/preprocessCore")
-    (synopsis "Collection of pre-processing functions")
-    (description
-     "This package provides a library of core pre-processing and
-normalization routines.")
-    (license license:lgpl2.0+)))
-
 (define-public r-wgcna
   (package
     (name "r-wgcna")
