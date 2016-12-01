@@ -298,26 +298,6 @@ of the @code{libR} shared library."))))
        ,@(package-inputs rstudio-server)))
     (synopsis "Integrated development environment (IDE) for R (desktop version)")))
 
-(define-public r-rematch
-  (package
-    (name "r-rematch")
-    (version "1.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rematch" version))
-       (sha256
-        (base32
-         "0y3mshvpvz9csmq8hk8jbabx4nxlv5sckvfzvm6920ndg34xw2d4"))))
-    (build-system r-build-system)
-    (home-page "https://github.com/MangoTheCat/rematch")
-    (synopsis "Match regular expressions with a nicer API")
-    (description
-     "This package provides a small wrapper on @code{regexpr} to
-extract the matches and captured groups from the match of a regular
-expression to a character vector.")
-    (license license:expat)))
-
 (define-public r-cellranger
   (package
     (name "r-cellranger")
