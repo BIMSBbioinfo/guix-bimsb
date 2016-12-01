@@ -1159,40 +1159,6 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
     (inputs
      (alist-delete "openmpi" (package-inputs lammps)))))
 
-(define-public r-gkmsvm
-  (package
-    (name "r-gkmsvm")
-    (version "0.71.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "gkmSVM" version))
-       (sha256
-        (base32
-         "1zpxgxmf2nd5j5wn00ps6kfxr8wxh7d1swr1rr4spq7sj5z5z0k0"))))
-    (properties `((upstream-name . "gkmSVM")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-biocgenerics" ,r-biocgenerics)
-       ("r-biostrings" ,r-biostrings)
-       ("r-genomeinfodb" ,r-genomeinfodb)
-       ("r-genomicranges" ,r-genomicranges)
-       ("r-iranges" ,r-iranges)
-       ("r-kernlab" ,r-kernlab)
-       ("r-rcpp" ,r-rcpp)
-       ("r-rocr" ,r-rocr)
-       ("r-rtracklayer" ,r-rtracklayer)
-       ("r-s4vectors" ,r-s4vectors)
-       ("r-seqinr" ,r-seqinr)))
-    (home-page "http://cran.r-project.org/web/packages/gkmSVM")
-    (synopsis "Gapped-kmer support vector machine")
-    (description
-     "This R package provides tools for training gapped-kmer SVM
-classifiers for DNA and protein sequences.  This package supports
-several sequence kernels, including: gkmSVM, kmer-SVM, mismatch kernel
-and wildcard kernel.")
-    (license license:gpl2+)))
-
 (define-public hisat2
   (package
     (name "hisat2")
