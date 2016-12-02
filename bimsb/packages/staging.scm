@@ -1670,3 +1670,25 @@ bias, GC-bias, 3' bias, and fragmentation effects.  Compared to other
 MCMC approaches, it is exceedingly efficient, though generally slower
 that modern maximum likelihood approaches.")
       (license license:expat))))
+
+(define-public r-compquadform
+  (package
+    (name "r-compquadform")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "CompQuadForm" version))
+       (sha256
+        (base32
+         "0bsgbdblxpv57mbwnf51xyiydp2bqyxkg4zzwqki85cv5xqlrq1n"))))
+    (properties `((upstream-name . "CompQuadForm")))
+    (build-system r-build-system)
+    (home-page "http://cran.r-project.org/web/packages/CompQuadForm")
+    (synopsis "Distribution function of quadratic forms in normal variables")
+    (description
+     "This package provides functions to compute the distribution
+function of quadratic forms in normal variables using Imhof's method,
+Davies's algorithm, Farebrother's algorithm or Liu et al.'s
+algorithm.")
+    (license license:gpl2+)))
