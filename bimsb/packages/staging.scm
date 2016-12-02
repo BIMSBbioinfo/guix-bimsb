@@ -1614,7 +1614,7 @@ CRISPResso automatizes and performs the following steps:
              (substitute* "setup.py"
                (("^(.*)packages=.*" line prefix)
                 (string-append line "\n"
-                               prefix "scripts=['TE.py'],\n")))
+                               prefix "scripts=['scripts/TE.py'],\n")))
              #t)))))
     (inputs
      `(("python-numpy" ,python2-numpy)
