@@ -1605,7 +1605,17 @@ CRISPResso automatizes and performs the following steps:
         (base32
          "0wpbwmfv05wdjxv7ikm664f7s7p7cqr8jnw99zrda0q67rl50aaj"))))
     (build-system python-build-system)
-    (arguments `(#:python ,python-2))
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-setup.py
+           (lambda _
+             (substitute* "setup.py"
+               (("^(.*)packages=.*" line prefix)
+                (string-append line "\n"
+                               prefix "scripts=['TE.py'],\n")))
+             #t)))))
     (inputs
      `(("python-numpy" ,python2-numpy)
        ("python-matplotlib" ,python2-matplotlib)
