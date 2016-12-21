@@ -1793,3 +1793,36 @@ spectra with different resolutions.")
      "This package provides S4 generic functions needed by
 Bioconductor proteomics packages.")
     (license license:artistic2.0)))
+
+(define-public r-mzr
+  (package
+    (name "r-mzr")
+    (version "2.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "mzR" version))
+       (sha256
+        (base32
+         "0y2ghqapr1gbg2r8zdg26gdbmwzl4d7mhb81l76zvfslq5l38ck9"))))
+    (properties `((upstream-name . "mzR")))
+    (build-system r-build-system)
+    (inputs
+     `(("netcdf" ,netcdf)))
+    (propagated-inputs
+     `(("r-biobase" ,r-biobase)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-protgenerics" ,r-protgenerics)
+       ("r-rcpp" ,r-rcpp)
+       ("r-zlibbioc" ,r-zlibbioc)))
+    (home-page "https://github.com/sneumann/mzR/")
+    (synopsis "Parser for mass spectrometry data files")
+    (description
+     "The mzR package provides a unified API to the common file
+formats and parsers available for mass spectrometry data.  It comes
+with a wrapper for the ISB random access parser for mass spectrometry
+mzXML, mzData and mzML files.  The package contains the original code
+written by the ISB, and a subset of the proteowizard library for mzML
+and mzIdentML.  The netCDF reading code has previously been used in
+XCMS.")
+    (license license:artistic2.0)))
