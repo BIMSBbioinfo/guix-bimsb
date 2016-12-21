@@ -1943,3 +1943,44 @@ handle all types of mzIdentML files with the drawback of having less
 maintainer with any problems and supply an mzIdentML file so the
 problems can be fixed quickly.")
     (license license:gpl2+)))
+
+(define-public r-msnbase
+  (package
+    (name "r-msnbase")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MSnbase" version))
+       (sha256
+        (base32
+         "0p0hwdfbxzq5nlbiasb1c8734z4m9yp6907ahqyahya58kdqyzln"))))
+    (properties `((upstream-name . "MSnbase")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-affy" ,r-affy)
+       ("r-biobase" ,r-biobase)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-biocparallel" ,r-biocparallel)
+       ("r-digest" ,r-digest)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-impute" ,r-impute)
+       ("r-iranges" ,r-iranges)
+       ("r-maldiquant" ,r-maldiquant)
+       ("r-mzid" ,r-mzid)
+       ("r-mzr" ,r-mzr)
+       ("r-pcamethods" ,r-pcamethods)
+       ("r-plyr" ,r-plyr)
+       ("r-preprocesscore" ,r-preprocesscore)
+       ("r-protgenerics" ,r-protgenerics)
+       ("r-rcpp" ,r-rcpp)
+       ("r-reshape2" ,r-reshape2)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-vsn" ,r-vsn)
+       ("r-xml" ,r-xml)))
+    (home-page "https://github.com/lgatto/MSnbase")
+    (synopsis "Base functions and classes for MS-based proteomics")
+    (description
+     "This package provides basic plotting, data manipulation and
+processing of MS-based Proteomics data.")
+    (license license:artistic2.0)))
