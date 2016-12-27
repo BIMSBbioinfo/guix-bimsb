@@ -1438,6 +1438,15 @@ scheme is called a @dfn{Hierarchical Graph FM index} (HGFM).")
         (base32
          "0945cbg4w2m148f0invni8gbkxrsxap0hy2yhjfy1qw63sncn2ag"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-import-in-executable
+           (lambda _
+             (substitute* "circ/CIRCexplorer.py"
+               (("from genomic_interval import Interval")
+                "from circ.genomic_interval import Interval"))
+             #t)))))
     (inputs
      `(("python-pysam" ,python-pysam)
        ("python-docopt" ,python-docopt)))
