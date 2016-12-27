@@ -2054,3 +2054,42 @@ It also contains a number of utilities to explore the MS/MS results
 and assess missed and irregular enzymatic cleavages, mass measurement
 accuracy, etc.")
     (license license:artistic2.0)))
+
+(define-public iclipro
+  (package
+    (name "iclipro")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.biolab.si/iCLIPro/dist/"
+                           "iCLIPro-" version ".tar.gz"))
+       (sha256
+        (base32
+         "05sql0150rq1w0d6pn5jcq0ag0rrlsg1wfgc9b5la6zvsp43xwxz"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2))
+    (propagated-inputs
+     `(("python-matplotlib" ,python2-matplotlib)
+       ("python-pysam" ,python2-pysam)))
+    (native-inputs
+     `(("python-setuptools" ,python2-setuptools)))
+    (home-page "http://www.biolab.si/iCLIPro")
+    (synopsis "Control for systematic misassignments in iCLIP data")
+    (description "A typical (i)CLIP experiment may result in the
+detection of RNA fragments of different lengths.  Under the
+assumptions of conventional iCLIP, the start sites of iCLIP fragments
+should coincide at the cross-linking position in a fragment
+length-independent fashion.  This interpretation may not hold for some
+iCLIP libraries (e.g., substantial read-through, binding to long RNA
+stretches etc).  In summary, we identified a previously unrecognized
+effect of iCLIP fragment length on the position of fragment start
+sites and thus assigned binding sites for some RBPs.
+
+iCLIPro is a robust analysis approach that examines this effect and
+thus can improve the assignment of binding sites from iCLIP
+data. iCLIPro’s main function is to visualize coinciding and
+non-coinciding fragment start sites in order to examine the best way
+how to analyze iCLIP data.")
+    (license license:gpl3+)))
