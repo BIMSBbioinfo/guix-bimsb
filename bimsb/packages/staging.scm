@@ -2125,3 +2125,19 @@ EM algorithm for model-based clustering, classification, and density
 estimation, including Bayesian regularization, dimension reduction for
 visualisation, and resampling-based inference.")
     (license license:gpl2+)))
+
+(define-public python-fastcluster
+  (package
+    (inherit r-fastcluster)
+    (name "python-fastcluster")
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "src/python") #t)))))
+    (propagated-inputs
+     `(("python-numpy" ,python-numpy)))))
+
+(define-public python2-fastcluster
+  (package-with-python2 python-fastcluster))
