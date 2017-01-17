@@ -355,7 +355,7 @@ transcription factor ChIP-seq.")
               (uri "http://compbio.uthscsa.edu/GESS_Web/files/gess.src.tar.gz")
               (sha256
                (base32
-                "16qvzr51mlg152glvxyk4n88ny6428219a83cbf1hn1rv20ny1bb"))))
+                "0hyk403kxscclzfs24pvdgiv0wm03kjcziqdrp5w46cb049gz0d7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
