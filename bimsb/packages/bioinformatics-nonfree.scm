@@ -53,7 +53,8 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages zip)
   #:use-module (bimsb packages staging)
-  #:use-module (bimsb packages bioinformatics-variants))
+  #:use-module (bimsb packages bioinformatics-variants)
+  #:use-module (bimsb packages variants))
 
 (define-public bcl2fastq
   (package
@@ -180,9 +181,9 @@ to write a free software alternative rather than using this tool."))))
                           "configureValidation.pl"))
               #t))))))
     (inputs
-     `(("perl-xml-simple" ,perl-xml-simple)
-       ("perl-xml-parser" ,perl-xml-parser)
-       ("perl" ,perl)
+     `(("perl-xml-simple" ,(package-for-perl-5.14 perl-xml-simple))
+       ("perl-xml-parser" ,(package-for-perl-5.14 perl-xml-parser))
+       ("perl" ,perl-5.14)
        ,@(package-inputs bcl2fastq)))))
 
 (define-public bowtie1
