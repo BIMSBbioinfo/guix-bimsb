@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2016, 2017 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -30,6 +30,86 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages statistics))
+
+;; An older version of Perl is required for Bcl2Fastq version 1.x
+(define-public perl-5.14
+  (package (inherit perl)
+    (name "perl")
+    (version "5.14.4")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://cpan/src/5.0/perl-"
+                                 version ".tar.gz"))
+             (sha256
+              (base32
+               "1js47zzna3v38fjnirf2vq6y0rjp8m86ysj5vagzgkig956d8gw0"))
+             (patches (map search-patch
+                           '("perl-5.14-no-sys-dirs.patch"
+                             "perl-5.14-autosplit-default-time.patch"
+                             "perl-5.14-module-pluggable-search.patch")))))
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out  (assoc-ref outputs "out"))
+                   (libc (assoc-ref inputs "libc")))
+               ;; Use the right path for `pwd'.
+               (substitute* "dist/Cwd/Cwd.pm"
+                 (("/bin/pwd")
+                  (which "pwd")))
+
+               (zero?
+                (system* "./Configure"
+                         (string-append "-Dprefix=" out)
+                         (string-append "-Dman1dir=" out "/share/man/man1")
+                         (string-append "-Dman3dir=" out "/share/man/man3")
+                         "-de" "-Dcc=gcc"
+                         "-Uinstallusrbinperl"
+                         "-Dinstallstyle=lib/perl5"
+                         "-Duseshrplib"
+                         (string-append "-Dlocincpth=" libc "/include")
+                         (string-append "-Dloclibpth=" libc "/lib")
+
+                         ;; Force the library search path to contain only libc
+                         ;; because it is recorded in Config.pm and
+                         ;; Config_heavy.pl; we don't want to keep a reference
+                         ;; to everything that's in $LIBRARY_PATH at build
+                         ;; time (Binutils, bzip2, file, etc.)
+                         (string-append "-Dlibpth=" libc "/lib")
+                         (string-append "-Dplibpth=" libc "/lib"))))))
+
+         (add-before 'strip 'make-shared-objects-writable
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; The 'lib/perl5' directory contains ~50 MiB of .so.  Make them
+             ;; writable so that 'strip' actually strips them.
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib")))
+               (for-each (lambda (dso)
+                           (chmod dso #o755))
+                         (find-files lib "\\.so$"))))))))))
+
+(define (perl-5.14-package-name name)
+  "Return NAME with a \"perl5.14-\" prefix instead of \"perl-\", when
+applicable."
+  (if (string-prefix? "perl-" name)
+      (string-append "perl5.14-"
+                     (string-drop name
+                                  (string-length "perl-")))
+      name))
+
+(define-public (package-for-perl-5.14 pkg)
+  ;; This is a procedure to replace PERL by PERL-5.14, recursively.
+  ;; It also ensures that rewritten packages are built with PERL-5.14.
+  (let* ((rewriter (package-input-rewriting `((,perl . ,perl-5.14))
+                                            perl-5.14-package-name))
+         (new (rewriter pkg)))
+    (package (inherit new)
+      (arguments `(#:perl ,perl-5.14
+                   #:tests? #f
+                   ,@(package-arguments new))))))
+
 
 (define-public rsem-latest
   (package (inherit rsem)
