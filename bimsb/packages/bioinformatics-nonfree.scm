@@ -148,7 +148,12 @@ to write a free software alternative rather than using this tool."))))
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "14s15h8kk9vqqwy0hykdzffz6zlkbqpvg5wnnfiwd2x7cwxizikm"))))
+                "14s15h8kk9vqqwy0hykdzffz6zlkbqpvg5wnnfiwd2x7cwxizikm"))
+              (snippet
+               `(begin
+                  (delete-file "redist/boost_1_44_0.tar.gz")
+                  (delete-file "redist/cmake-2.8.4.tar.gz")
+                  #t))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
