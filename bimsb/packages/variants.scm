@@ -29,7 +29,9 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages statistics))
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages statistics)
+  #:use-module (gnu packages shells))
 
 ;; An older version of Perl is required for Bcl2Fastq version 1.x
 (define-public perl-5.14
@@ -110,6 +112,67 @@ applicable."
                    #:tests? #f
                    ,@(package-arguments new))))))
 
+(define-public boost-1.58
+  (package (inherit boost)
+    (name "boost")
+    (version "1.58.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://sourceforge/boost/boost/" version "/boost_"
+                    (string-map (lambda (x) (if (eq? x #\.) #\_ x)) version)
+                    ".tar.bz2"))
+              (sha256
+               (base32
+                "1rfkqxns60171q62cppiyzj8pmsbwp1l8jd7p6crriryqd7j1z7x"))))
+    (native-inputs
+     `(("perl" ,perl)
+       ("python" ,python-2)
+       ("tcsh" ,tcsh)))
+    (arguments
+     `(#:tests? #f ; TODO
+       #:make-flags
+       (list "threading=multi" "link=shared"
+
+             ;; Set the RUNPATH to $libdir so that the libs find each other.
+             (string-append "linkflags=-Wl,-rpath="
+                            (assoc-ref %outputs "out") "/lib")
+
+             ;; Boost's 'context' library is not yet supported on mips64, so
+             ;; we disable it.  The 'coroutine' library depends on 'context',
+             ;; so we disable that too.
+             ,@(if (string-prefix? "mips64" (or (%current-target-system)
+                                                (%current-system)))
+                   '("--without-context"
+                     "--without-coroutine" "--without-coroutine2")
+                   '()))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* '("libs/config/configure"
+                              "libs/spirit/classic/phoenix/test/runtest.sh"
+                              "tools/build/doc/bjam.qbk"
+                              "tools/build/src/engine/execunix.c"
+                              "tools/build/src/engine/Jambase"
+                              "tools/build/src/engine/jambase.c")
+                 (("/bin/sh") (which "sh")))
+
+               (setenv "SHELL" (which "sh"))
+               (setenv "CONFIG_SHELL" (which "sh"))
+
+               (zero? (system* "./bootstrap.sh"
+                               (string-append "--prefix=" out)
+                               "--with-toolset=gcc")))))
+         (replace 'build
+           (lambda* (#:key outputs make-flags #:allow-other-keys)
+             (zero? (apply system* "./b2"
+                           (format #f "-j~a" (parallel-job-count))
+                           make-flags))))
+         (replace 'install
+           (lambda* (#:key outputs make-flags #:allow-other-keys)
+             (zero? (apply system* "./b2" "install" make-flags)))))))))
 
 (define-public rsem-latest
   (package (inherit rsem)
