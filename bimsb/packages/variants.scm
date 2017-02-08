@@ -232,6 +232,80 @@ applicable."
            (lambda* (#:key outputs make-flags #:allow-other-keys)
              (zero? (apply system* "./b2" "install" make-flags)))))))))
 
+(define-public boost-1.44
+  (package (inherit boost-1.55)
+    (name "boost")
+    (version "1.44.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://sourceforge/boost/boost/" version "/boost_"
+                    (string-map (lambda (x) (if (eq? x #\.) #\_ x)) version)
+                    ".tar.bz2"))
+              (sha256
+               (base32
+                "1nvq36mvzr1fr85q0jh86rk3bk65s1y55jgqgzfg3lcpkl12ihs5"))))
+    (arguments
+     `(#:tests? #f
+       #:make-flags
+       (list "threading=multi" "link=shared"
+             ;; Set the RUNPATH to $libdir so that the libs find each other.
+             (string-append "linkflags=-Wl,-rpath="
+                            (assoc-ref %outputs "out") "/lib"))
+       #:phases
+       (modify-phases %standard-phases
+         ;; See https://svn.boost.org/trac/boost/ticket/6165
+         (add-after 'unpack 'fix-threads-detection
+           (lambda _
+             (substitute* "boost/config/stdlib/libstdcpp3.hpp"
+               (("_GLIBCXX_HAVE_GTHR_DEFAULT")
+                "_GLIBCXX_HAS_GTHREADS"))
+             #t))
+         ;; See https://svn.boost.org/trac/boost/ticket/6940
+         (add-after 'unpack 'fix-TIME_UTC
+           (lambda _
+             (substitute* '("libs/interprocess/test/util.hpp"
+                            "libs/interprocess/test/condition_test_template.hpp"
+                            "libs/spirit/classic/test/grammar_mt_tests.cpp"
+                            "libs/spirit/classic/test/owi_mt_tests.cpp"
+                            "libs/thread/src/pthread/thread.cpp"
+                            "libs/thread/src/pthread/timeconv.inl"
+                            "libs/thread/src/win32/timeconv.inl"
+                            "libs/thread/test/util.inl"
+                            "libs/thread/test/test_xtime.cpp"
+                            "libs/thread/example/xtime.cpp"
+                            "libs/thread/example/tennis.cpp"
+                            "libs/thread/example/starvephil.cpp"
+                            "libs/thread/example/thread.cpp"
+                            "boost/thread/xtime.hpp")
+               (("TIME_UTC") "TIME_UTC_"))
+             #t))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* '("libs/config/configure"
+                              "libs/spirit/classic/phoenix/test/runtest.sh"
+                              "tools/jam/doc/bjam.qbk"
+                              "tools/jam/src/execunix.c"
+                              "tools/jam/src/Jambase"
+                              "tools/jam/src/jambase.c")
+                 (("/bin/sh") (which "sh")))
+
+               (setenv "SHELL" (which "sh"))
+               (setenv "CONFIG_SHELL" (which "sh"))
+
+               (zero? (system* "./bootstrap.sh"
+                               (string-append "--prefix=" out)
+                               "--with-toolset=gcc")))))
+         (replace 'build
+           (lambda* (#:key outputs make-flags #:allow-other-keys)
+             (zero? (apply system* "./bjam"
+                           (format #f "-j~a" (parallel-job-count))
+                           make-flags))))
+         (replace 'install
+           (lambda* (#:key outputs make-flags #:allow-other-keys)
+             (zero? (apply system* "./bjam" "install" make-flags)))))))))
+
 (define-public rsem-latest
   (package (inherit rsem)
     (name "rsem")
