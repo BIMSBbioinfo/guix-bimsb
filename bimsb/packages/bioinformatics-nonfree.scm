@@ -153,22 +153,16 @@ to write a free software alternative rather than using this tool."))))
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'enter-dir (lambda _ (chdir "src") #t))
-         (add-after
-          'enter-dir 'patch-stuff
-          (lambda _
-            ;; Update to boost 1.56
-            (substitute* "c++/lib/demultiplex/BclDemultiplexer.cpp"
-              (("boost::bind\\(\\&fs::path::string, _1\\)")
-               (string-append "boost::bind("
-                              "static_cast< std::string const & "
-                              "(boost::filesystem::path::*)() const >"
-                              "(&boost::filesystem::path::string), _1)")))
-            (substitute* "c++/lib/io/PtreeXml.cpp"
-              (("xml_writer_make_settings\\(")
-               "xml_writer_make_settings<ptree::key_type>("))
-            #t))
-         (add-after
-          'install 'wrap-perl-scripts
+         (add-after 'enter-dir 'fix-includes
+           (lambda _
+             (substitute* "c++/include/common/FileConversion.hh"
+               (("#pragma once" line)
+                (string-append line "\n#include <stdint.h>")))
+             (substitute* "c++/include/demultiplex/BarcodeTranslationTable.hh"
+               (("^namespace casava" line)
+                (string-append "#include <stdint.h>\n" line)))
+             #t))
+         (add-after 'install 'wrap-perl-scripts
           (lambda* (#:key inputs outputs #:allow-other-keys)
             ;; Make sure perl scripts finds all perl inputs at runtime.
             (let ((out (assoc-ref outputs "out")))
@@ -181,10 +175,16 @@ to write a free software alternative rather than using this tool."))))
                           "configureValidation.pl"))
               #t))))))
     (inputs
-     `(("perl-xml-simple" ,(package-for-perl-5.14 perl-xml-simple))
+     `(;; We need the older version of Boost although this could be
+       ;; built with 1.55 with only minor changes.  The reason is
+       ;; option parsing, which only bites us at runtime.
+       ("boost" ,boost-1.44)
+       ("libxml2" ,libxml2)
+       ("libxslt" ,libxslt)
+       ("perl-xml-simple" ,(package-for-perl-5.14 perl-xml-simple))
        ("perl-xml-parser" ,(package-for-perl-5.14 perl-xml-parser))
        ("perl" ,perl-5.14)
-       ,@(package-inputs bcl2fastq)))))
+       ("zlib" ,zlib)))))
 
 (define-public bowtie1
   (package
