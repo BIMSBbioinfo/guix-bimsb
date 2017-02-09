@@ -28,6 +28,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system r)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -1075,3 +1076,26 @@ MXSCARNA and ProbConsRNA.")
               (sha256
                (base32
                 "0mycxjqci462d1zmcdhhc47360np1xcrdf2f3yrhhzbn5blwiwwl"))))))
+
+(define-public r-rbowtie
+  (package
+    (name "r-rbowtie")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Rbowtie" version))
+       (sha256
+        (base32
+         "11sl03ljkq7hkm6ilw91bh4p2lz6iw35xn0f5fyh37i0j5nrmikh"))))
+    (properties `((upstream-name . "Rbowtie")))
+    (build-system r-build-system)
+    (home-page "http://bioconductor.org/packages/Rbowtie")
+    (synopsis "R bowtie wrapper")
+    (description
+     "This package provides an R wrapper around the popular bowtie
+short read aligner and around SpliceMap, a de novo splice junction
+discovery and alignment tool.  The package is used by the QuasR
+bioconductor package.  It is recommended to use the QuasR package
+instead of using Rbowtie directly.")
+    (license nonfree:artistic1.0)))
