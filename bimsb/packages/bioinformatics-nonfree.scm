@@ -1099,3 +1099,49 @@ discovery and alignment tool.  The package is used by the QuasR
 bioconductor package.  It is recommended to use the QuasR package
 instead of using Rbowtie directly.")
     (license nonfree:artistic1.0)))
+
+(define-public r-quasr
+  (package
+    (name "r-quasr")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "QuasR" version))
+       (sha256
+        (base32
+         "1330vlvsfypr0pl7arawks4d80yjk2afn637ivcnbhrchkmicfdv"))))
+    (properties `((upstream-name . "QuasR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biobase" ,r-biobase)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-biocinstaller" ,r-biocinstaller)
+       ("r-biocparallel" ,r-biocparallel)
+       ("r-biostrings" ,r-biostrings)
+       ("r-bsgenome" ,r-bsgenome)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicalignments" ,r-genomicalignments)
+       ("r-genomicfeatures" ,r-genomicfeatures)
+       ("r-genomicfiles" ,r-genomicfiles)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-iranges" ,r-iranges)
+       ("r-rbowtie" ,r-rbowtie)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-shortread" ,r-shortread)
+       ("r-zlibbioc" ,r-zlibbioc)))
+    (inputs
+     `(("zlib" ,zlib)))
+    (home-page "http://bioconductor.org/packages/QuasR")
+    (synopsis "Quantify and annotate short reads in R")
+    (description
+     "This package provides a framework for the quantification and
+analysis of short genomic reads.  It covers a complete workflow
+starting from raw sequence reads, over creation of alignments and
+quality control plots, to the quantification of genomic regions of
+interest.")
+    ;; Although this is free software, it depends on rbowtie, which is
+    ;; nonfree.
+    (license license:gpl2)))
