@@ -1771,3 +1771,37 @@ mask), (3) the mask of repeats from RepeatMasker (RM mask), and (4)
 the mask of repeats from Tandem Repeats Finder (TRF mask).  Only the
 AGAPS and AMB masks are \"active\" by default."  )
     (license license:artistic2.0)))
+
+(define-public r-genomicfiles
+  (package
+    (name "r-genomicfiles")
+    (version "1.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "GenomicFiles" version))
+       (sha256
+        (base32
+         "03yqkl2yjdz999j1y7azcs16vg0vydrqs6sxcfkgn11fiwi6i3l2"))))
+    (properties `((upstream-name . "GenomicFiles")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biocgenerics" ,r-biocgenerics)
+       ("r-biocparallel" ,r-biocparallel)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicalignments" ,r-genomicalignments)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-iranges" ,r-iranges)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-summarizedexperiment" ,r-summarizedexperiment)
+       ("r-variantannotation" ,r-variantannotation)))
+    (home-page "http://bioconductor.org/packages/GenomicFiles")
+    (synopsis "Distributed computing by file or by range")
+    (description
+     "This package provides infrastructure for parallel computations
+distributed by file or by range.  User defined mapper and reducer
+functions provide added flexibility for data combination and
+manipulation.")
+    (license license:artistic2.0)))
