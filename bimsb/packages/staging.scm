@@ -1805,3 +1805,104 @@ distributed by file or by range.  User defined mapper and reducer
 functions provide added flexibility for data combination and
 manipulation.")
     (license license:artistic2.0)))
+
+(define-public bbmap
+  (package
+    (name "bbmap")
+    (version "36.92")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/bbmap/BBMap_"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "0sa2mqpviwdhp114qyyrx1nk1ib4dp578msyjvzqcbi6s93wcjn4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (for-each delete-file (find-files "." "\\.class$"))
+           #t))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:build-target "dist"
+       #:tests? #f ; there are no tests
+       ;; Java 1.7 is supported according to the documentation, but it
+       ;; won't build with icedtea-7.
+       #:jdk ,icedtea-8
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'add-ecj-to-classpath
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CLASSPATH" (assoc-ref inputs "ecj"))
+             #t))
+         (add-after 'unpack 'embed-paths
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* (find-files "." ".*\\.sh$")
+                 (("^CP=.*$")
+                  (string-append "CP=" out "/lib/BBTools.jar\n"))
+                 (("^NATIVELIBDIR=.*$")
+                  (string-append "NATIVELIBDIR=" out "/lib/\n"))
+                 (("\\$DIR\"\"docs")
+                  (string-append out "/share/doc/bbmap"))
+                 (("CMD=\"java ")
+                  (string-append "CMD=\"" (assoc-ref inputs "jre")
+                                 "/bin/java "))))
+             #t))
+         (add-after 'build 'build-jni-extension
+           (lambda _
+             (with-directory-excursion "jni"
+               (zero? (system* "make" "-f" "makefile.linux")))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (lib (string-append out "/lib"))
+                    (doc (string-append out "/share/doc/bbmap")))
+               (for-each mkdir-p
+                         (list bin lib doc))
+               (for-each (lambda (script)
+                           (install-file script bin))
+                         (find-files "." ".*\\.sh$"))
+               (for-each (lambda (file)
+                           (install-file file lib))
+                         '("dist/lib/BBTools.jar"
+                           "jni/libbbtoolsjni.so"))
+               (copy-recursively "docs" doc)
+               #t))))))
+    (inputs
+     `(("jre" ,icedtea-8)))
+    (native-inputs
+     `(("ecj"
+        ,(origin
+           (method url-fetch)
+           (uri "http://central.maven.org/maven2/org/eclipse/\
+jdt/core/compiler/ecj/4.6.1/ecj-4.6.1.jar")
+           (sha256
+            (base32
+             "1q5dxv28izkg23wrfiyzazvd15z8ldhpnkplffg4dd51yisxmpcw"))))))
+    (home-page "http://jgi.doe.gov/data-and-tools/bbtools/")
+    (synopsis "Aligner and other tools for short genomic reads")
+    (description
+     "BBTools is a suite of fast, multithreaded bioinformatics tools
+designed for analysis of DNA and RNA sequence data.  BBTools can
+handle common sequencing file formats such as fastq, fasta, sam,
+scarf, fasta+qual, compressed or raw, with autodetection of quality
+encoding and interleaving.
+
+The BBTools suite includes programs such as:
+@itemize
+@item bbduk: filters or trims reads for adapters and contaminants
+  using k-mers;
+@item bbmap: short-read aligner for DNA and RNA-seq data;
+@item bbmerge: merges overlapping or nonoverlapping pairs into a
+  single reads;
+@item reformat: converts sequence files between different formats such
+  as fastq and fasta.
+@end itemize\n")
+    ;; This package includes adapter sequences for Illumina machines.
+    ;; I don't know if redistribution and use for any purpose is
+    ;; actually permitted.
+    (license license:bsd-3)))
+
