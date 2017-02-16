@@ -71,6 +71,7 @@
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages zip)
+  #:use-module (bimsb packages variants)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 ;; This package cannot yet be added to Guix because it bundles an as
