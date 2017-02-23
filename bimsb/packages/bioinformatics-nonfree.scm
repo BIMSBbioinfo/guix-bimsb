@@ -1145,3 +1145,90 @@ interest.")
     ;; Although this is free software, it depends on rbowtie, which is
     ;; nonfree.
     (license license:gpl2)))
+
+(define-public defuse-tools
+  (package
+    (name "defuse-tools")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://bitbucket.org/dranew/defuse/"
+                           "get/v" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0my24iw5mqdrq1k08casdv5p4wvk01inikhvi8mb74r7z93kcpf5"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete bundled stuff
+           (delete-file-recursively "external")
+           #t))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no check target
+       #:make-flags
+       (list "ZLIB=-lz"
+             (string-append "BAMTOOLSSRC="
+                            (assoc-ref %build-inputs "bamtools")
+                            "/lib/bamtools/libbamtools.a")
+             (string-append "BAMTOOLSDIR="
+                            (assoc-ref %build-inputs "bamtools")
+                            "/include/bamtools"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "tools") #t))
+         (add-after 'chdir 'do-not-use-bundled-libraries
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "makefile"
+               (("\\$\\(BAMDIR\\)/\\$\\(BAMLIB\\)")
+                (string-append (assoc-ref inputs "samtools")
+                               "/lib/libbam.a"))
+               (("\\$\\(ZDIR\\)/\\$\\(ZLIB\\)") "$(ZLIB)")
+               ;; Don't try to build the bundled libs
+               (("\\$\\(MAKE\\).*") ""))
+             (substitute* '("FastaIndex.cpp"
+                            "FastaIndex.h")
+               (("#include \"faidx.h\"")
+                "#include <samtools/faidx.h>"))
+             (substitute* "bamfastq.cpp"
+               (("#include \"BamReader.h\"")
+                "#include <bamtools/api/BamReader.h>"))
+             #t))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (for-each
+                (lambda (file) (install-file file bin))
+                '("clustermatepairs"
+                  "setcover"
+                  "calccov"
+                  "estislands"
+                  "dosplitalign"
+                  "evalsplitalign"
+                  "localalign"
+                  "splitseq"
+                  "matealign"
+                  "bamfastq")))
+             #t)))))
+    (inputs
+     `(("zlib" ,zlib)
+       ("boost" ,boost)
+       ("bamtools" ,bamtools-2.0)
+       ("samtools" ,samtools-0)))
+    (home-page "https://bitbucket.org/dranew/defuse")
+    (synopsis "Gene fusion discovery using RNA-Seq data")
+    (description "deFuse is a software package for gene fusion
+discovery using RNA-Seq data.  The software uses clusters of
+discordant paired end alignments to inform a split read alignment
+analysis for finding fusion boundaries.  The software also employs a
+number of heuristic filters in an attempt to reduce the number of
+false positives and produces a fully annotated output for each
+predicted fusion.
+
+This package provides only the binaries from the \"tools\" directory,
+not the pipeline scripts.")
+    (license (nonfree:non-free "file://LICENSE.md"))))
