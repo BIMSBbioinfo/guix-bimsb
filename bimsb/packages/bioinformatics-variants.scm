@@ -99,21 +99,25 @@
         (base32
          "16js559vg13zz7rxsj4kz2l96gkly8kdk8wgj9jhrqwgdh7jq9iv"))))
     (arguments
-     (substitute-keyword-arguments `(#:modules ((guix build gnu-build-system)
-                                                (guix build utils)
-                                                (srfi srfi-1)
-                                                (srfi srfi-26))
-                                               ,@(package-arguments samtools))
-       ((#:tests? tests) #f) ;no "check" target
-       ((#:phases phases)
-        `(alist-replace
-          'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((bin (string-append
-                        (assoc-ref outputs "out") "/bin")))
-            (mkdir-p bin)
-            (copy-file "samtools" (string-append bin "/samtools-" ,version))))
-          (alist-delete 'patch-tests ,phases)))))))
+     `(#:tests? #f ;no "check" target
+       ,@(substitute-keyword-arguments `(#:modules ((guix build gnu-build-system)
+                                                    (guix build utils)
+                                                    (srfi srfi-1)
+                                                    (srfi srfi-26))
+                                         ,@(package-arguments samtools))
+           ((#:make-flags flags)
+            `(cons "LIBCURSES=-lncurses" ,flags))
+           ((#:phases phases)
+            `(modify-phases ,phases
+               (delete 'patch-tests)
+               (delete 'configure)
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((bin (string-append
+                               (assoc-ref outputs "out") "/bin")))
+                     (mkdir-p bin)
+                     (copy-file "samtools" (string-append bin "/samtools-" ,version)))
+                   #t)))))))))
 
 ;; Fixed version of ParDRe for Harm.
 (define-public pardre/fixed
