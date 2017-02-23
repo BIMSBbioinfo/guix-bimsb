@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2016, 2017 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -26,7 +26,8 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages bioinformatics)
-  #:use-module (gnu packages statistics))
+  #:use-module (gnu packages statistics)
+  #:use-module (gnu packages serialization))
 
 ;; A different version of MACS2 for Rebecca
 (define-public macs/rebecca
@@ -152,6 +153,40 @@
      ;; We need to disable tests because we don't seem to have
      ;; getopts.pl.
      `(#:tests? #f))))
+
+(define-public bamtools-2.0
+  (package (inherit bamtools)
+    (version "2.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/pezmaster31/bamtools/"
+                                  "archive/v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1s95gjhnlfd91mr692xp14gmirfwq55dsj1jir9fa06m1lk4iw1n"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "src/third_party/")
+                  (substitute* "src/CMakeLists.txt"
+                    (("add_subdirectory \\(third_party\\)") ""))
+                  (substitute* "src/toolkit/bamtools_filter.cpp"
+                    (("jsoncpp/json.h") "json/json.h"))
+                  #t))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments bamtools)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'add-install-target-for-utils-library
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* "src/utils/CMakeLists.txt"
+                 (("target_link_libraries.*" line)
+                  (string-append line "\ninstall(TARGETS BamTools-utils \
+LIBRARY DESTINATION \"lib/bamtools\")")))
+               #t))))))
+    (inputs
+     `(("jsoncpp" ,jsoncpp)
+       ,@(package-inputs bamtools)))))
 
 (define-public r-3.3.1
   (package (inherit r)
