@@ -93,7 +93,7 @@
      (origin
        (method url-fetch)
        (uri
-        (string-append "mirror://sourceforge/samtools/"
+        (string-append "mirror://sourceforge/samtools/samtools/"
                        version "/samtools-" version ".tar.bz2"))
        (sha256
         (base32
