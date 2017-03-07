@@ -2412,3 +2412,24 @@ package.  This package implements a parametric bootstrap test and a
 Kenward Roger modification of F-tests for linear mixed effects models
 and a parametric bootstrap test for generalized linear mixed models.")
     (license license:gpl2+)))
+
+(define-public r-matrixmodels
+  (package
+    (name "r-matrixmodels")
+    (version "0.4-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "MatrixModels" version))
+       (sha256
+        (base32
+         "0cyfvhci2p1vr2x52ymkyqqs63x1qchn856dh2j94yb93r08x1zy"))))
+    (properties `((upstream-name . "MatrixModels")))
+    (build-system r-build-system)
+    (home-page "http://Matrix.R-forge.R-project.org/")
+    (synopsis "Modelling with sparse and dense matrices")
+    (description
+     "This package provides tools for modelling with sparse and dense
+@code{Matrix} matrices, using modular prediction and response module
+classes.")
+    (license license:gpl2+)))
