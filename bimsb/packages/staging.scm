@@ -2286,3 +2286,26 @@ providing a common interface for a number of different optimization
 routines available online as well as original implementations of
 various other algorithms.")
     (license license:lgpl2.1+)))
+
+(define-public r-nloptr
+  (package
+    (name "r-nloptr")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nloptr" version))
+       (sha256
+        (base32
+         "1cypz91z28vhvwq2rzqjrbdc6a2lvfr2g16vid2sax618q6ai089"))))
+    (build-system r-build-system)
+    (inputs
+     `(("nlopt" ,nlopt)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (home-page "http://cran.r-project.org/web/packages/nloptr")
+    (synopsis "R interface to optimization library NLopt")
+    (description
+     "The nloptr package is an R interface to the NLopt nonlinear
+optimization library.")
+    (license license:lgpl3)))
