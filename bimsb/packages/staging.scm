@@ -2177,3 +2177,24 @@ working with SAM and BAM files.  Current parallelised functionality is
 an important subset of samtools functionality, including view, index,
 sort, markdup, and depth.")
     (license license:gpl2+)))
+
+(define-public r-rook
+  (package
+    (name "r-rook")
+    (version "1.1-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Rook" version))
+       (sha256
+        (base32
+         "00s9a0kr9rwxvlq433daxjk4ji8m0w60hjdprf502msw9kxfrx00"))))
+    (properties `((upstream-name . "Rook")))
+    (build-system r-build-system)
+    (propagated-inputs `(("r-brew" ,r-brew)))
+    (home-page "http://cran.r-project.org/web/packages/Rook")
+    (synopsis "Web server interface for R")
+    (description
+     "This package contains the Rook specification and convenience
+software for building and running Rook applications.")
+    (license license:gpl2)))
