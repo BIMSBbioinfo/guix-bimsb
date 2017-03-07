@@ -2337,3 +2337,27 @@ and solutions of linear systems.")
     ;; This package bundles the header files of a version of Eigen,
     ;; which is licensed under MPLv2.
     (license license:gpl2+)))
+
+(define-public r-minqa
+  (package
+    (name "r-minqa")
+    (version "1.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "minqa" version))
+       (sha256
+        (base32
+         "036drja6xz7awja9iwb76x91415p26fb0jmg7y7v0p65m6j978fg"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-rcpp" ,r-rcpp)))
+    (native-inputs
+     `(("gfortran" ,gfortran)))
+    (home-page "http://optimizer.r-forge.r-project.org")
+    (synopsis "Optimization algorithms by quadratic approximation")
+    (description
+     "This package implements derivative-free optimization algorithms
+by quadratic approximation based on an interface to Fortran
+implementations by M.J.D. Powell.")
+    (license license:gpl2)))
