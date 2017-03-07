@@ -2565,3 +2565,28 @@ is supported.")
      "This package provides a collection of tools to deal with
 statistical models.")
     (license license:gpl2)))
+
+(define-public r-flexmix
+  (package
+    (name "r-flexmix")
+    (version "2.3-13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "flexmix" version))
+       (sha256
+        (base32
+         "1i205yw3kkxs27gqcs6zx0c2mh16p332a2p06wq6fdzb20bazg3z"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-modeltools" ,r-modeltools)))
+    (home-page "http://cran.r-project.org/web/packages/flexmix")
+    (synopsis "Flexible mixture modeling")
+    (description
+     "FlexMix implements a general framework for finite mixtures of
+regression models using the EM algorithm.  FlexMix provides the E-step
+and all data handling, while the M-step can be supplied by the user to
+easily define new models.  Existing drivers implement mixtures of
+standard linear models, generalized linear models and model-based
+clustering.")
+    (license license:gpl2+)))
