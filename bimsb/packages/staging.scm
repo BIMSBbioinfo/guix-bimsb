@@ -2263,3 +2263,26 @@ confidence interval calculation and to distill pertinent information
 from a potentially complex object; primarily used in common with the
 packages extRemes and SpatialVx.")
     (license license:gpl2+)))
+
+(define-public nlopt
+  (package
+    (name "nlopt")
+    (version "2.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://ab-initio.mit.edu/nlopt/"
+                                  "nlopt-" version ".tar.gz"))
+              (sha256
+               (base32
+                "12cfkkhcdf4zmb6h7y6qvvdvqjs2xf9sjpa3rl3bq76px4yn76c0"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "--enable-shared")))
+    (home-page "http://ab-initio.mit.edu/wiki/index.php/NLopt")
+    (synopsis "Library for nonlinear optimization")
+    (description "NLopt is a library for nonlinear optimization,
+providing a common interface for a number of different optimization
+routines available online as well as original implementations of
+various other algorithms.")
+    (license license:lgpl2.1+)))
