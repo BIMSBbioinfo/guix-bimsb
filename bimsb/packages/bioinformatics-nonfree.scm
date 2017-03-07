@@ -40,6 +40,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
@@ -1232,3 +1233,54 @@ predicted fusion.
 This package provides only the binaries from the \"tools\" directory,
 not the pipeline scripts.")
     (license (nonfree:non-free "file://LICENSE.md"))))
+
+(define-public r-scde
+  (package
+    (name "r-scde")
+    (version "1.99.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/hms-dbmi/scde/"
+                                  "archive/" version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ykvmnrjqiq5p9hfr568ndfx46fqdsi5jjp0i6s098y5i27455xg"))))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'link-against-armadillo
+           (lambda _
+             (substitute* "src/Makevars"
+               (("PKG_LIBS =" prefix)
+                (string-append prefix "-larmadillo"))))))))
+    (propagated-inputs
+     `(("r-rcpp" ,r-rcpp)
+       ("r-rcpparmadillo" ,r-rcpparmadillo)
+       ("r-mgcv" ,r-mgcv)
+       ("r-rook" ,r-rook)
+       ("r-rjson" ,r-rjson)
+       ("r-cairo" ,r-cairo)
+       ("r-rcolorbrewer" ,r-rcolorbrewer)
+       ("r-edger" ,r-edger)
+       ("r-quantreg" ,r-quantreg)
+       ("r-nnet" ,r-nnet)
+       ("r-rmtstat" ,r-rmtstat)
+       ("r-extremes" ,r-extremes)
+       ("r-pcamethods" ,r-pcamethods)
+       ("r-biocparallel" ,r-biocparallel)
+       ("r-flexmix" ,r-flexmix)))
+    (home-page "http://hms-dbmi.github.io/scde/")
+    (synopsis "R package for analyzing single-cell RNA-seq data")
+    (description "The SCDE package implements a set of statistical
+methods for analyzing single-cell RNA-seq data.  SCDE fits individual
+error models for single-cell RNA-seq measurements.  These models can
+then be used for assessment of differential expression between groups
+of cells, as well as other types of analysis.  The SCDE package also
+contains the pagoda framework which applies pathway and gene set
+overdispersion analysis to identify aspects of transcriptional
+heterogeneity among single cells.")
+    ;; TODO: it's not clear if this is true.  See
+    ;; https://github.com/hms-dbmi/scde/issues/38
+    (license license:gpl2)))
