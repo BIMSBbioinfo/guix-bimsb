@@ -2388,3 +2388,27 @@ using S4 classes and methods.  The core computational algorithms are
 implemented using the @code{Eigen} C++ library for numerical linear
 algebra and @code{RcppEigen} \"glue\".")
     (license license:gpl2+)))
+
+(define-public r-pbkrtest
+  (package
+    (name "r-pbkrtest")
+    (version "0.4-6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pbkrtest" version))
+       (sha256
+        (base32
+         "00cw18q7wvddzjrbxz917wkix6r7672vi2wmsp4gwgzady8vha4x"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-lme4" ,r-lme4)))
+    (home-page "http://people.math.aau.dk/~sorenh/software/pbkrtest/")
+    (synopsis "Parametric bootstrap and methods for mixed model comparison")
+    (description
+     "This package provides tools for mixed effects models.
+Attention is on mixed effects models as implemented in the @code{lme4}
+package.  This package implements a parametric bootstrap test and a
+Kenward Roger modification of F-tests for linear mixed effects models
+and a parametric bootstrap test for generalized linear mixed models.")
+    (license license:gpl2+)))
