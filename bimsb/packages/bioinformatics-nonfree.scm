@@ -499,14 +499,15 @@ data.")
 (define-public meme
   (package
     (name "meme")
-    (version "4.11.0")
+    (version "4.11.3_1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://meme-suite.org/meme-software/"
-                                  version "/meme_" version ".tar.gz"))
+                                  (car (string-split version #\_))
+                                  "/meme_" version ".tar.gz"))
               (sha256
                (base32
-                "0zr3gvz4k30ggx0wqrbxdrr446vcc1v8q25xnjyjbvqn90gq9i2x"))))
+                "08df4wgiz1baq3749slpmr7df0hg3q4i3cdvap97xw063kx2d9gc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -573,6 +574,7 @@ data.")
               #t))))))
     (inputs
      `(("perl" ,perl)
+       ("perl-file-which" ,perl-file-which)
        ("perl-html-parser" ,perl-html-parser)
        ("perl-html-template" ,perl-html-template)
        ("perl-xml-simple" ,perl-xml-simple)
