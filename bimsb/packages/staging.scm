@@ -2537,3 +2537,64 @@ is supported.")
      "This package provides a collection of tools to deal with
 statistical models.")
     (license license:gpl2)))
+
+(define-public r-misha
+  (package
+    (name "r-misha")
+    (version "3.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.wisdom.weizmann.ac.il/~aviezerl/"
+                           "gpatterns/misha_" version ".tar.gz"))
+       (sha256
+        (base32
+         "1df4i0cisqj3szg08didmzk99awgvzjmzi55kasji5fw21z8qan6"))
+       ;; Delete bundled executable.
+       (snippet
+        '(begin
+           (delete-file "exec/bigWigToWig") #t))))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'do-not-use-bundled-bigWigToWig
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "R/misha.R"
+               (("get\\(\".GLIBDIR\"\\), \"/exec/bigWigToWig")
+                (string-append "\""
+                               (assoc-ref inputs "kentutils")
+                               "/bin/bigWigToWig")))
+             #t))
+         (add-after 'unpack 'fix-isnan-error
+           (lambda _
+             (substitute* '("src/IncrementalWilcox.cpp"
+                            "src/BinFinder.h"
+                            "src/GenomeTrackImportWig.cpp"
+                            "src/GenomeTrackSparse.h"
+                            "src/GenomeTrackSmooth.cpp"
+                            "src/GenomeTrackPartition.cpp"
+                            "src/GenomeTrackArrays.cpp"
+                            "src/TrackExpressionVars.cpp"
+                            "src/GenomeTrackWilcox.cpp"
+                            "src/GenomeTrackSegmentation.cpp"
+                            "src/GTrackLiftover.cpp"
+                            "src/rdbutils.h"
+                            "src/GenomeTrackArrayImport.cpp"
+                            "src/GenomeTrackFixedBin.cpp"
+                            "src/GenomeTrackSummary.cpp"
+                            "src/BinsManager.h"
+                            "src/GenomeTrackQuantiles.cpp"
+                            "src/GenomeTrackArrays.h"
+                            "src/rdbinterval.cpp"
+                            "src/GenomeTrackBinnedTransform.cpp")
+               (("#define isnan ::isnan")
+                "#define isnan std::isnan"))
+             #t)))))
+    (inputs
+     `(("kentutils" ,kentutils)))
+    (home-page "http://www.wisdom.weizmann.ac.il")
+    (synopsis "Toolkit for analysis of genomic data")
+    (description "This package is intended to help users to
+efficiently analyze genomic data resulting from various experiments.")
+    (license license:gpl2)))
