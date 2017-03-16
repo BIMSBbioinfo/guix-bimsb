@@ -2436,34 +2436,6 @@ and a parametric bootstrap test for generalized linear mixed models.")
 classes.")
     (license license:gpl2+)))
 
-(define-public r-quantreg
-  (package
-    (name "r-quantreg")
-    (version "5.29")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "quantreg" version))
-       (sha256
-        (base32
-         "098gy8xv9kcl5y0cm93b8chr5sm6crrdxi20bkx9lmwmybl3himv"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-matrixmodels" ,r-matrixmodels)
-       ("r-sparsem" ,r-sparsem)))
-    (native-inputs
-     `(("gfortran" ,gfortran)))
-    (home-page "http://www.r-project.org")
-    (synopsis "Methods for quantile regression")
-    (description
-     "This package provides estimation and inference methods for
-models of conditional quantiles: linear and nonlinear parametric and
-non-parametric (total variation penalized) models for conditional
-quantiles of a univariate response and several methods for handling
-censored survival data.  Portfolio selection methods based on expected
-shortfall risk are also included.")
-    (license license:gpl2+)))
-
 (define-public r-car
   (package
     (name "r-car")
