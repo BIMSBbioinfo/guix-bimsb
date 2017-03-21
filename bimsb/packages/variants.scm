@@ -27,11 +27,16 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages databases)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages statistics)
-  #:use-module (gnu packages shells))
+  #:use-module (gnu packages shells)
+  #:use-module (gnu packages wxwidgets))
 
 ;; An older version of Perl is required for Bcl2Fastq version 1.x
 (define-public perl-5.14
@@ -305,6 +310,37 @@ applicable."
          (replace 'install
            (lambda* (#:key outputs make-flags #:allow-other-keys)
              (zero? (apply system* "./bjam" "install" make-flags)))))))))
+
+;; Guix commit 6f9ba4c91c096a2fb95da111be0657d99ef2b683 removed this
+;; for security reasons.  However, rapidstorm from staging depends on
+;; this version.
+(define-public wxwidgets-2
+  (package
+    (inherit wxwidgets)
+    (version "2.8.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/wxWidgets/wxWidgets/"
+                           "releases/download/v" version
+                           "/wxGTK-" version ".tar.gz"))
+       (sha256
+        (base32 "1gjs9vfga60mk4j4ngiwsk9h6c7j22pw26m3asxr1jwvqbr8kkqk"))))
+    (inputs
+     `(("gtk" ,gtk+-2)
+       ("libjpeg" ,libjpeg)
+       ("libtiff" ,libtiff)
+       ("libmspack" ,libmspack)
+       ("sdl" ,sdl)
+       ("unixodbc" ,unixodbc)))
+    (arguments
+     `(#:configure-flags
+       '("--enable-unicode" "--with-regex=sys" "--with-sdl")
+       #:make-flags
+       (list (string-append "LDFLAGS=-Wl,-rpath="
+                            (assoc-ref %outputs "out") "/lib"))
+       ;; No 'check' target.
+       #:tests? #f))))
 
 (define-public rsem-latest
   (package (inherit rsem)
