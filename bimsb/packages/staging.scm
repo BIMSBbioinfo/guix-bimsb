@@ -2605,3 +2605,22 @@ classification, regression and information measures are implemented.")
 calculation of auto- and cross-proximities, along with implementations
 of the most popular ones.")
     (license license:gpl2)))
+
+(define-public r-scatterplot3d
+  (package
+    (name "r-scatterplot3d")
+    (version "0.3-38")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "scatterplot3d" version))
+       (sha256
+        (base32
+         "1mw1v725cdq24lfygjjmx3vmxzr2zpd332v0lham7g0p4r7lc8pb"))))
+    (build-system r-build-system)
+    (home-page "http://cran.r-project.org/web/packages/scatterplot3d")
+    (synopsis "3D scatter plot")
+    (description
+     "This package provides tools to plot a three dimensional (3D)
+point cloud.")
+    (license license:gpl2)))
