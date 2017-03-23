@@ -2421,3 +2421,29 @@ analysis.")
     (description "This package is intended to help users to
 efficiently analyze genomic data resulting from various experiments.")
     (license license:gpl2)))
+
+(define-public r-lmtest
+  (package
+    (name "r-lmtest")
+    (version "0.9-35")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lmtest" version))
+       (sha256
+        (base32
+         "107br1l7p52wxvazs031f4h5ryply97qywg9dzrkw4ydnvqq4j9g"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-zoo" ,r-zoo)))
+    (native-inputs
+     `(("gfortran" ,gfortran)))
+    (home-page "http://cran.r-project.org/web/packages/lmtest")
+    (synopsis "Testing linear regression models")
+    (description
+     "This package provides a collection of tests, data sets, and
+examples for diagnostic checking in linear regression models.
+Furthermore, some generic tools for inference in parametric models are
+provided.")
+    ;; Either version is okay
+    (license (list license:gpl2 license:gpl3))))
