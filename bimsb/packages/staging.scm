@@ -2336,29 +2336,6 @@ by quadratic approximation based on an interface to Fortran
 implementations by M.J.D. Powell.")
     (license license:gpl2)))
 
-(define-public r-car
-  (package
-    (name "r-car")
-    (version "2.1-4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "car" version))
-       (sha256
-        (base32
-         "0a6v7rsd1xsdyapnfqy37m7c4kx9wslkzsizc9k0lmnba0bwyfgx"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-pbkrtest" ,r-pbkrtest)
-       ("r-quantreg" ,r-quantreg)))
-    (home-page "https://r-forge.r-project.org/projects/car/")
-    (synopsis "Supporting code for \"An R Companion to Applied Regression\"")
-    (description
-     "This package provides functions and datasets to accompany J. Fox and S. Weisberg,
-\"An R Companion to Applied Regression\", Second Edition, Sage,
-2011.")
-    (license license:gpl2+)))
-
 (define-public r-extremes
   (package
     (name "r-extremes")
