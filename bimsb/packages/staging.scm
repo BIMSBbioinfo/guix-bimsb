@@ -2312,34 +2312,6 @@ various other algorithms.")
 optimization library.")
     (license license:lgpl3)))
 
-(define-public r-rcppeigen
-  (package
-    (name "r-rcppeigen")
-    (version "0.3.2.9.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "RcppEigen" version))
-        (sha256
-          (base32
-            "0fy9kr03160f1ywzff3p380s8a59jz7d2d0rggb14g2y0slzpbr5"))))
-    (properties `((upstream-name . "RcppEigen")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-rcpp" ,r-rcpp)))
-    (home-page "http://eigen.tuxfamily.org")
-    (synopsis "Rcpp integration for the Eigen linear algebra library")
-    (description
-     "This package provides an R interface for the linear algebra
-library Eigen.  This is achieved using Rcpp. 'Eigen' is a C++ template
-library for linear algebra: matrices, vectors, numerical solvers and
-related algorithms.  It supports dense and sparse matrices on integer,
-floating point and complex numbers, decompositions of such matrices,
-and solutions of linear systems.")
-    ;; This package bundles the header files of a version of Eigen,
-    ;; which is licensed under MPLv2.
-    (license license:gpl2+)))
-
 (define-public r-minqa
   (package
     (name "r-minqa")
