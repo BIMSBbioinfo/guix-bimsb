@@ -2361,25 +2361,6 @@ implementations by M.J.D. Powell.")
 analysis.")
     (license license:gpl2+)))
 
-(define-public r-modeltools
-  (package
-    (name "r-modeltools")
-    (version "0.2-21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "modeltools" version))
-       (sha256
-        (base32
-         "0ynds453xprxv0jqqzi3blnv5w6vrdww9pvd1sq4lrr5ar3k3cq7"))))
-    (build-system r-build-system)
-    (home-page "http://cran.r-project.org/web/packages/modeltools")
-    (synopsis "Tools and classes for statistical models")
-    (description
-     "This package provides a collection of tools to deal with
-statistical models.")
-    (license license:gpl2)))
-
 (define-public r-misha
   (package
     (name "r-misha")
