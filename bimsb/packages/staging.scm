@@ -2498,3 +2498,27 @@ The package was package was originally inspired by the book
 main support package for a new book, \"Discrete Data Analysis with R\"
 by Michael Friendly and David Meyer (2015).")
     (license license:gpl2)))
+
+(define-public r-sp
+  (package
+    (name "r-sp")
+    (version "1.2-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sp" version))
+       (sha256
+        (base32
+         "0crba3j00mb2xv2yk60rpa57gn97xq4ql3a6p9cjzqjxzv2cknk2"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-lattice" ,r-lattice)))
+    (home-page "http://cran.r-project.org/web/packages/sp")
+    (synopsis "Classes and methods for spatial data")
+    (description
+     "This package provides classes and methods for spatial data; the
+classes document where the spatial location information resides, for
+2D or 3D data.  Utility functions are provided, e.g.  for plotting
+data as maps, spatial selection, as well as methods for retrieving
+coordinates, for subsetting, print, summary, etc.")
+    (license license:gpl2+)))
