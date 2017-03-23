@@ -2697,3 +2697,36 @@ numerical data, commencing with a port of the Matlab gaussian window
 smoothing function.  In addition, several functions typically used in
 smoothing of financial data are included.")
     (license license:gpl2)))
+
+(define-public r-destiny
+  (package
+    (name "r-destiny")
+    (version "2.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "destiny" version))
+       (sha256
+        (base32
+         "18rf73c65ni0769a3x00hryrvmz1bkdskm8x45lwbbssraaj8ffk"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biobase" ,r-biobase)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-fnn" ,r-fnn)
+       ("r-hmisc" ,r-hmisc)
+       ("r-igraph" ,r-igraph)
+       ("r-matrix" ,r-matrix)
+       ("r-proxy" ,r-proxy)
+       ("r-rcpp" ,r-rcpp)
+       ("r-rcppeigen" ,r-rcppeigen)
+       ("r-scales" ,r-scales)
+       ("r-scatterplot3d" ,r-scatterplot3d)
+       ("r-smoother" ,r-smoother)
+       ("r-vim" ,r-vim)))
+    (home-page "http://bioconductor.org/packages/destiny")
+    (synopsis "Create and plot diffusion maps")
+    (description "This package provides tools to create and plot
+diffusion maps.")
+    ;; Any version of the GPL
+    (license license:gpl3+)))
