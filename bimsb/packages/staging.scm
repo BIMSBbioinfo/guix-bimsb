@@ -2585,3 +2585,23 @@ classification, regression and information measures are implemented.")
     ;; The DESCRIPTION file erroneously states that GPL version 2.1 or
     ;; later can be used.
     (license license:gpl2+)))
+
+(define-public r-proxy
+  (package
+    (name "r-proxy")
+    (version "0.4-17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "proxy" version))
+       (sha256
+        (base32
+         "0bg1fn96qrj8whmnl7c3gv244ksm2ykxxsd0zrmw4lb6465pizl2"))))
+    (build-system r-build-system)
+    (home-page "http://cran.r-project.org/web/packages/proxy")
+    (synopsis "Distance and Similarity Measures")
+    (description
+     "This package provides an extensible framework for the efficient
+calculation of auto- and cross-proximities, along with implementations
+of the most popular ones.")
+    (license license:gpl2)))
