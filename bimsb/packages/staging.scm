@@ -2336,33 +2336,6 @@ by quadratic approximation based on an interface to Fortran
 implementations by M.J.D. Powell.")
     (license license:gpl2)))
 
-(define-public r-lme4
-  (package
-    (name "r-lme4")
-    (version "1.1-12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "lme4" version))
-       (sha256
-        (base32
-         "0j60l5kgx1wvw2wm3jwfqwi63hammaq8gfcxzwa4h552likvaxi9"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-minqa" ,r-minqa)
-       ("r-nloptr" ,r-nloptr)
-       ("r-rcpp" ,r-rcpp)
-       ("r-rcppeigen" ,r-rcppeigen)))
-    (home-page "http://cran.r-project.org/web/packages/lme4")
-    (synopsis "Linear mixed-effects models")
-    (description
-     "This package provides linear and generalized linear
-mixed-effects models.  The models and their components are represented
-using S4 classes and methods.  The core computational algorithms are
-implemented using the @code{Eigen} C++ library for numerical linear
-algebra and @code{RcppEigen} \"glue\".")
-    (license license:gpl2+)))
-
 (define-public r-pbkrtest
   (package
     (name "r-pbkrtest")
