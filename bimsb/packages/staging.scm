@@ -2624,3 +2624,28 @@ of the most popular ones.")
      "This package provides tools to plot a three dimensional (3D)
 point cloud.")
     (license license:gpl2)))
+
+(define-public r-xts
+  (package
+    (name "r-xts")
+    (version "0.9-7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "xts" version))
+       (sha256
+        (base32
+         "163hzcnxrdb4lbsnwwv7qa00h4qlg4jm289acgvbg4jbiywpq7zi"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-zoo" ,r-zoo)))
+    (native-inputs
+     `(("gfortran" ,gfortran)))
+    (home-page "http://r-forge.r-project.org/projects/xts/")
+    (synopsis "Extensible time series")
+    (description
+     "This package provides for uniform handling of R's different
+time-based data classes by extending zoo, maximizing native format
+information preservation and allowing for user level customization and
+extension, while simplifying cross-class interoperability.")
+    (license license:gpl2+)))
