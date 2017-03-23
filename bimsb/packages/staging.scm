@@ -2522,3 +2522,43 @@ classes document where the spatial location information resides, for
 data as maps, spatial selection, as well as methods for retrieving
 coordinates, for subsetting, print, summary, etc.")
     (license license:gpl2+)))
+
+(define-public r-vim
+  (package
+    (name "r-vim")
+    (version "4.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "VIM" version))
+       (sha256
+        (base32
+         "1yl6bsdigwjfkdn5mbfrw10ip1xr7scw1mvykdwgzkyfnlb8z86w"))))
+    (properties `((upstream-name . "VIM")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-car" ,r-car)
+       ("r-colorspace" ,r-colorspace)
+       ("r-data-table" ,r-data-table)
+       ("r-e1071" ,r-e1071)
+       ("r-laeken" ,r-laeken)
+       ("r-mass" ,r-mass)
+       ("r-nnet" ,r-nnet)
+       ("r-rcpp" ,r-rcpp)
+       ("r-robustbase" ,r-robustbase)
+       ("r-sp" ,r-sp)
+       ("r-vcd" ,r-vcd)))
+    (home-page "https://github.com/alexkowa/VIM")
+    (synopsis "Visualization and imputation of missing values")
+    (description
+     "This package provides tools for the visualization of missing
+and/or imputed values are introduced, which can be used for exploring
+the data and the structure of the missing and/or imputed values.
+Depending on this structure of the missing values, the corresponding
+methods may help to identify the mechanism generating the missing
+values and allows to explore the data including missing values.  In
+addition, the quality of imputation can be visually explored using
+various univariate, bivariate, multiple and multivariate plot methods.
+A graphical user interface available in the separate package VIMGUI
+allows an easy handling of the implemented plot methods.")
+    (license license:gpl2+)))
