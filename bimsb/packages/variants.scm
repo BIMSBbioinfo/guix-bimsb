@@ -23,6 +23,7 @@
   #:use-module (guix download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages bioinformatics)
@@ -412,3 +413,40 @@ applicable."
        ("r" ,r)
        ("perl" ,perl)
        ("zlib" ,zlib)))))
+
+;; For Benedikt
+(define-public python-pysam-0.9
+  (package (inherit python-pysam)
+    (name "python-pysam")
+    (version "0.9.1.4")
+    (source (origin
+              (method url-fetch)
+              ;; Test data is missing on PyPi.
+              (uri (string-append
+                    "https://github.com/pysam-developers/pysam/archive/v"
+                    version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0y41ssbg6nvn2jgcbnrvkzblpjcwszaiv1rgyd8dwzjkrbfsgsmc"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Drop bundled htslib. TODO: Also remove samtools and bcftools.
+               '(delete-file-recursively "htslib"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+          (add-before 'build 'set-flags
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "HTSLIB_MODE" "external")
+              (setenv "HTSLIB_LIBRARY_DIR"
+                      (string-append (assoc-ref inputs "htslib") "/lib"))
+              (setenv "HTSLIB_INCLUDE_DIR"
+                      (string-append (assoc-ref inputs "htslib") "/include"))
+              (setenv "LDFLAGS" "-lncurses")
+              (setenv "CFLAGS" "-D_CURSES_LIB=1")
+              #t))
+          (delete 'check))))))
+
+(define-public python2-pysam-0.9
+  (package-with-python2 python-pysam-0.9))
