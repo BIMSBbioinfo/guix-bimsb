@@ -34,7 +34,9 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages databases)
@@ -2759,3 +2761,76 @@ diffusion maps.")
                                (install-file file cram))
                              (find-files "cram" "\\.h$"))
                    #t))))))))))
+
+(define-public pbbam
+  (let ((commit "2db9abe7d979b5642a97446b9f9601e387315585")
+        (revision "1"))
+    (package
+      (name "pbbam")
+      (version (string-append "0-" revision "." (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/PacificBiosciences/pbbam.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1z9p8zhf59pbrx63js64n35gmhy9gbihs1drvx04kh33p45aab6m"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:configure-flags
+         (list "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE"
+               "-DPacBioBAM_build_shared=ON"
+               "-DHTSLIB_LIBRARIES=-lhts"
+               (string-append "-DHTSLIB_INCLUDE_DIRS="
+                              (assoc-ref %build-inputs "pacbio-htslib")
+                              "/include")
+               (string-append "-DGTEST_SRC_DIR="
+                              (getcwd) "/source/"
+                              "googletest-release-"
+                              ,(package-version googletest)
+                              "/googletest"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'unpack-googletest
+             (lambda* (#:key inputs #:allow-other-keys)
+               (zero? (system* "tar" "xf"
+                               (assoc-ref inputs "googletest-source")))))
+           (add-after 'unpack 'patch-tests
+             (lambda _
+               (substitute* "tests/scripts/cram.py"
+                 (("/bin/sh") (which "bash")))
+               #t))
+           ;; The install target only installs the tests.
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out     (assoc-ref outputs "out"))
+                      (bin     (string-append out "/bin"))
+                      (lib     (string-append out "/lib"))
+                      (include (string-append out "/include")))
+                 (mkdir-p out)
+                 (copy-recursively "bin" bin)
+                 (copy-recursively "lib" lib)
+                 (copy-recursively "../source/include" include)
+                 #t)))
+           ;; Run tests after installation.  This is needed to make
+           ;; sure that the executable finds the libpbbam library.
+           (delete 'check)
+           (add-after 'install 'check
+             (assoc-ref %standard-phases 'check)))))
+      (inputs
+       `(("boost" ,boost)
+         ("pacbio-htslib" ,pacbio-htslib)
+         ("zlib" ,zlib)))
+      (native-inputs
+       `(("doxygen" ,doxygen)
+         ("python" ,python-2)
+         ("googletest-source" ,(package-source googletest))
+         ("patch" ,patch)))
+      (home-page "https://github.com/PacificBiosciences/pbbam")
+      (synopsis "BAM library for PacBio software")
+      (description "The pbbam software package provides components to
+create, query, and edit PacBio BAM files and associated indices.
+These components include a core C++ library, bindings for additional
+languages, and command-line utilities.")
+      (license license:bsd-3))))
