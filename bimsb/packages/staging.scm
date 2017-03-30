@@ -2731,3 +2731,31 @@ smoothing of financial data are included.")
 diffusion maps.")
     ;; Any version of the GPL
     (license license:gpl3+)))
+
+(define-public pacbio-htslib
+  (let ((commit "6b6c81388e699c0c0cf2d1f7fe59c5da60fb7b9a")
+        (revision "1"))
+    (package (inherit htslib-1.1)
+      (name "pacbio-htslib")
+      (version (string-append "1.1-" revision "." (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/PacificBiosciences/htslib.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1zynj7na8iypzzaryhpsczd2603facj8nskvfk6il0zcjrgn4rnj"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments htslib-1.1)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'install 'install-cram-headers
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let ((cram (string-append (assoc-ref outputs "out")
+                                            "/include/cram")))
+                   (mkdir-p cram)
+                   (for-each (lambda (file)
+                               (install-file file cram))
+                             (find-files "cram" "\\.h$"))
+                   #t))))))))))
