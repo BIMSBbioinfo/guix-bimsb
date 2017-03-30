@@ -488,3 +488,17 @@ applicable."
               (sha256
                (base32
                 "0gwj4mzrys5bs7r8h3fl7w2qfzwbvbby6qmgzj552di3hqc7j2pb"))))))
+
+(define-public htslib-1.2.1
+  (package (inherit htslib)
+    (name "htslib")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/samtools/htslib/"
+                                  "releases/download/"
+                                  version "/htslib-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "1c32ssscbnjwfw3dra140fq7riarp2x990qxybh34nr1p5r17nxx"))))))
