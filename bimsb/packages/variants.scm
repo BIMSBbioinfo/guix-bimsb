@@ -474,3 +474,17 @@ applicable."
              (substitute* "test/test.pl"
                (("/bin/bash") (which "bash")))
              #t)))))))
+
+;; Needed for pacbio-htslib
+(define-public htslib-1.1
+  (package (inherit htslib-1.0)
+    (name "htslib")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/samtools/htslib/"
+                                  "archive/" version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gwj4mzrys5bs7r8h3fl7w2qfzwbvbby6qmgzj552di3hqc7j2pb"))))))
