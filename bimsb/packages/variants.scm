@@ -450,3 +450,27 @@ applicable."
 
 (define-public python2-pysam-0.9
   (package-with-python2 python-pysam-0.9))
+
+(define-public htslib-1.0
+  (package (inherit htslib)
+    (name "htslib")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/samtools/htslib/"
+                                  "archive/" version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1a483cqlhs9k8gjdyb78jkrpilhz2qyyvgrgr8bhy11mpki8vflk"))))
+    (arguments
+     `(#:make-flags
+       (list (string-append "prefix=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             (substitute* "test/test.pl"
+               (("/bin/bash") (which "bash")))
+             #t)))))))
