@@ -2900,3 +2900,39 @@ higher accuracy than the original gkm-SVM.")
      "This package provides a Python module for reading raw fcs
 files.")
     (license license:expat)))
+
+;; python-magic already exists, so we need to give this a different
+;; name.
+(define-public python-biomagic
+  (package
+    (name "python-biomagic")
+    (version "0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/pkathail/magic/"
+                           "archive/" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "14v2ykxlc6yscj3s7bxgmbz7lc6pr2ab469w3qcxzh4lgvh3mq0m"))))
+    (build-system python-build-system)
+    ;; No tests included.
+    (arguments `(#:tests? #f))
+    (propagated-inputs
+     `(("python-numpy" ,python-numpy)
+       ("python-pandas" ,python-pandas)
+       ("python-scipy" ,python-scipy)
+       ("python-matplotlib" ,python-matplotlib)
+       ("python-seaborn" ,python-seaborn)
+       ("python-scikit-learn" ,python-scikit-learn)
+       ("python-networkx" ,python-networkx)
+       ("python-fcsparser" ,python-fcsparser)
+       ("python-statsmodels" ,python-statsmodels)))
+    (home-page "https://github.com/pkathail/magic")
+    (synopsis "Markov affinity-based graph imputation of cells")
+    (description "MAGIC is an interactive tool to impute missing
+values in single-cell sequencing data and to restore the structure of
+the data.  It also provides data pre-processing functionality such as
+dimensionality reduction and gene expression visualization.")
+    (license license:gpl2+)))
