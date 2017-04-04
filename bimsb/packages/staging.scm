@@ -2876,3 +2876,27 @@ much better scalability and provides further advanced gapped k-mer
 based kernel functions.  As a result, LS-GKM achieves considerably
 higher accuracy than the original gkm-SVM.")
       (license license:gpl3+))))
+
+(define-public python-fcsparser
+  (package
+    (name "python-fcsparser")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fcsparser" version ".tar.gz"))
+       (sha256
+        (base32
+         "0jgxny74ppy7va96szvh04nrzkvy866hygki3imivg9kb9pzjdm2"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-numpy" ,python-numpy)
+       ("python-pandas" ,python-pandas)))
+    (native-inputs
+     `(("python-setuptools" ,python-setuptools)))
+    (home-page "https://github.com/eyurtsev/fcsparser")
+    (synopsis "Tools for reading raw fcs files")
+    (description
+     "This package provides a Python module for reading raw fcs
+files.")
+    (license license:expat)))
