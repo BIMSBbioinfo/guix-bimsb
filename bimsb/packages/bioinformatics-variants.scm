@@ -211,3 +211,15 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
               (sha256
                (base32
                 "0k2i9qdd83g09fcpls2198q4ykxkii5skczb514gnx7mx4hsv56j"))))))
+
+(define-public r-devel
+  (package (inherit r-minimal)
+    (name "r-devel")
+    (version "2017-04-27_r72634")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cran/src/base-prerelease/"
+                                  "R-devel_" version ".tar.gz"))
+              (sha256
+               (base32
+                "02x5dqps8v31djr38s4akq8q3hk6xf8x5knk5454awyvjipkry2j"))))))
