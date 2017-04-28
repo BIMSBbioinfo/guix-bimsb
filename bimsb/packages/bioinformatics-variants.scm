@@ -189,7 +189,7 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
        ,@(package-inputs bamtools)))))
 
 (define-public r-3.3.1
-  (package (inherit r)
+  (package (inherit r-minimal)
     (version "3.3.1")
     (source (origin
               (method url-fetch)
@@ -201,7 +201,7 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                 "1qm9znh8akfy9fkzzi6f1vz2w1dd0chsr6qn7kw80lqzhgjrmi9x"))))))
 
 (define-public r-3.3.2
-  (package (inherit r)
+  (package (inherit r-minimal)
     (version "3.3.2")
     (source (origin
               (method url-fetch)
