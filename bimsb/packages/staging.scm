@@ -126,7 +126,7 @@ whose output can be displayed directly in the UCSC Genome Browser.")
 (define-public rstudio-server
   (package
     (name "rstudio-server")
-    (version "1.0.115")
+    (version "1.1.220")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -134,7 +134,7 @@ whose output can be displayed directly in the UCSC Genome Browser.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "09vmfpcp7gv78qjpzdq339zg8srlk7khdd5s62hqr5f0nf8aw2ai"))
+                "00aqkz392l754n9h6z23f4yd5z7s5bfj57c0v0c5zf0y828fiawq"))
               (file-name (string-append name "-" version ".tar.gz"))))
     (build-system cmake-build-system)
     (arguments
