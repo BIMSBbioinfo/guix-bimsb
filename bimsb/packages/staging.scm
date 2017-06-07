@@ -3441,3 +3441,35 @@ powerful Perl module @code{Getopt::Long} and with some adaptation for
 easier use in R.  It also provides a simple way for variable
 interpolation in R.")
     (license license:gpl2+)))
+
+(define-public r-complexheatmap
+  (package
+    (name "r-complexheatmap")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ComplexHeatmap" version))
+       (sha256
+        (base32
+         "0rz99swi2s2wqyfws4642xkd23dar2vapiw86xsjqcc845032p9x"))))
+    (properties
+     `((upstream-name . "ComplexHeatmap")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-circlize" ,r-circlize)
+       ("r-colorspace" ,r-colorspace)
+       ("r-dendextend" ,r-dendextend)
+       ("r-getoptlong" ,r-getoptlong)
+       ("r-globaloptions" ,r-globaloptions)
+       ("r-rcolorbrewer" ,r-rcolorbrewer)))
+    (home-page
+     "https://github.com/jokergoo/ComplexHeatmap")
+    (synopsis "Making Complex Heatmaps")
+    (description
+     "Complex heatmaps are efficient to visualize associations
+between different sources of data sets and reveal potential
+structures.  Here the ComplexHeatmap package provides a highly
+flexible way to arrange multiple heatmaps and supports self-defined
+annotation graphics.")
+    (license license:gpl2+)))
