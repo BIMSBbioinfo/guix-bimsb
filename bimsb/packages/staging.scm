@@ -1830,14 +1830,14 @@ AGAPS and AMB masks are \"active\" by default."  )
 (define-public r-genomicfiles
   (package
     (name "r-genomicfiles")
-    (version "1.10.3")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GenomicFiles" version))
        (sha256
         (base32
-         "03yqkl2yjdz999j1y7azcs16vg0vydrqs6sxcfkgn11fiwi6i3l2"))))
+         "07pd9vq3qigkh28mw33nicsy90ijsp01kcdgzfvnhzww5r32jfcd"))))
     (properties `((upstream-name . "GenomicFiles")))
     (build-system r-build-system)
     (propagated-inputs
