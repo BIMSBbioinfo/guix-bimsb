@@ -3109,3 +3109,28 @@ with R.  Automatic \"reactive\" binding between inputs and outputs and
 extensive prebuilt widgets make it possible to build beautiful,
 responsive, and powerful applications with minimal effort.")
     (license license:artistic2.0)))
+
+(define-public r-interactivedisplaybase
+  (package
+    (name "r-interactivedisplaybase")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "interactiveDisplayBase" version))
+       (sha256
+        (base32
+         "12f6ap4bl3h2iwwhg8i3r9a7yyd28d8i5lb3fj1vnfvjs762r7r7"))))
+    (properties
+     `((upstream-name . "interactiveDisplayBase")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biocgenerics" ,r-biocgenerics)
+       ("r-shiny" ,r-shiny)))
+    (home-page "http://bioconductor.org/packages/interactiveDisplayBase")
+    (synopsis "Base package for enabling shiny web displays of Bioconductor objects")
+    (description
+     "The interactiveDisplayBase package contains the the basic
+methods needed to generate interactive Shiny based display methods for
+Bioconductor objects.")
+    (license license:artistic2.0)))
