@@ -3956,3 +3956,30 @@ studies.")
 SNP association studies.  This extends the earlier snpMatrix package,
 allowing for uncertainty in genotypes.")
     (license license:gpl3)))
+
+(define-public r-org-hs-eg-db
+  (package
+    (name "r-org-hs-eg-db")
+    (version "3.4.1")
+    (source (origin
+              (method url-fetch)
+              ;; We cannot use bioconductor-uri here because this tarball is
+              ;; located under "data/annotation/" instead of "bioc/".
+              (uri (string-append "http://www.bioconductor.org/packages/"
+                                  "release/data/annotation/src/contrib/"
+                                  "org.Hs.eg.db_"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "001bkj40kcgf3w9g2xnbsz8qny0iynyh14mdwl3p07asjbqv71qg"))))
+    (properties
+     `((upstream-name . "org.Hs.eg.db")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-annotationdbi" ,r-annotationdbi)))
+    (home-page "http://bioconductor.org/packages/org.Hs.eg.db/")
+    (synopsis "Genome wide annotation for Human")
+    (description
+     "This package contains genome wide annotations for Human,
+primarily based on mapping using Entrez Gene identifiers.")
+    (license license:artistic2.0)))
