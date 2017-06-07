@@ -4016,3 +4016,33 @@ primarily based on mapping using Entrez Gene identifiers.")
      "This package contains the Homo.sapiens object to access data
 from several related annotation packages.")
     (license license:artistic2.0)))
+
+(define-public r-ldblock
+  (package
+    (name "r-ldblock")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ldblock" version))
+       (sha256
+        (base32
+         "1fr38vs0na6brfwzkppmq3z4n0gdrl9jxjih4w80gqp8672n2hrh"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-erma" ,r-erma)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicfiles" ,r-genomicfiles)
+       ("r-go-db" ,r-go-db)
+       ("r-homo-sapiens" ,r-homo-sapiens)
+       ("r-matrix" ,r-matrix)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-snpstats" ,r-snpstats)
+       ("r-variantannotation" ,r-variantannotation)))
+    (home-page
+     "http://bioconductor.org/packages/ldblock")
+    (synopsis "Data structures for linkage disequilibrium measures in populations")
+    (description
+     "This package defines data structures for linkage disequilibrium
+measures in populations.")
+    (license license:artistic2.0)))
