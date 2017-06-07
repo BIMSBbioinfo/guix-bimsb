@@ -3929,3 +3929,30 @@ toolkit (http://biit.cs.ut.ee/gprofiler/).")
      "This package provides infrastructure for eQTL, mQTL and similar
 studies.")
     (license license:artistic2.0)))
+
+(define-public r-snpstats
+  (package
+    (name "r-snpstats")
+    (version "1.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "snpStats" version))
+       (sha256
+        (base32
+         "1f8i8pj741h8539lqj508ji27p5ljghyvmdrh3qcfx5jwn9jq8bj"))))
+    (properties `((upstream-name . "snpStats")))
+    (build-system r-build-system)
+    (inputs `(("zlib" ,zlib)))
+    (propagated-inputs
+     `(("r-biocgenerics" ,r-biocgenerics)
+       ("r-matrix" ,r-matrix)
+       ("r-survival" ,r-survival)
+       ("r-zlibbioc" ,r-zlibbioc)))
+    (home-page "http://bioconductor.org/packages/snpStats")
+    (synopsis "SnpMatrix and XSnpMatrix classes and methods")
+    (description
+     "This package provides classes and statistical methods for large
+SNP association studies.  This extends the earlier snpMatrix package,
+allowing for uncertainty in genotypes.")
+    (license license:gpl3)))
