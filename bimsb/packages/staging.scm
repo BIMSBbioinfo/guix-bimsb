@@ -3695,3 +3695,48 @@ implement filters for manipulating Bioconductor annotation resources.
 The filters are used by ensembldb, Organism.dplyr, and other
 packages.")
     (license license:artistic2.0)))
+
+(define-public r-ensembldb
+  (package
+    (name "r-ensembldb")
+    (version "2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ensembldb" version))
+       (sha256
+        (base32
+         "1qmfg6qfr46nljjymirz3xkx2vcqcmdis0jzkg9r49jcb03lsvdw"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-annotationdbi" ,r-annotationdbi)
+       ("r-annotationfilter" ,r-annotationfilter)
+       ("r-annotationhub" ,r-annotationhub)
+       ("r-biobase" ,r-biobase)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-biostrings" ,r-biostrings)
+       ("r-curl" ,r-curl)
+       ("r-dbi" ,r-dbi)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicfeatures" ,r-genomicfeatures)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-iranges" ,r-iranges)
+       ("r-protgenerics" ,r-protgenerics)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-rsqlite" ,r-rsqlite)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-s4vectors" ,r-s4vectors)))
+    (home-page "https://github.com/jotsetung/ensembldb")
+    (synopsis "Utilities to create and use Ensembl-based annotation databases")
+    (description
+     "The package provides functions to create and use transcript
+centric annotation databases/packages.  The annotation for the
+databases are directly fetched from Ensembl using their Perl API.  The
+functionality and data is similar to that of the TxDb packages from
+the GenomicFeatures package, but, in addition to retrieve all
+gene/transcript models and annotations from the database, the
+ensembldb package provides also a filter framework allowing to
+retrieve annotations for specific entries like genes encoded on a
+chromosome region or transcript models of lincRNA genes.")
+    ;; No version specified
+    (license license:lgpl3+)))
