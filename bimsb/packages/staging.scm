@@ -3335,3 +3335,30 @@ display bitmap images stored in the PNG format.  It can read and write
 both files and in-memory raw vectors.")
     ;; Any of these GPL versions.
     (license (list license:gpl2 license:gpl3))))
+
+(define-public r-keggrest
+  (package
+    (name "r-keggrest")
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "KEGGREST" version))
+       (sha256
+        (base32
+         "00mbnsrh0xc6c9wm9szv55jyh1habxq6d448wk3bi2hizg60cdcw"))))
+    (properties `((upstream-name . "KEGGREST")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biostrings" ,r-biostrings)
+       ("r-httr" ,r-httr)
+       ("r-png" ,r-png)))
+    (home-page
+     "http://bioconductor.org/packages/KEGGREST")
+    (synopsis "Client-side REST access to KEGG")
+    (description
+     "This package provides a package that provides a client
+interface to the KEGG REST server.  Based on KEGGSOAP by J.  Zhang, R.
+Gentleman, and Marc Carlson, and KEGG (python package) by Aurelien
+Mazurie.")
+    (license license:artistic2.0)))
