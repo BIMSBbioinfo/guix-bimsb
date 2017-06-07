@@ -4147,3 +4147,53 @@ exploring the equilibrium status of a large set of diallelic markers:
 ternary plots with acceptance regions, log-ratio plots and Q-Q
 plots.")
     (license license:gpl2+)))
+
+(define-public r-gqtlstats
+  (package
+    (name "r-gqtlstats")
+    (version "1.8.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (bioconductor-uri "gQTLstats" version))
+        (sha256
+          (base32
+            "14zdgysd6c4jil7k699m5j4bfj6fdnwz8j05x2wq8r6sbz2pqkwp"))))
+    (properties `((upstream-name . "gQTLstats")))
+    (build-system r-build-system)
+    (propagated-inputs
+      `(("r-annotationdbi" ,r-annotationdbi)
+        ("r-batchjobs" ,r-batchjobs)
+        ("r-bbmisc" ,r-bbmisc)
+        ("r-beeswarm" ,r-beeswarm)
+        ("r-biobase" ,r-biobase)
+        ("r-biocgenerics" ,r-biocgenerics)
+        ("r-doparallel" ,r-doparallel)
+        ("r-dplyr" ,r-dplyr)
+        ("r-erma" ,r-erma)
+        ("r-ffbase" ,r-ffbase)
+        ("r-foreach" ,r-foreach)
+        ("r-genomeinfodb" ,r-genomeinfodb)
+        ("r-genomicfeatures" ,r-genomicfeatures)
+        ("r-genomicfiles" ,r-genomicfiles)
+        ("r-genomicranges" ,r-genomicranges)
+        ("r-ggplot2" ,r-ggplot2)
+        ("r-gqtlbase" ,r-gqtlbase)
+        ("r-hardyweinberg" ,r-hardyweinberg)
+        ("r-iranges" ,r-iranges)
+        ("r-ldblock" ,r-ldblock)
+        ("r-limma" ,r-limma)
+        ("r-mgcv" ,r-mgcv)
+        ("r-plotly" ,r-plotly)
+        ("r-reshape2" ,r-reshape2)
+        ("r-s4vectors" ,r-s4vectors)
+        ("r-shiny" ,r-shiny)
+        ("r-snpstats" ,r-snpstats)
+        ("r-summarizedexperiment" ,r-summarizedexperiment)
+        ("r-variantannotation" ,r-variantannotation)))
+    (home-page "http://bioconductor.org/packages/gQTLstats")
+    (synopsis "Computationally efficient analysis for eQTL and allied studies")
+    (description
+      "This package provides tools for the computationally efficient
+analysis of eQTL, mQTL, dsQTL, etc.")
+    (license license:artistic2.0)))
