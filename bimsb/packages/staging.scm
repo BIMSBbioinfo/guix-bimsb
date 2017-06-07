@@ -3077,3 +3077,35 @@ values in single-cell sequencing data and to restore the structure of
 the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
+
+;; TODO: bundles minified JavaScript!
+(define-public r-shiny
+  (package
+    (name "r-shiny")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/rstudio/shiny/"
+                           "archive/v" version ".tar.gz"))
+       (sha256
+        (base32
+         "0z2v2s4hd44mvzjn7r70549kdzkrrch9nxhp27r6x2cy6micizm3"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-httpuv" ,r-httpuv)
+       ("r-mime" ,r-mime)
+       ("r-jsonlite" ,r-jsonlite)
+       ("r-xtable" ,r-xtable)
+       ("r-digest" ,r-digest)
+       ("r-htmltools" ,r-htmltools)
+       ("r-r6" ,r-r6)
+       ("r-sourcetools" ,r-sourcetools)))
+    (home-page "http://shiny.rstudio.com")
+    (synopsis "Easy interactive web applications with R")
+    (description
+     "Makes it incredibly easy to build interactive web applications
+with R.  Automatic \"reactive\" binding between inputs and outputs and
+extensive prebuilt widgets make it possible to build beautiful,
+responsive, and powerful applications with minimal effort.")
+    (license license:artistic2.0)))
