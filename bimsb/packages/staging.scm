@@ -3134,3 +3134,38 @@ responsive, and powerful applications with minimal effort.")
 methods needed to generate interactive Shiny based display methods for
 Bioconductor objects.")
     (license license:artistic2.0)))
+
+(define-public r-annotationhub
+  (package
+    (name "r-annotationhub")
+    (version "2.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "AnnotationHub" version))
+       (sha256
+        (base32
+         "0hw5pqvhayllwnjlrb0cqx2m8157si7f52b838cfcnaklxmcz53f"))))
+    (properties `((upstream-name . "AnnotationHub")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-annotationdbi" ,r-annotationdbi)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-biocinstaller" ,r-biocinstaller)
+       ("r-httr" ,r-httr)
+       ("r-interactivedisplaybase" ,r-interactivedisplaybase)
+       ("r-rsqlite" ,r-rsqlite)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-yaml" ,r-yaml)))
+    (home-page "http://bioconductor.org/packages/AnnotationHub")
+    (synopsis "Client to access AnnotationHub resources")
+    (description
+     "This package provides a client for the Bioconductor
+AnnotationHub web resource.  The AnnotationHub web resource provides a
+central location where genomic files (e.g., VCF, bed, wig) and other
+resources from standard locations (e.g., UCSC, Ensembl) can be
+discovered.  The resource includes metadata about each resource, e.g.,
+a textual description, tags, and date of modification.  The client
+creates and manages a local cache of files retrieved by the user,
+helping with quick and reproducible access.")
+    (license license:artistic2.0)))
