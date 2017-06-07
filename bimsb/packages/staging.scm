@@ -3894,3 +3894,38 @@ gene identifier conversion and mapping homologous genes across related
 organisms via the g:Profiler
 toolkit (http://biit.cs.ut.ee/gprofiler/).")
     (license license:gpl2+)))
+
+(define-public r-gqtlbase
+  (package
+    (name "r-gqtlbase")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "gQTLBase" version))
+       (sha256
+        (base32
+         "1583w1nmm7rshrmz7m3clcvqxxfymj81x4lddywpr9pcp2dncm9c"))))
+    (properties `((upstream-name . "gQTLBase")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-batchjobs" ,r-batchjobs)
+       ("r-bbmisc" ,r-bbmisc)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-bit" ,r-bit)
+       ("r-doparallel" ,r-doparallel)
+       ("r-ff" ,r-ff)
+       ("r-ffbase" ,r-ffbase)
+       ("r-foreach" ,r-foreach)
+       ("r-genomicfiles" ,r-genomicfiles)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-summarizedexperiment" ,r-summarizedexperiment)))
+    (home-page
+     "http://bioconductor.org/packages/gQTLBase")
+    (synopsis "Infrastructure for eQTL, mQTL and similar studies")
+    (description
+     "This package provides infrastructure for eQTL, mQTL and similar
+studies.")
+    (license license:artistic2.0)))
