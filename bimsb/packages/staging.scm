@@ -3869,3 +3869,28 @@ High-level plots include sequence fragment length, edge-linked
 interval to data view, mismatch pileup, and several splicing
 summaries.")
     (license license:artistic2.0)))
+
+(define-public r-gprofiler
+  (package
+    (name "r-gprofiler")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gProfileR" version))
+       (sha256
+        (base32
+         "1qix15d0wa9nspdclcawml94mng4qmr2jciv7d24py315wfsvv8p"))))
+    (properties `((upstream-name . "gProfileR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-plyr" ,r-plyr)
+       ("r-rcurl" ,r-rcurl)))
+    (home-page "http://cran.r-project.org/web/packages/gProfileR")
+    (synopsis "Interface to the 'g:Profiler' Toolkit")
+    (description
+     "This package provides tools for functional enrichment analysis,
+gene identifier conversion and mapping homologous genes across related
+organisms via the g:Profiler
+toolkit (http://biit.cs.ut.ee/gprofiler/).")
+    (license license:gpl2+)))
