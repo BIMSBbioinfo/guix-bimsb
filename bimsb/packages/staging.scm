@@ -4046,3 +4046,35 @@ from several related annotation packages.")
      "This package defines data structures for linkage disequilibrium
 measures in populations.")
     (license license:artistic2.0)))
+
+(define-public r-erma
+  (package
+    (name "r-erma")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "erma" version))
+       (sha256
+        (base32
+         "1wn9fvnwrk08s30nd5xy61brsx20wmzdmc0xq92rbnmy2c3c0kvd"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-annotationdbi" ,r-annotationdbi)
+       ("r-biobase" ,r-biobase)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-foreach" ,r-foreach)
+       ("r-genomicfiles" ,r-genomicfiles)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-homo-sapiens" ,r-homo-sapiens)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-shiny" ,r-shiny)
+       ("r-summarizedexperiment" ,r-summarizedexperiment)))
+    (home-page "http://bioconductor.org/packages/erma")
+    (synopsis "Epigenomic road map adventures")
+    (description
+     "This package provides software and data to support epigenomic
+road map adventures.")
+    (license license:artistic2.0)))
