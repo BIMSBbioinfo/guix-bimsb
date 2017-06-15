@@ -34,7 +34,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
-  #:use-module (gnu packages base)
+  #:use-module ((gnu packages base) #:hide (which))
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
