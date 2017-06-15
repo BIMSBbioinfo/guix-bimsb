@@ -4129,3 +4129,27 @@ the @dfn{least concave majorant} (LCM), for the half-normal and
 correlation distributions, and for computing empirical @dfn{higher
 criticism} (HC) scores and the corresponding decision threshold.")
     (license license:gpl3+)))
+
+(define-public r-fithic
+  (package
+    (name "r-fithic")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "FitHiC" version))
+              (sha256
+               (base32
+                "10jalj7gjqsldx92c349ihx608m6234y8s0pj7kgdfm9jwmgrwww"))))
+    (properties `((upstream-name . "FitHiC")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-data-table" ,r-data-table)
+       ("r-fdrtool" ,r-fdrtool)
+       ("r-rcpp" ,r-rcpp)))
+    (home-page "http://bioconductor.org/packages/FitHiC")
+    (synopsis "Confidence estimation for intra-chromosomal contact maps")
+    (description
+     "Fit-Hi-C is a tool for assigning statistical confidence
+estimates to intra-chromosomal contact maps produced by genome-wide
+genome architecture assays such as Hi-C.")
+    (license license:gpl2+)))
