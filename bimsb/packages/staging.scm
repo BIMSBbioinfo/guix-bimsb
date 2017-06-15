@@ -4059,3 +4059,23 @@ change; see the NEWS and ChangeLog files for latest changes.")
 Techniques for Data Analysis - The Kernel Approach with S-Plus
 Illustrations' Oxford University Press.")
     (license license:gpl2+)))
+
+(define-public r-vioplot
+  (package
+    (name "r-vioplot")
+    (version "0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "vioplot" version))
+       (sha256
+        (base32
+         "16wkb26kv6qr34hv5zgqmgq6zzgysg9i78pvy2c097lr60v087v0"))))
+    (build-system r-build-system)
+    (propagated-inputs `(("r-sm" ,r-sm)))
+    (home-page "http://wsopuppenkiste.wiso.uni-goettingen.de/~dadler")
+    (synopsis "Violin plot")
+    (description
+     "This package provides a violin plot is a combination of a box
+plot and a kernel density plot.")
+    (license license:bsd-3)))
