@@ -3962,3 +3962,20 @@ genomic information plotted together with your data.")
      "This package provides tools for representing and modeling data
 in the EMBL-EBI GWAS catalog.")
     (license license:artistic2.0)))
+
+(define-public r-trimcluster
+  (package
+    (name "r-trimcluster")
+    (version "0.1-2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "trimcluster" version))
+              (sha256
+               (base32
+                "0lsgbg93hm0w1rdb813ry0ks2l0jfpyqzqkf3h3bj6fch0avcbv2"))))
+    (build-system r-build-system)
+    (home-page "http://www.www.homepages.ucl.ac.uk/~ucakche/")
+    (synopsis "Cluster analysis with trimming")
+    (description "This package provides analysis tools for trimmed
+k-means clustering.")
+    (license (list license:gpl2+ license:gpl3+))))
