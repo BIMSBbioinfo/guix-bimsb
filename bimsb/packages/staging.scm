@@ -4079,3 +4079,25 @@ Illustrations' Oxford University Press.")
      "This package provides a violin plot is a combination of a box
 plot and a kernel density plot.")
     (license license:bsd-3)))
+
+(define-public r-sushi
+  (package
+    (name "r-sushi")
+    (version "1.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Sushi" version))
+              (sha256
+               (base32
+                "0cn8kwrx030vb2wqxp8f6cc6sqyvjdfkpgyadyhrar6154fpx58r"))))
+    (properties `((upstream-name . "Sushi")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biomart" ,r-biomart)
+       ("r-zoo" ,r-zoo)))
+    (home-page "http://bioconductor.org/packages/Sushi")
+    (synopsis "Tools for visualizing genomics data")
+    (description
+     "This package provides flexible, quantitative, and integrative
+genomic visualizations for publication-quality multi-panel figures.")
+    (license license:gpl2+)))
