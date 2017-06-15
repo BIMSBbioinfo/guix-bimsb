@@ -4003,3 +4003,38 @@ measures, Clustering of presence-absence, abundance and multilocus
 genetical data for species delimitation, nearest neighbor based noise
 detection.")
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-vgam
+  (package
+    (name "r-vgam")
+    (version "1.0-3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "VGAM" version))
+              (sha256
+               (base32
+                "0wr6szcpj8r4a1rlzgd6iym7khin69fmvxcf37iyvs8mms86dfr3"))))
+    (properties `((upstream-name . "VGAM")))
+    (build-system r-build-system)
+    (native-inputs `(("gfortran" ,gfortran)))
+    (home-page "https://www.stat.auckland.ac.nz/~yee/VGAM")
+    (synopsis "Vector generalized linear and additive models")
+    (description
+     "This package provides an implementation of about 6 major
+classes of statistical regression models.  At the heart of it are the
+vector generalized linear and additive model (VGLM/VGAM) classes, and
+the book \"Vector Generalized Linear and Additive Models: With an
+Implementation in R\" (Yee, 2015) <DOI:10.1007/978-1-4939-2818-7>
+gives details of the statistical framework and VGAM package.
+Currently only fixed-effects models are implemented, i.e., no
+random-effects models.  Many (150+) models and distributions are
+estimated by maximum likelihood estimation (MLE) or penalized MLE,
+using Fisher scoring.  VGLMs can be loosely thought of as multivariate
+GLMs.  VGAMs are data-driven VGLMs (i.e., with smoothing).  The other
+classes are RR-VGLMs (reduced-rank VGLMs), quadratic RR-VGLMs,
+reduced-rank VGAMs, RCIMs (row-column interaction models)---these
+classes perform constrained and unconstrained quadratic
+ordination (CQO/UQO) models in ecology, as well as constrained
+additive ordination (CAO).  Note that these functions are subject to
+change; see the NEWS and ChangeLog files for latest changes.")
+    (license (list license:gpl2 license:gpl3))))
