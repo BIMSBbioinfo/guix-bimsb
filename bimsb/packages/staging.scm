@@ -4153,3 +4153,32 @@ criticism} (HC) scores and the corresponding decision threshold.")
 estimates to intra-chromosomal contact maps produced by genome-wide
 genome architecture assays such as Hi-C.")
     (license license:gpl2+)))
+
+(define-public r-hitc
+  (package
+    (name "r-hitc")
+    (version "1.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "HiTC" version))
+              (sha256
+               (base32
+                "1gkg8774rr5qihm5fmx8mi1a0111iniz3i80ygg7jpn5imv60p4h"))))
+    (properties `((upstream-name . "HiTC")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biostrings" ,r-biostrings)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-iranges" ,r-iranges)
+       ("r-matrix" ,r-matrix)
+       ("r-rcolorbrewer" ,r-rcolorbrewer)
+       ("r-rtracklayer" ,r-rtracklayer)))
+    (home-page "http://bioconductor.org/packages/HiTC")
+    (synopsis "High throughput chromosome conformation capture analysis")
+    (description
+     "The HiTC package was developed to explore high-throughput 'C'
+data such as 5C or Hi-C.  Dedicated R classes as well as standard
+methods for quality controls, normalization, visualization, and
+further analysis are also provided.")
+    (license license:artistic2.0)))
