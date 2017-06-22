@@ -4202,3 +4202,28 @@ functions and S4 methods with inlined C, C++ or Fortran code
 supporting @code{.C} and @code{.Call} calling conventions.")
     ;; Any version of the LGPL.
     (license license:lgpl3+)))
+
+(define-public r-rsofia
+  (package
+    (name "r-rsofia")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              ;; This package has been removed from CRAN, so we can
+              ;; only fetch it from the archives.
+              (uri (string-append "https://cran.r-project.org/src/"
+                                  "contrib/Archive/RSofia/RSofia_"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0q931y9rcf6slb0s2lsxhgqrzy4yqwh8hb1124nxg0bjbxvjbihn"))))
+    (properties `((upstream-name . "RSofia")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-rcpp" ,r-rcpp)))
+    (home-page "https://cran.r-project.org/src/contrib/Archive/RSofia")
+    (synopsis "Port of sofia-ml to R")
+    (description "This package is a port of sofia-ml to R.  Sofia-ml
+is a suite of fast incremental algorithms for machine learning that
+can be used for training models for classification or ranking.")
+    (license license:asl2.0)))
