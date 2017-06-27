@@ -157,7 +157,13 @@ to write a free software alternative rather than using this tool."))))
                   (delete-file "redist/cmake-2.8.4.tar.gz")
                   #t))))
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list (string-append "-DBOOST_ROOT="
+			    (assoc-ref %build-inputs "boost"))
+	     "-DBoost_DEBUG=ON"
+	     ;; Needed for later versions of CMake with older versions of Boost
+	     "-DBoost_NO_BOOST_CMAKE=ON")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'enter-dir (lambda _ (chdir "src") #t))
          (add-after 'enter-dir 'fix-includes
@@ -181,6 +187,8 @@ to write a free software alternative rather than using this tool."))))
                           "configureQseqToFastq.pl"
                           "configureValidation.pl"))
               #t))))))
+    (native-inputs
+     `(("gcc" ,gcc-4.9)))
     (inputs
      `(;; We need the older version of Boost although this could be
        ;; built with 1.55 with only minor changes.  The reason is
