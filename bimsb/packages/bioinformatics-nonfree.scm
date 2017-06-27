@@ -710,7 +710,8 @@ sequences with a predefined structure (inverse folding) is provided.")
     (arguments
      `(#:tests? #f ; no tests
        #:configure-flags
-       (list "--without-perl")))
+       (list "--without-perl"
+	     "CFLAGS=-std=gnu89")))
     (inputs '())
     (native-inputs '())))
 
