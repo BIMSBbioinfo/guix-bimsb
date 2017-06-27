@@ -29,7 +29,9 @@
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -255,6 +257,8 @@ applicable."
      `(#:tests? #f
        #:make-flags
        (list "threading=multi" "link=shared"
+	     (string-append "-sICU_PATH=" (assoc-ref %build-inputs "icu4c"))
+             "-sHAVE_ICU=1"
              ;; Set the RUNPATH to $libdir so that the libs find each other.
              (string-append "linkflags=-Wl,-rpath="
                             (assoc-ref %outputs "out") "/lib"))
@@ -310,7 +314,13 @@ applicable."
                            make-flags))))
          (replace 'install
            (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (zero? (apply system* "./bjam" "install" make-flags)))))))))
+	     (zero? (apply system* "./bjam" "install" make-flags)))))))
+    (inputs
+     `(("icu4c" ,icu4c)
+       ,@(package-inputs boost-1.55)))
+    (native-inputs
+     `(("gcc" ,gcc-4.9)
+       ,@(package-native-inputs boost-1.55)))))
 
 ;; Guix commit 6f9ba4c91c096a2fb95da111be0657d99ef2b683 removed this
 ;; for security reasons.  However, rapidstorm from staging depends on
