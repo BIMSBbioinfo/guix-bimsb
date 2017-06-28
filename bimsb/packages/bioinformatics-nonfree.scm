@@ -1058,7 +1058,7 @@ sequences greater than 1000 nt in length.")
                                   version "-with-extensions-src.tgz"))
               (sha256
                (base32
-                "1lglkzi26czw5wrl6viv99xyavjl70vx6d85i99fdpqy17bwpz16"))))
+                "0m8kdpw57j494j27m9c92virnq32xyfvfr306bh1wbxjz3l518kg"))))
     (arguments
      `(#:tests? #f ; no tests included
        #:make-flags
