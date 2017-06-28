@@ -89,7 +89,7 @@
          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "snakemake/executors.py"
-               (("\\{sys.executable\\}")
+               (("\\{sys.executable\\} -m snakemake")
                 (string-append (assoc-ref outputs "out")
                                "/bin/snakemake")))
              #t)))))))
