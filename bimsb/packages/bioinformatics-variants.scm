@@ -188,6 +188,18 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
      `(("jsoncpp" ,jsoncpp)
        ,@(package-inputs bamtools)))))
 
+(define-public htslib-latest
+  (package (inherit htslib)
+    (version "1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/samtools/htslib/releases/download/"
+                    version "/htslib-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0bcjmnbwp2bib1z1bkrp95w9v2syzdwdfqww10mkb1hxlmg52ax0"))))))
+
 (define-public r-3.3.1
   (package (inherit r-minimal)
     (version "3.3.1")
