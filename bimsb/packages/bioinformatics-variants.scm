@@ -26,6 +26,9 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages bioinformatics)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages maths)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages serialization))
 
@@ -199,6 +202,41 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
               (sha256
                (base32
                 "0bcjmnbwp2bib1z1bkrp95w9v2syzdwdfqww10mkb1hxlmg52ax0"))))))
+
+(define-public bcftools-latest
+  (package (inherit bcftools)
+    (version "1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/samtools/bcftools/releases/download/"
+                    version "/bcftools-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0093hkkvxmbwfaa7905s6185jymynvg42kq6sxv7fili11l5mxwz"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Delete bundled htslib.
+               '(delete-file-recursively "htslib-1.5"))))
+    (arguments
+     `(#:test-target "test"
+       #:configure-flags
+       (list "--enable-libgsl"
+             (string-append "--with-htslib="
+                            (assoc-ref %build-inputs "htslib")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'patch-tests
+           (lambda _
+             (substitute* "test/test.pl"
+               (("/bin/bash") (which "bash")))
+             #t)))))
+    (native-inputs
+     `(("perl" ,perl)))
+    (inputs
+     `(("htslib" ,htslib-latest)
+       ("gsl" ,gsl)
+       ("zlib" ,zlib)))))
 
 (define-public r-3.3.1
   (package (inherit r-minimal)
