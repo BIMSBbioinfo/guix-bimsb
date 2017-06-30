@@ -77,6 +77,18 @@
          "1ywcy3yfwzhl905b51l0ffjia55h75vv3mw5xkvib04pp6pj548m"))
        (patches (list (search-patch "bedtools-fix-null-segfault.patch")))))))
 
+(define-public samtools-latest
+  (package (inherit samtools)
+    (version "1.5")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "mirror://sourceforge/samtools/samtools/"
+                              version "/samtools-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1xidmv0jmfy7l0kb32hdnlshcxgzi1hmygvig0cqrq1fhckdlhl5"))))))
+
 (define-public samtools-1.1
   (package
     (inherit samtools-0.1)
