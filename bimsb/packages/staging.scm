@@ -4351,3 +4351,25 @@ ensure values assigned to the variable conform.")
 references in a more convenient way than the usual approach of
 examining the return value of @code{ref}.")
     (license license:x11)))
+
+(define-public perl-regexp-util
+  (package
+    (name "perl-regexp-util")
+    (version "0.003")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/T/TO/TOBYINK/"
+                           "Regexp-Util-" version ".tar.gz"))
+       (sha256
+        (base32
+         "01n1cggiflsnp9f6adkcxzkc0qpgssz60cwnyyd8mzavh2ximr5a"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/Regexp-Util")
+    (synopsis "Selection of general-utility regexp subroutines")
+    (description "This package provides a selection of regular
+expression subroutines including @code{is_regexp},
+@code{regexp_seen_evals}, @code{regexp_is_foreign},
+@code{regexp_is_anchored}, @code{serialize_regexp}, and
+@code{deserialize_regexp}.")
+    (license (package-license perl))))
