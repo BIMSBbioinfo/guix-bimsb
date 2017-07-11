@@ -4373,3 +4373,27 @@ expression subroutines including @code{is_regexp},
 @code{regexp_is_anchored}, @code{serialize_regexp}, and
 @code{deserialize_regexp}.")
     (license (package-license perl))))
+
+(define-public perl-hash-fieldhash
+  (package
+    (name "perl-hash-fieldhash")
+    (version "0.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/G/GF/GFUJI/"
+                           "Hash-FieldHash-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1wg8nzczfxif55j2nbymbhyd25pjy7dqs4bvd6jrcds3ll3mflaw"))))
+    (build-system perl-build-system)
+    (native-inputs
+     `(("perl-module-build" ,perl-module-build)
+       ("perl-test-leaktrace" ,perl-test-leaktrace)))
+    (home-page "http://search.cpan.org/dist/Hash-FieldHash")
+    (synopsis "Lightweight field hash for inside-out objects")
+    (description "@code{Hash::FieldHash} provides the field hash
+mechanism which supports the inside-out technique.  It is an
+alternative to @code{Hash::Util::FieldHash} with a simpler interface,
+higher performance, and relic support.")
+    (license (package-license perl))))
