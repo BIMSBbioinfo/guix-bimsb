@@ -53,7 +53,6 @@
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages zip)
   #:use-module (bimsb packages staging)
   #:use-module (bimsb packages bioinformatics-variants)
   #:use-module (bimsb packages variants))

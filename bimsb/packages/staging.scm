@@ -74,7 +74,6 @@
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages zip)
   #:use-module (bimsb packages variants)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
