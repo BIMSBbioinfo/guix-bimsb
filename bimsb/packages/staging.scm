@@ -926,7 +926,8 @@ data).")
        ("hdf5" ,hdf5)
        ("gzip" ,gzip)))
     (native-inputs
-     `(("bc" ,bc)))
+     `(("bc" ,bc)
+       ("gcc" ,gcc-4.9)))
     (home-page "http://lammps.sandia.gov/")
     (synopsis "Classical molecular dynamics simulator")
     (description "LAMMPS is a classical molecular dynamics simulator
