@@ -4523,3 +4523,29 @@ also has functions to analyze base-pair resolution 5hmC data from
 experimental protocols such as oxBS-Seq and TAB-Seq.  Perl is needed
 to read SAM files only.")
     (license license:artistic2.0)))
+
+(define-public r-lpsolve
+  (package
+    (name "r-lpsolve")
+    (version "5.6.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lpSolve" version))
+       (sha256
+        (base32
+         "13a9ry8xf5j1f2j6imqrxdgxqz3nqp9sj9b4ivyx9sid459irm6m"))))
+    (properties `((upstream-name . "lpSolve")))
+    (build-system r-build-system)
+    (home-page
+     "http://cran.r-project.org/web/packages/lpSolve")
+    (synopsis
+     "Interface to 'Lp_solve' v. 5.5 to Solve Linear/Integer Programs")
+    (description
+     "Lp_solve is freely available (under LGPL 2) software for solving
+linear, integer and mixed integer programs.  In this implementation we
+supply a \"wrapper\" function in C and some R functions that solve
+general linear/integer problems, assignment problems, and
+transportation problems.  This version calls lp_solve version 5.5.")
+    ;; TODO: check
+    (license license:lgpl2.0)))
