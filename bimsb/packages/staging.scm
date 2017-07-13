@@ -77,22 +77,6 @@
   #:use-module (bimsb packages variants)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
-(define-public snakemake-cluster
-  (package (inherit snakemake)
-    (name "snakemake-cluster")
-    (arguments
-     ;; TODO: Package missing test dependencies.
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "snakemake/executors.py"
-               (("\\{sys.executable\\} -m snakemake")
-                (string-append (assoc-ref outputs "out")
-                               "/bin/snakemake")))
-             #t)))))))
-
 ;; This package cannot yet be added to Guix because it bundles an as
 ;; yet unpackaged third-party library, namely "commons-cli-1.1.jar"
 (define-public f-seq
