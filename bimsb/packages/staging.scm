@@ -4445,3 +4445,36 @@ R.  This package modifies and extends the 'mle' classes in the
 Data\", a book presenting maximum likelihood estimation and related
 topics for ecologists (ISBN 978-0-691-12522-0).")
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-qvalue
+  (package
+    (name "r-qvalue")
+    (version "2.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "qvalue" version))
+       (sha256
+        (base32
+         "1dxdwa767a9r8n61r272ypi09qblcdfpzzwkmri74y5mbp1r3y4i"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-ggplot2" ,r-ggplot2)
+       ("r-reshape2" ,r-reshape2)))
+    (home-page "http://github.com/jdstorey/qvalue")
+    (synopsis
+     "Q-value estimation for false discovery rate control")
+    (description
+     "This package takes a list of p-values resulting from the
+simultaneous testing of many hypotheses and estimates their q-values
+and local FDR values.  The q-value of a test measures the proportion
+of false positives incurred (called the false discovery rate) when
+that particular test is called significant.  The local FDR measures
+the posterior probability the null hypothesis is true given the test's
+p-value.  Various plots are automatically generated, allowing one to
+make sensible significance cut-offs.  Several mathematical results
+have recently been shown on the conservative accuracy of the estimated
+q-values from this software.  The software can be applied to problems
+in genomics, brain imaging, astrophysics, and data mining.")
+    ;; Any version
+    (license license:lgpl3+)))
