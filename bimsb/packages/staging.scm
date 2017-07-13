@@ -77,51 +77,6 @@
   #:use-module (bimsb packages variants)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
-;; This package cannot yet be added to Guix because it bundles an as
-;; yet unpackaged third-party library, namely "commons-cli-1.1.jar"
-(define-public f-seq
-  (let ((commit "d8cdf18")
-        (revision "1"))
-    (package
-      (name "f-seq")
-      (version (string-append "1.85." revision "." commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/aboyle/F-seq.git")
-                      (commit commit)))
-                (file-name (string-append name "-" version))
-                (sha256
-                 (base32
-                  "1rz305g6ikan5w9h7rl4a072qsb6h3371cmgppg9ribjnivqh3v7"))))
-      (build-system ant-build-system)
-      (arguments
-       `(#:tests? #f ; no tests included
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((target (assoc-ref outputs "out"))
-                      (doc (string-append target "/share/doc/f-seq/")))
-                 (mkdir-p target)
-                 (mkdir-p doc)
-                 (substitute* "bin/linux/fseq"
-                   (("java") (which "java")))
-                 (install-file "README.txt" doc)
-                 (install-file "bin/linux/fseq" (string-append target "/bin"))
-                 (install-file "build~/fseq.jar" (string-append target "/lib"))
-                 (copy-recursively "lib" (string-append target "/lib"))
-                 #t))))))
-      (inputs
-       `(("perl" ,perl)))
-      (home-page "http://fureylab.web.unc.edu/software/fseq/")
-      (synopsis "Feature density estimator for high-throughput sequence tags")
-      (description
-       "F-Seq is a software package that generates a continuous tag sequence
-density estimation allowing identification of biologically meaningful sites
-whose output can be displayed directly in the UCSC Genome Browser.")
-      (license license:gpl3+))))
-
 (define-public rstudio-server
   (package
     (name "rstudio-server")
