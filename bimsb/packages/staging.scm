@@ -4549,3 +4549,36 @@ general linear/integer problems, assignment problems, and
 transportation problems.  This version calls lp_solve version 5.5.")
     ;; TODO: check
     (license license:lgpl2.0)))
+
+;; TODO
+(define-public r-limsolve
+  (package
+    (name "r-limsolve")
+    (version "1.5.5.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "limSolve" version))
+        (sha256
+          (base32
+            "01vc6as0mr6fmz8vzlnziv4sy302amwwvn7nsnmfrhslqyps4vx1"))))
+    (properties `((upstream-name . "limSolve")))
+    (build-system r-build-system)
+    (propagated-inputs
+      `(("r-lpsolve" ,r-lpsolve)
+        ("r-mass" ,r-mass)
+        ("r-quadprog" ,r-quadprog)))
+    (native-inputs `(("gfortran" ,gfortran)))
+    (home-page
+      "http://cran.r-project.org/web/packages/limSolve")
+    (synopsis "Solving Linear Inverse Models")
+    (description
+      "Functions that (1) find the minimum/maximum of a linear or
+quadratic function: min or max (f(x)), where f(x) = ||Ax-b||^2 or f(x)
+= sum(a_i*x_i) subject to equality constraints Ex=f and/or inequality
+constraints Gx>=h, (2) sample an underdetermined- or overdetermined
+system Ex=f subject to Gx>=h, and if applicable Ax~=b, (3) solve a
+linear system Ax=B for the unknown x.  It includes banded and
+tridiagonal linear systems.  The package calls Fortran functions from
+'LINPACK'.")
+    (license (list license:gpl2+ license:gpl3+))))
