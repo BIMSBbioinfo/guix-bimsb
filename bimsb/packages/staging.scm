@@ -4418,3 +4418,30 @@ and higher order moments.")
 R.  This package modifies and extends the 'mle' classes in the
 'stats4' package.")
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-emdbook
+  (package
+    (name "r-emdbook")
+    (version "1.3.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "emdbook" version))
+       (sha256
+        (base32
+         "09xbdyw8a4pvrsg3ryr8drby0njy4avc5wsjj4ffibdaicpchy69"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-bbmle" ,r-bbmle)
+       ("r-coda" ,r-coda)
+       ("r-lattice" ,r-lattice)
+       ("r-mass" ,r-mass)
+       ("r-plyr" ,r-plyr)
+       ("r-rcpp" ,r-rcpp)))
+    (home-page "http://www.math.mcmaster.ca/bolker/emdbook")
+    (synopsis "Support Functions and Data for \"Ecological Models and Data\"")
+    (description
+     "Auxiliary functions and data sets for \"Ecological Models and
+Data\", a book presenting maximum likelihood estimation and related
+topics for ecologists (ISBN 978-0-691-12522-0).")
+    (license (list license:gpl2+ license:gpl3+))))
