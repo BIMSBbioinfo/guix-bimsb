@@ -4537,17 +4537,13 @@ to read SAM files only.")
          "13a9ry8xf5j1f2j6imqrxdgxqz3nqp9sj9b4ivyx9sid459irm6m"))))
     (properties `((upstream-name . "lpSolve")))
     (build-system r-build-system)
-    (home-page
-     "http://cran.r-project.org/web/packages/lpSolve")
-    (synopsis
-     "Interface to 'Lp_solve' v. 5.5 to Solve Linear/Integer Programs")
+    (home-page "http://cran.r-project.org/web/packages/lpSolve")
+    (synopsis "R interface to 'Lp_solve' to Solve Linear/Integer Programs")
     (description
-     "Lp_solve is freely available (under LGPL 2) software for solving
-linear, integer and mixed integer programs.  In this implementation we
-supply a \"wrapper\" function in C and some R functions that solve
-general linear/integer problems, assignment problems, and
-transportation problems.  This version calls lp_solve version 5.5.")
-    ;; TODO: check
+     "Lp_solve is software for solving linear, integer and mixed
+integer programs.  In this implementation we supply a \"wrapper\"
+function in C and some R functions that solve general linear/integer
+problems, assignment problems, and transportation problems.")
     (license license:lgpl2.0)))
 
 ;; TODO
