@@ -2570,6 +2570,29 @@ distributional differences between lanes (e.g., sequencing depth):
 global-scaling and full-quantile normalization.")
     (license license:artistic2.0)))
 
+(define-public r-catch
+  (let ((commit "60c995e34a6b709832c96bc82128218ecfebd108")
+        (release "1.0")
+        (revision "1"))
+    (package
+      (name "r-catch")
+      (version (string-append release "-" revision "." (string-take commit 9)))
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://raw.githubusercontent.com/zhanyinx/CaTCH_R/"
+                                    commit "/CaTCH_" release ".tar.gz"))
+                (sha256
+                 (base32
+                  "052s1ysyvg307q85h4v9flcvfilxw6wpgll417gp5jsygh3kgcpm"))))
+      (build-system r-build-system)
+      (home-page "https://github.com/zhanyinx/CaTCH_R")
+      (synopsis "Call a hierarchy of domains based on Hi-C data")
+      (description "This package allows building the hierarchy of
+domains starting from Hi-C data.  Each hierarchical level is
+identified by a minimum value of physical insulation between
+neighboring domains.")
+      (license license:gpl2))))
+
 (define-public pacbio-htslib
   (let ((commit "6b6c81388e699c0c0cf2d1f7fe59c5da60fb7b9a")
         (revision "1"))
