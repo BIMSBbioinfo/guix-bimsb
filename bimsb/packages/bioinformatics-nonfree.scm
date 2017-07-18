@@ -40,6 +40,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
@@ -1336,3 +1337,42 @@ advanced visualization of sets of conserved noncoding elements.")
     ;; src/ucsc is non-free (derived from Kent Utils)
     (license (list license:gpl2
                    (nonfree:non-free "Academic use only.")))))
+
+(define-public blat
+  (package
+    (name "blat")
+    (version "35")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://users.soe.ucsc.edu/~kent/src/blatSrc"
+                           version ".zip"))
+       (sha256
+        (base32
+         "081nwnd97p2ry4rjnnia6816cssm682hlm7hzqhlnjpc2kqvrn86"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; There is no test target
+       #:make-flags (list "MACHTYPE=i386"
+                          "BINDIR=/tmp/bin")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda _ (mkdir-p "/tmp/bin") #t))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out")
+                                       "/bin")))
+               (copy-recursively "/tmp/bin" bin))
+             #t)))))
+    (native-inputs
+     `(("unzip" ,unzip)))
+    (inputs
+     `(("libpng" ,libpng)))
+    (home-page "http://genome.ucsc.edu")
+    (synopsis "Pairwise sequence alignment algorithm")
+    (description "BLAT is a pairwise sequence alignment algorithm
+that.  It was designed primarily to decrease the time needed to align
+millions of mouse genomic reads and expressed sequence tags against
+the human genome sequence.")
+    (license (nonfree:non-free "Personal and academic use only."))))
