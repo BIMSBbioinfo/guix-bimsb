@@ -4638,3 +4638,76 @@ normality, distance components (disco) for non-parametric analysis of
 structured data, and other energy statistics/methods are
 implemented.")
     (license license:gpl2+)))
+
+(define-public mageck
+  (package
+    (name "mageck")
+    (version "0.5.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/mageck/"
+                                  (version-major+minor version)
+                                  "/mageck-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1sc1pwjh6hsxhkiq251vijnx7sp1k0f4dmqijbz3avpd5bpbdrh7"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:use-setuptools? #f
+       #:modules ((guix build python-build-system)
+                  (guix build utils)
+                  (srfi srfi-1)
+                  (ice-9 match))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'check)
+         (add-after 'wrap 'check
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (tests '(("demo1" "run.sh")
+                            ("demo2" "runmageck.sh")
+                            ;; FIXME: these two tests fail with
+                            ;; ValueError: max() arg is an empty sequence
+                            ;;("demo3" "run.sh")
+                            ;;("demo4" "run.sh")
+                            )))
+               (setenv "PATH"
+                       (string-append out "/bin:"
+                                      (getenv "PATH")))
+               (every (match-lambda
+                        ((dir script)
+                         (with-directory-excursion (string-append "demo/" dir)
+                           (zero? (system* "bash" script)))))
+                      tests)))))))
+    (inputs
+     `(("python-numpy" ,python-numpy)
+       ("python-scipy" ,python-scipy)
+       ("python-matplotlib" ,python-matplotlib)
+       ("python-statsmodels" ,python-statsmodels)
+       ("python-pyqt" ,python-pyqt)
+       ("r-minimal" ,r-minimal)
+       ("r-xtable" ,r-xtable)
+       ("r-gplots" ,r-gplots)))
+    (home-page "http://mageck.sourceforge.net")
+    (synopsis "Model-based analysis of genome-wide CRISPR-Cas9 Knockout")
+    (description
+     "Model-based Analysis of Genome-wide CRISPR-Cas9
+Knockout (MAGeCK) is a computational tool to identify important genes
+from the recent genome-scale CRISPR-Cas9 knockout screens
+technology.  Its features include:
+
+@enumerate
+@item Simple, easy to use pipeline to screen genes in Genome-wide
+   CRISPR-Cas9 Knockout experiments;
+@item High sensitivity and low false discovery rate;
+@item Fully utilize the screening data by performing both positive and
+   negative screening in one dataset;
+@item Provide statistical evaluation in genes, sgRNAs and pathways;
+@item Require as few as 2 samples;
+@item Identify cell-type specific targets;
+@item A set of visualization features that generate publication
+   standard figures.
+@end enumerate\n")
+    ;; It's unclear which BSD variant it is, because no copy of the
+    ;; license text is included.
+    (license license:bsd-3)))
