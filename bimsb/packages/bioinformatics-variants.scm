@@ -315,3 +315,18 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                 (sha256
                  (base32
                   "061yx5lgm5c37v9asnvbl4wxay04791cbxs52ar16x0a0gd13p53")))))))
+
+(define-public starlong
+  (package (inherit star)
+    (name "starlong")
+    (arguments
+     (substitute-keyword-arguments (package-arguments star)
+       ((#:make-flags flags)
+        `(list "STARlong"))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
+                 (install-file "STARlong" bin))
+               #t))))))))
