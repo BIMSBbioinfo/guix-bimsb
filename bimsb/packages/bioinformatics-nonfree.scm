@@ -1376,3 +1376,25 @@ that.  It was designed primarily to decrease the time needed to align
 millions of mouse genomic reads and expressed sequence tags against
 the human genome sequence.")
     (license (nonfree:non-free "Personal and academic use only."))))
+
+(define-public gmap-gsnap
+  (package
+    (name "gmap-gsnap")
+    (version "2017-06-20")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://research-pub.gene.com/gmap/src/gmap-gsnap-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0kkd4wm1a8y80j5qiqx2zk4qz19zlqqlf9rq1yjajgbd0478xk2r"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("perl" ,perl)))
+    (home-page "http://research-pub.gene.com/gmap/")
+    (synopsis "Genomic mapper and aligner")
+    (description "This package provides GMAP and GSNAP.  The former is
+a genomic mapping and alignment program for mRNA and EST sequences;
+the latter is an aligner for genomic short-read nucleotide sequences.")
+    (license (nonfree:non-free "Distribution of modified versions
+requires the author's consent."))))
