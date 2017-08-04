@@ -4767,6 +4767,39 @@ more.")
     (home-page "http://pypi.python.org/pypi/python-igraph")
     (synopsis "Python bindings for the igraph network analysis library")))
 
+(define-public python-louvain-igraph
+  (package
+    (name "python-louvain-igraph")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/vtraag/louvain-igraph/"
+                           "archive/v" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0hc4rjgcajm1fnq4r6xf5s4h5583c4r2qmd1ycz9i9nmxr8ymi0v"))))
+    (build-system python-build-system)
+    ;; There are no tests.
+    (arguments '(#:tests? #f))
+    (propagated-inputs
+     `(("python-igraph" ,python-igraph)))
+    (inputs
+     `(("igraph" ,igraph)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (home-page "https://github.com/vtraag/louvain-igraph")
+    (synopsis "Implementation of the Louvain algorithm")
+    (description "This package implements the Louvain algorithm for
+community detection in C++ and exposes it to Python.  Besides the
+relative flexibility of the implementation, it also scales well, and
+can be run on graphs of millions of nodes (as long as they can fit in
+memory).  The core function is @code{find_partition} which finds the
+optimal partition using the louvain algorithm for a number of
+different methods.")
+    (license license:gpl3+)))
+
 (define-public r-suppdists
   (package
     (name "r-suppdists")
