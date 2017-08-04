@@ -4747,6 +4747,26 @@ random and regular graphs, graph visualization, centrality methods and much
 more.")
     (license license:gpl2+)))
 
+(define-public python-igraph
+  (package (inherit igraph)
+    (name "python-igraph")
+    (version "0.7.1.post6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-igraph" version))
+       (sha256
+        (base32
+         "0xp61zz710qlzhmzbfr65d5flvsi8zf2xy78s6rsszh719wl5sm5"))))
+    (build-system python-build-system)
+    (arguments '())
+    (inputs
+     `(("igraph" ,igraph)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (home-page "http://pypi.python.org/pypi/python-igraph")
+    (synopsis "Python bindings for the igraph network analysis library")))
+
 (define-public r-suppdists
   (package
     (name "r-suppdists")
