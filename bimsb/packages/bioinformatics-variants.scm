@@ -117,6 +117,19 @@
                (base32
                 "1rja282fwdc25ql6izkhdyh8ppw8x2fs0w0js78zgkmqjlikmma9"))))))
 
+(define-public htslib-1.4
+  (package
+    (inherit htslib)
+    (version "1.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/samtools/htslib/releases/download/"
+                    version "/htslib-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1crkk79kgxcmrkmh5f58c4k93w4rz6lp97sfsq3s6556zxcxvll5"))))))
+
 (define-public samtools-1.3
   (package
     (inherit samtools)
