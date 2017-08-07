@@ -31,6 +31,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages serialization))
 
@@ -387,3 +388,17 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
                  (install-file "STARlong" bin))
                #t))))))))
+
+(define-public jupyter-with-python2
+  (package (inherit jupyter)
+    (name "jupyter-python2")
+    (build-system python-build-system)
+    ;; FIXME: it's not clear how to run the tests.
+    (arguments `(#:tests? #f
+                 #:python ,python-2))
+    (propagated-inputs
+     `(("python-ipykernel" ,python2-ipykernel)
+       ("python-ipywidgets" ,python2-ipywidgets)
+       ("python-jupyter-console" ,python2-jupyter-console)
+       ("python-nbconvert" ,python2-nbconvert)
+       ("python-notebook" ,python2-notebook)))))
