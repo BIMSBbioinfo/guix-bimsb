@@ -117,6 +117,22 @@
                (base32
                 "1rja282fwdc25ql6izkhdyh8ppw8x2fs0w0js78zgkmqjlikmma9"))))))
 
+(define-public samtools-1.3
+  (package
+    (inherit samtools)
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/samtools/samtools/"
+                           version "/samtools-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0znnnxc467jbf1as2dpskrjhfh8mbll760j6w6rdkwlwbqsp8gbc"))))
+    (inputs
+     `(("htslib" ,htslib-1.3)
+       ,@(package-inputs samtools)))))
+
 (define-public samtools-0
   (package (inherit samtools)
     (version "0.1.8")
