@@ -2684,14 +2684,14 @@ Bioconductor objects.")
 (define-public r-annotationhub
   (package
     (name "r-annotationhub")
-    (version "2.8.1")
+    (version "2.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationHub" version))
        (sha256
         (base32
-         "0hw5pqvhayllwnjlrb0cqx2m8157si7f52b838cfcnaklxmcz53f"))))
+         "1nh5si3j1nv37jcg4260582ayjg18851np47cskrm54prnvhwd9r"))))
     (properties `((upstream-name . "AnnotationHub")))
     (build-system r-build-system)
     (propagated-inputs
