@@ -401,4 +401,6 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
        ("python-ipywidgets" ,python2-ipywidgets)
        ("python-jupyter-console" ,python2-jupyter-console)
        ("python-nbconvert" ,python2-nbconvert)
-       ("python-notebook" ,python2-notebook)))))
+       ("python-notebook" ,python2-notebook)
+       ;; TODO: this should be propagated by tornado
+       ("python-certifi" ,python2-certifi)))))
