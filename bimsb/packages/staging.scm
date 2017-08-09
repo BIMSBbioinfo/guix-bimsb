@@ -1428,9 +1428,9 @@ repeats from Tandem Repeats Finder (TRF mask).  Only the AGAPS and AMB
 masks are \"active\" by default.")
     (license license:artistic2.0)))
 
-(define-public r-bsgenome-hsapiens-ucsc-mm9-masked
+(define-public r-bsgenome-mmusculus-ucsc-mm9-masked
   (package
-    (name "r-bsgenome-hsapiens-ucsc-mm9-masked")
+    (name "r-bsgenome-mmusculus-ucsc-mm9-masked")
     (version "1.3.99")
     (source (origin
               (method url-fetch)
