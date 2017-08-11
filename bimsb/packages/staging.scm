@@ -47,6 +47,7 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages graph)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
