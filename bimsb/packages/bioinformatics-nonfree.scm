@@ -36,6 +36,7 @@
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cran)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages file)
   #:use-module (gnu packages gcc)
