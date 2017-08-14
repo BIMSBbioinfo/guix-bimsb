@@ -263,51 +263,6 @@ of the @code{libR} shared library."))))
        ,@(package-inputs rstudio-server)))
     (synopsis "Integrated development environment (IDE) for R (desktop version)")))
 
-(define-public r-dexseq
-  (package
-    (name "r-dexseq")
-    (version "1.22.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "DEXSeq" version))
-       (sha256
-        (base32
-         "085aqk1wlzzqcqcqhvz74y099kr2ln5dwdxd3rl6zan806mgwahg"))))
-    (properties `((upstream-name . "DEXSeq")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-annotationdbi" ,r-annotationdbi)
-       ("r-biobase" ,r-biobase)
-       ("r-biocgenerics" ,r-biocgenerics)
-       ("r-biocparallel" ,r-biocparallel)
-       ("r-biomart" ,r-biomart)
-       ("r-deseq2" ,r-deseq2)
-       ("r-genefilter" ,r-genefilter)
-       ("r-geneplotter" ,r-geneplotter)
-       ("r-genomicranges" ,r-genomicranges)
-       ("r-hwriter" ,r-hwriter)
-       ("r-iranges" ,r-iranges)
-       ("r-rcolorbrewer" ,r-rcolorbrewer)
-       ("r-rsamtools" ,r-rsamtools)
-       ("r-s4vectors" ,r-s4vectors)
-       ("r-statmod" ,r-statmod)
-       ("r-stringr" ,r-stringr)
-       ("r-summarizedexperiment"
-        ,r-summarizedexperiment)))
-    (home-page "http://bioconductor.org/packages/DEXSeq")
-    (synopsis "Inference of differential exon usage in RNA-Seq")
-    (description
-     "This package is focused on finding differential exon usage using
-RNA-seq exon counts between samples with different experimental
-designs.  It provides functions that allows the user to make the
-necessary statistical tests based on a model that uses the negative
-binomial distribution to estimate the variance between biological
-replicates and generalized linear models for testing.  The package
-also provides functions for the visualization and exploration of the
-results.")
-    (license license:gpl3+)))
-
 ;; This version of WebLogo is required by MEDICC.
 (define-public weblogo-3.3
   (package
