@@ -3897,35 +3897,6 @@ is a suite of fast incremental algorithms for machine learning that
 can be used for training models for classification or ranking.")
     (license license:asl2.0)))
 
-(define-public perl-math-random-isaac-xs
-  (package
-    (name "perl-math-random-isaac-xs")
-    (version "1.004")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/J/JA/JAWNSY/"
-                           "Math-Random-ISAAC-XS-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0yxqqcqvj51fn7b7j5xqhz65v74arzgainn66c6k7inijbmr1xws"))))
-    (build-system perl-build-system)
-    (native-inputs
-     `(("perl-module-build" ,perl-module-build)
-       ("perl-test-nowarnings" ,perl-test-nowarnings)))
-    (home-page "http://search.cpan.org/dist/Math-Random-ISAAC-XS")
-    (synopsis "C implementation of the ISAAC PRNG algorithm")
-    (description "ISAAC (Indirection, Shift, Accumulate, Add, and
-Count) is a fast pseudo-random number generator.  It is suitable for
-applications where a significant amount of random data needs to be
-produced quickly, such as solving using the Monte Carlo method or for
-games.  The results are uniformly distributed, unbiased, and
-unpredictable unless you know the seed.
-
-This package provides implements the same interface as
-@code{Math::Random::ISAAC}.")
-    (license license:public-domain)))
-
 (define-public perl-math-random-isaac
   (package
     (name "perl-math-random-isaac")
