@@ -1208,29 +1208,6 @@ non-coinciding fragment start sites in order to examine the best way
 how to analyze iCLIP data.")
     (license license:gpl3+)))
 
-(define-public r-mclust
-  (package
-    (name "r-mclust")
-    (version "5.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "mclust" version))
-       (sha256
-        (base32
-         "08swza5zg6dxlgwfl30nwh7170mxb5fhsrq5b42fffawsc86v8k5"))))
-    (build-system r-build-system)
-    (native-inputs
-     `(("gfortran" ,gfortran)))
-    (home-page "http://www.stat.washington.edu/mclust/")
-    (synopsis "Gaussian mixture modelling")
-    (description
-     "This package provides Gaussian finite mixture models fitted via
-EM algorithm for model-based clustering, classification, and density
-estimation, including Bayesian regularization, dimension reduction for
-visualisation, and resampling-based inference.")
-    (license license:gpl2+)))
-
 (define-public python-fastcluster
   (package
     (inherit r-fastcluster)
