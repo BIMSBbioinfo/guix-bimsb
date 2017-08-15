@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2015, 2016, 2017 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -280,7 +280,7 @@ depths and differentiate reliable RDNPs from the background noise.")
 (define-public kallisto
   (package
     (name "kallisto")
-    (version "0.43.0")
+    (version "0.43.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -289,7 +289,7 @@ depths and differentiate reliable RDNPs from the background noise.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1d9cqf3lz6mm9kmqn47d99c6byn6q9l4ppgcafxrhcnrb2davhv9"))))
+                "03j3iqhvq7ya3c91gidly3k3jvgm97vjq4scihrlxh315j696r11"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; no "check" target
     (inputs
@@ -312,10 +312,7 @@ only fast, but also as accurate than existing quantification tools.
 In fact, because the pseudoalignment procedure is robust to errors in
 the reads, in many benchmarks kallisto significantly outperforms
 existing tools.")
-    (license (nonfree:non-free
-              "http://pachterlab.github.io/kallisto/license.html"
-              "This software may only be used for educational and
-research not-for-profit purposes."))))
+    (license license:bsd-2)))
 
 (define-public macs-1
   (package (inherit macs)
