@@ -1359,3 +1359,41 @@ a genomic mapping and alignment program for mRNA and EST sequences;
 the latter is an aligner for genomic short-read nucleotide sequences.")
     (license (nonfree:non-free "Distribution of modified versions
 requires the author's consent."))))
+
+(define-public music
+  (let ((commit "6613c532bf21d958ae380f064cc7752f3e8c368f")
+        (revision "1"))
+    (package
+      (name "music")
+      (version (string-append "0.0.0-" revision "." (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/gersteinlab/MUSIC.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "1in3s6qimbx5s10sxx943krj52702s2f7yk9nfr54z5yirwqrf36"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f          ; no "check" target
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           ;; There is no "install" target.
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((bin (string-append (assoc-ref outputs "out")
+                                         "/bin")))
+                 (mkdir-p bin)
+                 (install-file "bin/MUSIC" bin))
+               #t)))))
+      (home-page "http://music.gersteinlab.org")
+      (synopsis "Multiscale enrichment calling for ChIP-Seq datasets")
+      (description
+       "MUSIC is an algorithm for identification of enriched regions
+at multiple scales in the read depth signals from ChIP-Seq
+experiments.")
+      ;; https://github.com/gersteinlab/MUSIC/issues/6
+      (license nonfree:undeclared))))
