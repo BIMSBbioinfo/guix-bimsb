@@ -4531,3 +4531,32 @@ quantification tools.")
     (description "This package is a collection of Perl, Python, and R
 scripts for manipulating 3C/4C/5C/Hi-C data.")
     (license license:asl2.0)))
+
+(define-public r-phangorn
+  (package
+    (name "r-phangorn")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "phangorn" version))
+       (sha256
+        (base32
+         "02r1b65d1v05bi62wmq0mr99dnbg7gfq4lca81blqa14yld1mj1j"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-ape" ,r-ape)
+       ("r-fastmatch" ,r-fastmatch)
+       ("r-igraph" ,r-igraph)
+       ("r-magrittr" ,r-magrittr)
+       ("r-matrix" ,r-matrix)
+       ("r-quadprog" ,r-quadprog)
+       ("r-rcpp" ,r-rcpp)))
+    (home-page "https://github.com/KlausVigo/phangorn")
+    (synopsis "Phylogenetic analysis in R")
+    (description
+     "Phangorn is a package for phylogenetic analysis in R.  It
+supports estimation of phylogenetic trees and networks using Maximum
+Likelihood, Maximum Parsimony, distance methods and Hadamard
+conjugation.")
+    (license license:gpl2+)))
