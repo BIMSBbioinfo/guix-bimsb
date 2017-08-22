@@ -4560,3 +4560,16 @@ supports estimation of phylogenetic trees and networks using Maximum
 Likelihood, Maximum Parsimony, distance methods and Hadamard
 conjugation.")
     (license license:gpl2+)))
+
+(define htslib-1.3
+  (package
+    (inherit htslib)
+    (version "1.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/samtools/htslib/releases/download/"
+                    version "/htslib-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1rja282fwdc25ql6izkhdyh8ppw8x2fs0w0js78zgkmqjlikmma9"))))))
