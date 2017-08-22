@@ -4573,3 +4573,66 @@ conjugation.")
               (sha256
                (base32
                 "1rja282fwdc25ql6izkhdyh8ppw8x2fs0w0js78zgkmqjlikmma9"))))))
+
+(define-public qtltools
+  (package
+    (name "qtltools")
+    (version "1.1")
+    (source (origin
+              (method url-fetch/tarbomb)
+              (uri (string-append "https://qtltools.github.io/qtltools/"
+                                  "binaries/QTLtools_" version
+                                  "_source.tar.gz"))
+              (sha256
+               (base32
+                "1vgr9kbah1cfgcln4mwafnr5x5akjzq3q0gx8vh3yzgn6lmln1d6"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no tests included
+       #:make-flags
+       (list (string-append "BOOST_INC="
+                            (assoc-ref %build-inputs "boost") "/include")
+             (string-append "BOOST_LIB="
+                            (assoc-ref %build-inputs "boost") "/lib")
+             (string-append "HTSLD_INC="
+                            (assoc-ref %build-inputs "htslib") "/include")
+             (string-append "HTSLD_LIB="
+                            (assoc-ref %build-inputs "htslib") "/lib")
+             (string-append "RMATH_INC="
+                            (assoc-ref %build-inputs "rmath-standalone")
+                            "/include")
+             (string-append "RMATH_LIB="
+                            (assoc-ref %build-inputs "rmath-standalone")
+                            "/lib"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-linkage
+           (lambda _
+             (substitute* "Makefile"
+               (("libboost_iostreams.a")
+                "libboost_iostreams.so")
+               (("libboost_program_options.a")
+                "libboost_program_options.so")
+               (("-lblas") "-lopenblas"))
+             #t))
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+               (mkdir-p bin)
+               (install-file "bin/QTLtools" bin)
+               #t))))))
+    (inputs
+     `(("gsl" ,gsl)
+       ("boost" ,boost)
+       ("rmath-standalone" ,rmath-standalone)
+       ("htslib" ,htslib-1.3)
+       ("openblas" ,openblas)
+       ("zlib" ,zlib)))
+    (home-page "https://qtltools.github.io/qtltools/")
+    (synopsis "Tool set for molecular QTL discovery and analysis")
+    (description "QTLtools is a tool set for molecular QTL discovery
+and analysis.  It allows to go from the raw genetic sequence data to
+collection of molecular @dfn{Quantitative Trait Loci} (QTLs) in few
+easy-to-perform steps.")
+    (license license:gpl3+)))
