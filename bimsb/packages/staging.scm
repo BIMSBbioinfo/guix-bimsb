@@ -3885,28 +3885,6 @@ in genomics, brain imaging, astrophysics, and data mining.")
     ;; Any version
     (license license:lgpl3+)))
 
-(define-public r-lpsolve
-  (package
-    (name "r-lpsolve")
-    (version "5.6.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "lpSolve" version))
-       (sha256
-        (base32
-         "13a9ry8xf5j1f2j6imqrxdgxqz3nqp9sj9b4ivyx9sid459irm6m"))))
-    (properties `((upstream-name . "lpSolve")))
-    (build-system r-build-system)
-    (home-page "http://cran.r-project.org/web/packages/lpSolve")
-    (synopsis "R interface to 'Lp_solve' to Solve Linear/Integer Programs")
-    (description
-     "Lp_solve is software for solving linear, integer and mixed
-integer programs.  In this implementation we supply a \"wrapper\"
-function in C and some R functions that solve general linear/integer
-problems, assignment problems, and transportation problems.")
-    (license license:lgpl2.0)))
-
 (define-public r-limsolve
   (package
     (name "r-limsolve")
