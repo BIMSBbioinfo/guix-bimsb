@@ -2489,26 +2489,6 @@ creates and manages a local cache of files retrieved by the user,
 helping with quick and reproducible access.")
     (license license:artistic2.0)))
 
-(define-public r-calibrate
-  (package
-    (name "r-calibrate")
-    (version "1.7.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "calibrate" version))
-       (sha256
-        (base32
-         "010nb1nb9y7zhw2k6d2i2drwy5brp7b83mjj2w7i3wjp9xb6l1kq"))))
-    (build-system r-build-system)
-    (propagated-inputs `(("r-mass" ,r-mass)))
-    (home-page "http://cran.r-project.org/web/packages/calibrate")
-    (synopsis "Calibration of Scatterplot and Biplot Axes")
-    (description
-     "This is a package for drawing calibrated scales with tick marks
-on (non-orthogonal) variable vectors in scatterplots and biplots.")
-    (license license:gpl2)))
-
 (define-public r-shape
   (package
     (name "r-shape")
