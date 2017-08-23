@@ -4144,40 +4144,6 @@ technology.  Its features include:
     ;; license text is included.
     (license license:bsd-3)))
 
-(define-public igraph
-  (package
-    (name "igraph")
-    (version "0.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://igraph.org/nightly/get/c/igraph-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "1pxh8sdlirgvbvsw8v65h6prn7hlm45bfsl1yfcgd6rn4w706y6r"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       (list "--with-external-glpk"
-             "--with-external-blas"
-             "--with-external-lapack")))
-    (inputs
-     `(("gmp" ,gmp)
-       ("glpk" ,glpk)
-       ("libxml2" ,libxml2)
-       ("lapack" ,lapack)
-       ("openblas" ,openblas)
-       ("zlib" ,zlib)))
-    (home-page "http://igraph.org")
-    (synopsis "Network analysis and visualization")
-    (description
-     "This package provides a library for the analysis of networks and graphs.
-It can handle large graphs very well and provides functions for generating
-random and regular graphs, graph visualization, centrality methods and much
-more.")
-    (license license:gpl2+)))
-
 (define-public python-igraph
   (package (inherit igraph)
     (name "python-igraph")
