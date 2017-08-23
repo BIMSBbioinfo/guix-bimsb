@@ -2489,30 +2489,6 @@ creates and manages a local cache of files retrieved by the user,
 helping with quick and reproducible access.")
     (license license:artistic2.0)))
 
-(define-public r-auc
-  (package
-    (name "r-auc")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "AUC" version))
-       (sha256
-        (base32
-         "0ripcib2qz0m7rgr1kiz68nx8f6p408l1ww7j78ljqik7p3g41g7"))))
-    (properties `((upstream-name . "AUC")))
-    (build-system r-build-system)
-    (home-page "http://cran.r-project.org/web/packages/AUC")
-    (synopsis "Threshold independent performance measures for probabilistic classifiers")
-    (description
-     "This package includes functions to compute the area under the
-curve of selected measures: The area under the sensitivity
-curve (AUSEC), the area under the specificity curve (AUSPC), the area
-under the accuracy curve (AUACC), and the area under the receiver
-operating characteristic curve (AUROC).  The curves can also be
-visualized.  Support for partial areas is provided.")
-    (license license:gpl2+)))
-
 (define-public r-calibrate
   (package
     (name "r-calibrate")
