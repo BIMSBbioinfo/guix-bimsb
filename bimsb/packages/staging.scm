@@ -1621,27 +1621,6 @@ an important subset of samtools functionality, including view, index,
 sort, markdup, and depth.")
     (license license:gpl2+)))
 
-(define-public r-distillery
-  (package
-    (name "r-distillery")
-    (version "1.0-2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "distillery" version))
-       (sha256
-        (base32
-         "12m4cacvc18fd3aayc8iih5q6bwsmvf29b55fwp7vs8wp1h8nd8c"))))
-    (build-system r-build-system)
-    (home-page "http://www.ral.ucar.edu/staff/ericg")
-    (synopsis "Functions for confidence intervals and object information")
-    (description
-     "This package provides some very simple method functions for
-confidence interval calculation and to distill pertinent information
-from a potentially complex object; primarily used in common with the
-packages extRemes and SpatialVx.")
-    (license license:gpl2+)))
-
 (define-public nlopt
   (package
     (name "nlopt")
