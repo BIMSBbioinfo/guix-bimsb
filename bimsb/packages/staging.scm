@@ -2489,27 +2489,6 @@ creates and manages a local cache of files retrieved by the user,
 helping with quick and reproducible access.")
     (license license:artistic2.0)))
 
-(define-public r-globaloptions
-  (package
-    (name "r-globaloptions")
-    (version "0.0.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "GlobalOptions" version))
-       (sha256
-        (base32
-         "1abpc03cfvazbwj2sx6qgngs5pgpzysvxkana20hyvb4n7ws77f0"))))
-    (properties `((upstream-name . "GlobalOptions")))
-    (build-system r-build-system)
-    (home-page "https://github.com/jokergoo/GlobalOptions")
-    (synopsis "Generate Functions to Get or Set Global Options")
-    (description
-     "This package provides more controls on the option values such as
-validation and filtering on the values, making options invisible or
-private.")
-    (license license:gpl2+)))
-
 (define-public r-circlize
   (package
     (name "r-circlize")
