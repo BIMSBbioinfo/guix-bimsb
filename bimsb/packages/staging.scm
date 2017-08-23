@@ -2797,32 +2797,6 @@ Quince, 2012, PLoS ONE 7(2): 1-15, as discussed further in the man
 page for this package, @code{?DirichletMultinomial}.")
     (license license:lgpl3)))
 
-(define-public r-progress
-  (package
-    (name "r-progress")
-    (version "1.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "progress" version))
-       (sha256
-        (base32
-         "1fxakchfjr5vj59s9sxynd7crpz97xj42438rmkhkf3rjpyspx59"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-prettyunits" ,r-prettyunits)
-       ("r-r6" ,r-r6)))
-    (home-page
-     "https://github.com/gaborcsardi/progress#readme")
-    (synopsis "Terminal progress bars")
-    (description
-     "This package provides configurable progress bars.  They may
-include percentage, elapsed time, and/or the estimated completion
-time.  They work in terminals, in 'Emacs' 'ESS', 'RStudio', 'Windows'
-'Rgui' and the 'macOS' 'R.app'.  The package also provides a 'C++'
-'API', that works with or without Rcpp.")
-    (license license:expat)))
-
 (define-public r-ggally
   (package
     (name "r-ggally")
