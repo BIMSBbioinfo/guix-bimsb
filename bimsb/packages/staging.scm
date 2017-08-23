@@ -3790,44 +3790,6 @@ is a suite of fast incremental algorithms for machine learning that
 can be used for training models for classification or ranking.")
     (license license:asl2.0)))
 
-(define-public r-fastseg
-  (package
-    (name "r-fastseg")
-    (version "1.22.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "fastseg" version))
-       (sha256
-        (base32
-         "083wiz03q9mynwchs9frlpp6c84dncri5ncibx6h82p228cpja6h"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-biobase" ,r-biobase)
-       ("r-biocgenerics" ,r-biocgenerics)
-       ("r-genomicranges" ,r-genomicranges)
-       ("r-iranges" ,r-iranges)
-       ("r-s4vectors" ,r-s4vectors)))
-    (home-page "http://www.bioinf.jku.at/software/fastseg/fastseg.html")
-    (synopsis "fastseg - a fast segmentation algorithm")
-    (description
-     "fastseg implements a very fast and efficient segmentation
-algorithm.  It has similar functionality as DNACopy (Olshen and
-Venkatraman 2004), but is considerably faster and more flexible.
-fastseg can segment data from DNA microarrays and data from next
-generation sequencing for example to detect copy number segments.
-Further it can segment data from RNA microarrays like tiling arrays to
-identify transcripts.  Most generally, it can segment data given as a
-matrix or as a vector.  Various data formats can be used as input to
-fastseg like expression set objects for microarrays or GRanges for
-sequencing data.  The segmentation criterion of fastseg is based on a
-statistical test in a Bayesian framework, namely the cyber
-t-test (Baldi 2001).  The speed-up arises from the facts, that
-sampling is not necessary in for fastseg and that a dynamic
-programming approach is used for calculation of the segments' first
-and higher order moments.")
-    (license license:lgpl2.0+)))
-
 (define-public r-bbmle
   (package
     (name "r-bbmle")
