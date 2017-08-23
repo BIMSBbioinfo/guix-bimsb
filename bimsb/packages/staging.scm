@@ -2797,37 +2797,6 @@ Quince, 2012, PLoS ONE 7(2): 1-15, as discussed further in the man
 page for this package, @code{?DirichletMultinomial}.")
     (license license:lgpl3)))
 
-(define-public r-ggally
-  (package
-    (name "r-ggally")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "GGally" version))
-       (sha256
-        (base32
-         "12ddab0nd0f9c7bb6cx3c22mliyvc8xsxv26aqz3cvfbla8crp3b"))))
-    (properties `((upstream-name . "GGally")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-ggplot2" ,r-ggplot2)
-       ("r-gtable" ,r-gtable)
-       ("r-plyr" ,r-plyr)
-       ("r-progress" ,r-progress)
-       ("r-rcolorbrewer" ,r-rcolorbrewer)
-       ("r-reshape" ,r-reshape)))
-    (home-page "https://ggobi.github.io/ggally")
-    (synopsis "Extension to 'ggplot2'")
-    (description
-     "The R package 'ggplot2' is a plotting system based on the
-grammar of graphics.  GGally extends ggplot2 by adding several
-functions to reduce the complexity of combining geometric objects with
-transformed data.  Some of these functions include a pairwise plot
-matrix, a two group pairwise plot matrix, a parallel coordinates plot,
-a survival plot, and several functions to plot networks.")
-    (license license:gpl2+)))
-
 (define-public r-annotationfilter
   (package
     (name "r-annotationfilter")
