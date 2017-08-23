@@ -3885,39 +3885,6 @@ in genomics, brain imaging, astrophysics, and data mining.")
     ;; Any version
     (license license:lgpl3+)))
 
-(define-public r-limsolve
-  (package
-    (name "r-limsolve")
-    (version "1.5.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "limSolve" version))
-       (sha256
-        (base32
-         "01vc6as0mr6fmz8vzlnziv4sy302amwwvn7nsnmfrhslqyps4vx1"))))
-    (properties `((upstream-name . "limSolve")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-lpsolve" ,r-lpsolve)
-       ("r-mass" ,r-mass)
-       ("r-quadprog" ,r-quadprog)))
-    (native-inputs `(("gfortran" ,gfortran)))
-    (home-page "http://cran.r-project.org/web/packages/limSolve")
-    (synopsis "Solving linear inverse models")
-    (description
-     "This package provides functions that:
-
-@enumerate
-@item find the minimum/maximum of a linear or quadratic function,
-@item sample an underdetermined or overdetermined system,
-@item solve a linear system Ax=B for the unknown x.
-@end enumerate
-
-It includes banded and tridiagonal linear systems.  The package calls
-Fortran functions from 'LINPACK'.")
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-fitdistrplus
   (package
     (name "r-fitdistrplus")
