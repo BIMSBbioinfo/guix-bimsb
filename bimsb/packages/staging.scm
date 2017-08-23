@@ -1712,31 +1712,6 @@ by quadratic approximation based on an interface to Fortran
 implementations by M.J.D. Powell.")
     (license license:gpl2)))
 
-(define-public r-extremes
-  (package
-    (name "r-extremes")
-    (version "2.0-8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "extRemes" version))
-       (sha256
-        (base32
-         "0pnpib3g2r9x8hfqhvq23j8m3jh62lp28ipnqir5yadnzv850gfm"))))
-    (properties `((upstream-name . "extRemes")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-car" ,r-car)
-       ("r-distillery" ,r-distillery)
-       ("r-lmoments" ,r-lmoments)))
-    (home-page
-     "http://www.assessment.ucar.edu/toolkit/")
-    (synopsis "Extreme value analysis")
-    (description
-     "This package provides functions for performing extreme value
-analysis.")
-    (license license:gpl2+)))
-
 (define-public r-misha
   (package
     (name "r-misha")
