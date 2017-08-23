@@ -2656,33 +2656,6 @@ Gentleman, and Marc Carlson, and KEGG (python package) by Aurelien
 Mazurie.")
     (license license:artistic2.0)))
 
-(define-public r-getoptlong
-  (package
-    (name "r-getoptlong")
-    (version "0.1.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "GetoptLong" version))
-       (sha256
-        (base32
-         "1d98gcvlvp9nz5lbnzr0kkpc2hbkx74hlhrnybqhg1gdwc3g09pm"))))
-    (properties `((upstream-name . "GetoptLong")))
-    (build-system r-build-system)
-    (inputs
-     `(("perl" ,perl)))
-    (propagated-inputs
-     `(("r-globaloptions" ,r-globaloptions)
-       ("r-rjson" ,r-rjson)))
-    (home-page "https://github.com/jokergoo/GetoptLong")
-    (synopsis "Parsing command-line arguments and variable interpolation")
-    (description
-     "This is yet another command-line argument parser which wraps the
-powerful Perl module @code{Getopt::Long} and with some adaptation for
-easier use in R.  It also provides a simple way for variable
-interpolation in R.")
-    (license license:gpl2+)))
-
 (define-public r-complexheatmap
   (package
     (name "r-complexheatmap")
