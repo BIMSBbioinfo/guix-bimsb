@@ -2454,14 +2454,14 @@ packages.")
 (define-public r-ensembldb
   (package
     (name "r-ensembldb")
-    (version "2.0.3")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ensembldb" version))
        (sha256
         (base32
-         "1qmfg6qfr46nljjymirz3xkx2vcqcmdis0jzkg9r49jcb03lsvdw"))))
+         "1np96nry1hba8lk4bg3grf8w3k6xz9lgd2jcl3vrj6wsl184c3fr"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-annotationdbi" ,r-annotationdbi)
