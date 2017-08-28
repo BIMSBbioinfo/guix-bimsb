@@ -1341,14 +1341,14 @@ the human genome sequence.")
 (define-public gmap-gsnap
   (package
     (name "gmap-gsnap")
-    (version "2017-06-20")
+    (version "2017-08-15")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://research-pub.gene.com/gmap/src/gmap-gsnap-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0kkd4wm1a8y80j5qiqx2zk4qz19zlqqlf9rq1yjajgbd0478xk2r"))))
+                "0bqvv26g4ic3nmrcdnnh7kqly86ly9gym75nw1wyzav4ad5h8rqv"))))
     (build-system gnu-build-system)
     (inputs
      `(("perl" ,perl)))
