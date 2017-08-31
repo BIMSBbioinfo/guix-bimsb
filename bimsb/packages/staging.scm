@@ -3618,3 +3618,28 @@ and analysis.  It allows to go from the raw genetic sequence data to
 collection of molecular @dfn{Quantitative Trait Loci} (QTLs) in few
 easy-to-perform steps.")
     (license license:gpl3+)))
+
+(define-public python2-pyml
+  (package
+    (name "python2-pyml")
+    (version "0.7.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/pyml/PyML-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1p8y0b597x1jb6q9b4k8q6r8wv8wbja9lav3bwi4mwdaa3pcjql4"))))
+    (build-system python-build-system)
+    (arguments `(#:python ,python-2))   ; python2 only
+    (inputs
+     `(("python2-numpy" ,python2-numpy)))
+    (home-page "http://pyml.sourceforge.net")
+    (synopsis "Interactive object oriented framework for machine learning")
+    (description "PyML is an interactive object oriented framework for
+machine learning written in Python.  PyML is focused on kernel-methods
+for classification and regression, including Support Vector
+Machines (SVM).  It provides tools for feature selection, model
+selection, syntax for combining classifiers and methods for assessing
+classifier performance.")
+    (license license:gpl2+)))
