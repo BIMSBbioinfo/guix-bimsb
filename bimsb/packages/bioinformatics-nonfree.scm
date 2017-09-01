@@ -643,7 +643,16 @@ including SNPS, microsatellites, RFLPs and AFLPs.")
      ;; when stripping.  Linking with the stripped static library
      ;; would fail when LTO is enabled.  See the discussion here:
      ;; https://github.com/s-will/LocARNA/issues/7
-     `(#:configure-flags '("--disable-lto")))
+     `(#:configure-flags '("--disable-lto")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-search-path
+           (lambda _
+             ;; Work around test failure.
+             (setenv "PERL5LIB"
+                     (string-append (getcwd) "/tests:"
+                                    (getenv "PERL5LIB")))
+             #t)))))
     (inputs
      `(("perl" ,perl)
        ("python" ,python)))
