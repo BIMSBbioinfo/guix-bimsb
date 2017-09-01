@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -38,6 +39,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages databases)
@@ -3643,3 +3645,32 @@ Machines (SVM).  It provides tools for feature selection, model
 selection, syntax for combining classifiers and methods for assessing
 classifier performance.")
     (license license:gpl2+)))
+
+(define-public python-multicore-tsne
+  (let ((commit "e1a40182068d4815e7fbe523db266caab20773ff")
+        (revision "1"))
+    (package
+      (name "python-multicore-tsne")
+      (version (string-append "0-" revision "." (string-take commit 9)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DmitryUlyanov/Multicore-TSNE.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "1k5vvsak19ap75rvanll0k71j5fi4kpyj83rl1006v4h04hwv1x6"))))
+      (build-system python-build-system)
+      ;; Tests need python-cffi and pypi/psutils (the latter not in
+      ;; guix)
+      (arguments `(#:tests? #f))
+      (native-inputs
+       `(("cmake" ,cmake)))
+      (home-page "https://github.com/DmitryUlyanov/Multicore-TSNE")
+      (synopsis "Parallel t-SNE implementation with Python and Torch wrappers")
+      (description
+       "This package contains a multicore Barnes-Hut implementation of
+the t-SNE algorithm.  The implementation is described here:
+@url{http://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf}.")
+      (license license:bsd-3))))
