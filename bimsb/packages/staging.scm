@@ -924,6 +924,16 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
                (("&ohgr;") "oh")
                (("&hellip;") "...")
                (("&middot;") ""))
+             #t))
+         ;; This is necessary for ABI compatibility when linking with
+         ;; the Boost 1.55 which has been built with GCC 4.9.  This
+         ;; wouldn't be necessary if we managed to build Boost with
+         ;; GCC 5.  See https://stackoverflow.com/a/30668880/519736
+         (add-after 'unpack 'use-old-abi
+           (lambda _
+             (substitute* "Makefile.in"
+               (("^CPPFLAGS = " line)
+                (string-append line "-D_GLIBCXX_USE_CXX11_ABI=0 ")))
              #t)))))
     (inputs
      `(("boost" ,boost-1.55)
