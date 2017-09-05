@@ -947,6 +947,13 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
        ("tinyxml" ,tinyxml)
        ("libtiff" ,libtiff)
        ("wxwidgets" ,wxwidgets-2)
+       ;; FIXME: this is currently broken:
+       ;;        dStorm/display/rapidstorm-store_image.o: In function `make_key_image':
+       ;; /tmp/guix-build-rapidstorm-3.3.0.drv-0/rapidstorm-3.3.0/dStorm/display/store_image.cpp:143: undefined reference to `Magick::Image::annotate(std::string const&, Magick::Geometry const&, MagickLib::GravityType, double)'
+       ;; /tmp/guix-build-rapidstorm-3.3.0.drv-0/rapidstorm-3.3.0/dStorm/display/store_image.cpp:153: undefined reference to `Magick::Image::annotate(std::string const&, Magick::Geometry const&, MagickLib::GravityType, double)'
+       ;; dStorm/display/rapidstorm-store_image.o: In function `write_scale_bar':
+       ;; /tmp/guix-build-rapidstorm-3.3.0.drv-0/rapidstorm-3.3.0/dStorm/display/store_image.cpp:202: undefined reference to `Magick::Image::annotate(std::string const&, Magick::Geometry const&, MagickLib::GravityType)'
+       ;; collect2: error: ld returned 1 exit status
        ("graphicsmagick" ,graphicsmagick)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
