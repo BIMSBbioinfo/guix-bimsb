@@ -238,7 +238,9 @@ applicable."
                            make-flags))))
          (replace 'install
            (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (zero? (apply system* "./b2" "install" make-flags)))))))))
+             (zero? (apply system* "./b2" "install" make-flags)))))))
+    (native-inputs
+     `(("gcc-4" ,gcc-4.9)))))
 
 (define-public boost-1.44
   (package (inherit boost-1.55)
