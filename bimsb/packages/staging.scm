@@ -3691,3 +3691,24 @@ classifier performance.")
 the t-SNE algorithm.  The implementation is described here:
 @url{http://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf}.")
       (license license:bsd-3))))
+
+(define-public umi-tools5
+  (package
+  (inherit umi-tools)
+  (name "umi-tools-0.5.0")
+  (version "0.5.0")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (pypi-uri "umi_tools" version))
+      (sha256
+       (base32
+        "04i9cxj3jf08pr0pafh7b0h4rn8cnkrsb2lzsai8zj9hgnka0dd5"))))
+  (inputs
+  `(("python-setuptools" ,python-setuptools)
+    ("python-pandas" ,python-pandas)
+    ("python-future" ,python-future)
+    ("python-scipy" ,python-scipy)
+    ("python-matplotlib" ,python-matplotlib)
+    ("python-regex" ,python-regex)
+    ("python-pysam" ,python-pysam)))))
