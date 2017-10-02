@@ -3695,7 +3695,7 @@ the t-SNE algorithm.  The implementation is described here:
 (define-public umi-tools5
   (package
   (inherit umi-tools)
-  (name "umi-tools-0.5.0")
+  (name "umi-tools")
   (version "0.5.0")
   (source
     (origin
