@@ -34,6 +34,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages sdl)
@@ -514,3 +515,8 @@ applicable."
               (sha256
                (base32
                 "1c32ssscbnjwfw3dra140fq7riarp2x990qxybh34nr1p5r17nxx"))))))
+
+(define-public guix-for-big-servers
+  (package (inherit guile2.0-guix)
+    (name "guix-for-big-servers")
+    (arguments '(#:tests? #f))))
