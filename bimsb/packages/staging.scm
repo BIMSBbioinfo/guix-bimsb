@@ -81,6 +81,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (bimsb packages variants)
+  #:use-module (bimsb packages bioinformatics-variants)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 (define-public rstudio-server
@@ -3712,3 +3713,45 @@ the t-SNE algorithm.  The implementation is described here:
     ("python-matplotlib" ,python-matplotlib)
     ("python-regex" ,python-regex)
     ("python-pysam" ,python-pysam)))))
+
+(define-public footprint-pipeline
+  (package
+    (name "footprint-pipeline")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://bimsbstatic.mdc-berlin.de/"
+                                  "ohler/asli/footprint-pipeline-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0aws3r67f04sfg0gsji4k29k7v2k9k4m0dyyw2lahkjwlvya5isx"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'fix-broken-shebang
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "run_footprinting.R.in"
+               (("@RSCRIPT@") (which "Rscript")))
+             #t))
+         (add-after 'install 'wrap-executable
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out")))
+               (wrap-program (string-append out "/bin/find_footprints.sh")
+                 `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
+             #t)))))
+    (inputs
+     `(("r-minimal" ,r-minimal)
+       ("r-mixtools" ,r-mixtools)
+       ("r-gtools" ,r-gtools)
+       ("r-genomicranges" ,r-genomicranges)
+       ("perl" ,perl)
+       ("samtools" ,samtools-1.1)
+       ("bedtools" ,bedtools-2.18)))
+    (home-page "https://ohlerlab.mdc-berlin.de/software/Reproducible_footprinting_139/")
+    (synopsis "Find transcription factor footprints in ATAC-seq or DNase-seq data")
+    (description "This is a pipeline to find transcription factor
+footprints in ATAC-seq or DNase-seq data.")
+    ;; TODO: there is no license!
+    (license license:gpl3+)))
