@@ -3755,3 +3755,33 @@ the t-SNE algorithm.  The implementation is described here:
 footprints in ATAC-seq or DNase-seq data.")
     ;; TODO: there is no license!
     (license license:gpl3+)))
+
+(define-public samstat
+  (package
+    (name "samstat")
+    (version "1.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/samstat/"
+                                  "samstat-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0hq5fsialpdv4dnhzws3nwiwzhhlhnf1438vg8h81yr63f84dw66"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'embed-samtools-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/io.c"
+               (("samtools")
+                (string-append (assoc-ref inputs "samtools")
+                               "/bin/samtools")))
+             #t)))))
+    (inputs
+     `(("samtools" ,samtools)))
+    (home-page "http://samstat.sourceforge.net/")
+    (synopsis "Sequence statistics for next generation sequencing")
+    (description "SAMStat displays various properties of
+next-generation genomic sequencing reads stored in SAM/BAM format.")
+    (license license:gpl3+)))
