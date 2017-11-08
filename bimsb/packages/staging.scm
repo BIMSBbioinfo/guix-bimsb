@@ -3563,6 +3563,39 @@ Likelihood, Maximum Parsimony, distance methods and Hadamard
 conjugation.")
     (license license:gpl2+)))
 
+(define-public r-chipcomp
+  (package
+    (name "r-chipcomp")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ChIPComp" version))
+       (sha256
+        (base32
+         "1nj3903nhii76v6jrm7bfw8kngbq525zikb3nwhvmp4905c77z40"))))
+    (properties `((upstream-name . "ChIPComp")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biocgenerics" ,r-biocgenerics)
+       ("r-bsgenome-hsapiens-ucsc-hg19" ,r-bsgenome-hsapiens-ucsc-hg19)
+       ("r-bsgenome-mmusculus-ucsc-mm9" ,r-bsgenome-mmusculus-ucsc-mm9)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-iranges" ,r-iranges)
+       ("r-limma" ,r-limma)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-s4vectors" ,r-s4vectors)))
+    (home-page "https://bioconductor.org/packages/ChIPComp")
+    (synopsis "Quantitative comparison of multiple ChIP-seq datasets")
+    (description
+     "ChIPComp detects differentially bound sharp binding sites across
+multiple conditions considering matching control in ChIP-seq
+datasets.")
+    ;; Any version of the GPL.
+    (license license:gpl3+)))
+
 (define htslib-1.3
   (package
     (inherit htslib)
