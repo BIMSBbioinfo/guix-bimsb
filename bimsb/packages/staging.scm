@@ -2227,33 +2227,6 @@ the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
 
-(define-public r-snpstats
-  (package
-    (name "r-snpstats")
-    (version "1.26.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "snpStats" version))
-       (sha256
-        (base32
-         "1f8i8pj741h8539lqj508ji27p5ljghyvmdrh3qcfx5jwn9jq8bj"))))
-    (properties `((upstream-name . "snpStats")))
-    (build-system r-build-system)
-    (inputs `(("zlib" ,zlib)))
-    (propagated-inputs
-     `(("r-biocgenerics" ,r-biocgenerics)
-       ("r-matrix" ,r-matrix)
-       ("r-survival" ,r-survival)
-       ("r-zlibbioc" ,r-zlibbioc)))
-    (home-page "http://bioconductor.org/packages/snpStats")
-    (synopsis "SnpMatrix and XSnpMatrix classes and methods")
-    (description
-     "This package provides classes and statistical methods for large
-SNP association studies.  This extends the earlier snpMatrix package,
-allowing for uncertainty in genotypes.")
-    (license license:gpl3)))
-
 (define-public r-org-hs-eg-db
   (package
     (name "r-org-hs-eg-db")
