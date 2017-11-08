@@ -2227,30 +2227,6 @@ the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
 
-(define-public r-fithic
-  (package
-    (name "r-fithic")
-    (version "1.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "FitHiC" version))
-              (sha256
-               (base32
-                "10jalj7gjqsldx92c349ihx608m6234y8s0pj7kgdfm9jwmgrwww"))))
-    (properties `((upstream-name . "FitHiC")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-data-table" ,r-data-table)
-       ("r-fdrtool" ,r-fdrtool)
-       ("r-rcpp" ,r-rcpp)))
-    (home-page "http://bioconductor.org/packages/FitHiC")
-    (synopsis "Confidence estimation for intra-chromosomal contact maps")
-    (description
-     "Fit-Hi-C is a tool for assigning statistical confidence
-estimates to intra-chromosomal contact maps produced by genome-wide
-genome architecture assays such as Hi-C.")
-    (license license:gpl2+)))
-
 (define-public r-hitc
   (package
     (name "r-hitc")
