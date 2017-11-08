@@ -2001,44 +2001,6 @@ diffusion maps.")
     ;; Any version of the GPL
     (license license:gpl3+)))
 
-(define-public r-edaseq
-  (package
-    (name "r-edaseq")
-    (version "2.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "EDASeq" version))
-       (sha256
-        (base32
-         "0f25dfc8hdii9fjm3bf89vy9jkxv23sa62fkcga5b4gkipwrvm9a"))))
-    (properties `((upstream-name . "EDASeq")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-annotationdbi" ,r-annotationdbi)
-       ("r-aroma-light" ,r-aroma-light)
-       ("r-biobase" ,r-biobase)
-       ("r-biocgenerics" ,r-biocgenerics)
-       ("r-biomart" ,r-biomart)
-       ("r-biostrings" ,r-biostrings)
-       ("r-deseq" ,r-deseq)
-       ("r-genomicfeatures" ,r-genomicfeatures)
-       ("r-genomicranges" ,r-genomicranges)
-       ("r-iranges" ,r-iranges)
-       ("r-rsamtools" ,r-rsamtools)
-       ("r-shortread" ,r-shortread)))
-    (home-page "https://github.com/drisso/EDASeq")
-    (synopsis "Exploratory data analysis and normalization for RNA-Seq")
-    (description
-     "This package provides support for numerical and graphical summaries of
-RNA-Seq genomic read data.  Provided within-lane normalization procedures to
-adjust for GC-content effect (or other gene-level effects) on read counts:
-loess robust local regression, global-scaling, and full-quantile
-normalization.  Between-lane normalization procedures to adjust for
-distributional differences between lanes (e.g., sequencing depth):
-global-scaling and full-quantile normalization.")
-    (license license:artistic2.0)))
-
 (define-public r-catch
   (let ((commit "60c995e34a6b709832c96bc82128218ecfebd108")
         (release "1.0")
