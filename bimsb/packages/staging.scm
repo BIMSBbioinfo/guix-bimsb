@@ -2227,30 +2227,6 @@ the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
 
-(define-public r-prabclus
-  (package
-    (name "r-prabclus")
-    (version "2.2-6")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "prabclus" version))
-              (sha256
-               (base32
-                "0qjsxrx6yv338bxm4ki0w9h8hind1l98abdrz828588bwj02jya1"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-mass" ,r-mass)
-       ("r-mclust" ,r-mclust)))
-    (home-page "http://www.homepages.ucl.ac.uk/~ucakche")
-    (synopsis "Functions for clustering of presence-absence, abundance and multilocus genetic data")
-    (description
-     "This package provides distance-based parametric bootstrap tests
-for clustering with spatial neighborhood information.  Some distance
-measures, Clustering of presence-absence, abundance and multilocus
-genetical data for species delimitation, nearest neighbor based noise
-detection.")
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-sm
   (package
     (name "r-sm")
