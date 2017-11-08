@@ -3756,6 +3756,51 @@ footprints in ATAC-seq or DNase-seq data.")
     ;; TODO: there is no license!
     (license license:gpl3+)))
 
+(define-public cpat
+  (package
+    (name "cpat")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/rna-cpat/v"
+                                  version "/CPAT-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0wqcj3p2r3b368504c10ggnmwd98ij849q3fnp04r0ax2x56448h"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'do-not-download-setuptools
+           (lambda _
+             (substitute* "setup.py"
+               (("use_setuptools\\(\\)")
+                "import setuptools"))
+             #t)))))
+    ;; This package bundles a possibly modified copy of the samtools
+    ;; and pysam sources.
+    (inputs
+     `(("python2-numpy" ,python2-numpy)
+       ("python2-cython" ,python2-cython)
+       ("r-minimal" ,r-minimal)
+       ("zlib" ,zlib)))
+    (native-inputs
+     `(("python2-nose" ,python2-nose)))
+    (home-page "http://rna-cpat.sourceforge.net/")
+    (synopsis "Alignment-free distinction between coding and noncoding RNA")
+    (description "CPAT is a method to distinguish coding and noncoding
+RNA by using a logistic regression model based on four pure
+sequence-based, linguistic features: ORF size, ORF coverage, Ficket
+TESTCODE, and Hexamer usage bias.  Linguistic features based method
+does not require other genomes or protein databases to perform
+alignment and is more robust. Because it is alignment-free, it runs
+much faster and also easier to use.")
+    ;; TODO: There is some license confusion.  The website says
+    ;; GPLv2+, setup.py says "Artistic License, see COPYING",
+    ;; "COPYING" contains the Expat license.
+    (license license:gpl2+)))
+
 (define-public samstat
   (package
     (name "samstat")
