@@ -2227,42 +2227,6 @@ the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
 
-(define-public r-mice
-  (package
-    (name "r-mice")
-    (version "2.30")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "mice" version))
-       (sha256
-        (base32
-         "1r673x51vs3w7kz4bkp2rih4445hcmajw86gjwz7m2piajwvs817"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-lattice" ,r-lattice)
-       ("r-mass" ,r-mass)
-       ("r-nnet" ,r-nnet)
-       ("r-rcpp" ,r-rcpp)
-       ("r-rpart" ,r-rpart)
-       ("r-survival" ,r-survival)))
-    (home-page "http://www.stefvanbuuren.nl")
-    (synopsis "Multivariate imputation by chained equations")
-    (description
-     "Multiple imputation using Fully Conditional Specification (FCS)
-implemented by the MICE algorithm as described in Van Buuren and
-Groothuis-Oudshoorn (2011) <doi:10.18637/jss.v045.i03>.  Each variable
-has its own imputation model.  Built-in imputation models are provided
-for continuous data (predictive mean matching, normal), binary
-data (logistic regression), unordered categorical data (polytomous
-logistic regression) and ordered categorical data (proportional odds).
-MICE can also impute continuous two-level data (normal model, pan,
-second-level variables).  Passive imputation can be used to maintain
-consistency between variables.  Various diagnostic plots are available
-to inspect the quality of the imputations.")
-    ;; Any of these two versions.
-    (license (list license:gpl2 license:gpl3))))
-
 (define-public r-hardyweinberg
   (package
     (name "r-hardyweinberg")
