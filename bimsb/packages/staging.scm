@@ -2227,39 +2227,6 @@ the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
 
-(define-public r-organismdbi
-  (package
-    (name "r-organismdbi")
-    (version "1.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "OrganismDbi" version))
-       (sha256
-        (base32
-         "17jamgx9hqyi8ia48whqf7jj6ibdah2641zvx1xpv2lm8mhl3qzc"))))
-    (properties `((upstream-name . "OrganismDbi")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-annotationdbi" ,r-annotationdbi)
-       ("r-biobase" ,r-biobase)
-       ("r-biocgenerics" ,r-biocgenerics)
-       ("r-biocinstaller" ,r-biocinstaller)
-       ("r-genomicfeatures" ,r-genomicfeatures)
-       ("r-genomicranges" ,r-genomicranges)
-       ("r-graph" ,r-graph)
-       ("r-iranges" ,r-iranges)
-       ("r-rbgl" ,r-rbgl)
-       ("r-rsqlite" ,r-rsqlite)
-       ("r-s4vectors" ,r-s4vectors)))
-    (home-page "http://bioconductor.org/packages/OrganismDbi")
-    (synopsis "Software to enable the smooth interfacing of database packages")
-    (description "The package enables a simple unified interface to
-several annotation packages each of which has its own schema by taking
-advantage of the fact that each of these packages implements a select
-methods.")
-    (license license:artistic2.0)))
-
 (define-public r-biovizbase
   (package
     (name "r-biovizbase")
