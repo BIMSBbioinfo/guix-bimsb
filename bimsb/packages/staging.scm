@@ -2814,3 +2814,28 @@ much faster and also easier to use.")
     (description "SAMStat displays various properties of
 next-generation genomic sequencing reads stored in SAM/BAM format.")
     (license license:gpl3+)))
+
+(define-public splicegrapher
+  (package
+    (name "splicegrapher")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/splicegrapher/"
+                                  "SpliceGrapher-" version ".tgz"))
+              (sha256
+               (base32
+                "1z5vwk7n1fa9g34qmz6dmc2s99qhk7s7zhaymyhzgc1mgpqlbq8q"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2))
+    (propagated-inputs
+     `(("python2-pyml" ,python2-pyml)
+       ("python2-matplotlib" ,python2-matplotlib)))
+    (home-page "http://splicegrapher.sourceforge.net/")
+    (synopsis "Predict alternative splicing patterns")
+    (description "SpliceGrapher predicts alternative splicing patterns
+and produces splice graphs that capture in a single structure the ways
+a gene's exons may be assembled.  It enhances gene models using
+evidence from next-generation sequencing and EST alignments.")
+    (license license:lgpl2.1+)))
