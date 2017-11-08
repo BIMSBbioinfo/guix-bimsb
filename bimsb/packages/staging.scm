@@ -2227,31 +2227,6 @@ the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
 
-(define-public r-annotationfilter
-  (package
-    (name "r-annotationfilter")
-    (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (bioconductor-uri "AnnotationFilter" version))
-              (sha256
-               (base32
-                "0pxvswjzwibdfmrkdragxmzcl844z73pmkn82z92wahwa6gjfyi7"))))
-    (properties
-     `((upstream-name . "AnnotationFilter")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-genomicranges" ,r-genomicranges)
-       ("r-lazyeval" ,r-lazyeval)))
-    (home-page "https://github.com/Bioconductor/AnnotationFilter")
-    (synopsis "Facilities for filtering Bioconductor annotation resources")
-    (description
-     "This package provides classes and other infrastructure to
-implement filters for manipulating Bioconductor annotation resources.
-The filters are used by ensembldb, Organism.dplyr, and other
-packages.")
-    (license license:artistic2.0)))
-
 (define-public r-ensembldb
   (package
     (name "r-ensembldb")
