@@ -2227,39 +2227,6 @@ the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
 
-(define-public r-homo-sapiens
-  (package
-    (name "r-homo-sapiens")
-    (version "1.3.1")
-    (source (origin
-              (method url-fetch)
-              ;; We cannot use bioconductor-uri here because this tarball is
-              ;; located under "data/annotation/" instead of "bioc/".
-              (uri (string-append "http://www.bioconductor.org/packages/"
-                                  "release/data/annotation/src/contrib/"
-                                  "Homo.sapiens_"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "151vj7h5p1c8yd5swrchk46z469p135wk50hvkl0nhgndvy0jj01"))))
-    (properties
-     `((upstream-name . "Homo.sapiens")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-genomicfeatures" ,r-genomicfeatures)
-       ("r-go-db" ,r-go-db)
-       ("r-org-hs-eg-db" ,r-org-hs-eg-db)
-       ("r-txdb-hsapiens-ucsc-hg19-knowngene"
-        ,r-txdb-hsapiens-ucsc-hg19-knowngene)
-       ("r-organismdbi" ,r-organismdbi)
-       ("r-annotationdbi" ,r-annotationdbi)))
-    (home-page "http://bioconductor.org/packages/Homo.sapiens/")
-    (synopsis "Annotation package for the Homo.sapiens object")
-    (description
-     "This package contains the Homo.sapiens object to access data
-from several related annotation packages.")
-    (license license:artistic2.0)))
-
 (define-public r-ldblock
   (package
     (name "r-ldblock")
