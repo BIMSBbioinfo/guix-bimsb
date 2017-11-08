@@ -2227,36 +2227,6 @@ the data.  It also provides data pre-processing functionality such as
 dimensionality reduction and gene expression visualization.")
     (license license:gpl2+)))
 
-(define-public r-dirichletmultinomial
-  (package
-    (name "r-dirichletmultinomial")
-    (version "1.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "DirichletMultinomial" version))
-       (sha256
-        (base32
-         "06mpj57fr08kgr9d87izwdbri930qfxr6kw6sg6qnfgx71lcdy1h"))))
-    (properties
-     `((upstream-name . "DirichletMultinomial")))
-    (build-system r-build-system)
-    (inputs
-     `(("gsl" ,gsl)))
-    (propagated-inputs
-     `(("r-biocgenerics" ,r-biocgenerics)
-       ("r-iranges" ,r-iranges)
-       ("r-s4vectors" ,r-s4vectors)))
-    (home-page "http://bioconductor.org/packages/DirichletMultinomial")
-    (synopsis "Dirichlet-Multinomial mixture models for microbiome data")
-    (description
-     "Dirichlet-multinomial mixture models can be used to describe
-variability in microbial metagenomic data.  This package is an
-interface to code originally made available by Holmes, Harris, and
-Quince, 2012, PLoS ONE 7(2): 1-15, as discussed further in the man
-page for this package, @code{?DirichletMultinomial}.")
-    (license license:lgpl3)))
-
 (define-public r-annotationfilter
   (package
     (name "r-annotationfilter")
