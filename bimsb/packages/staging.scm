@@ -2863,3 +2863,42 @@ generation utilities, filtering functions, resampling routines, and
 visualization of filter models.  It also includes interpolation
 functions.")
     (license license:gpl2)))
+
+(define-public r-psych
+  (package
+    (name "r-psych")
+    (version "1.7.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "psych" version))
+       (sha256
+        (base32
+         "0daismb8pdk392vdy304hqx0m3jx62gx3a0hygjygc125rhfla7k"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-foreign" ,r-foreign)
+       ("r-lattice" ,r-lattice)
+       ("r-mnormt" ,r-mnormt)
+       ("r-nlme" ,r-nlme)))
+    (home-page "http://cran.r-project.org/web/packages/psych")
+    (synopsis "Procedures for psychological, psychometric, and personality research")
+    (description
+     "This package provides a general purpose toolbox for personality,
+psychometric theory and experimental psychology.  The functions are
+primarily for multivariate analysis and scale construction using
+factor analysis, principal component analysis, cluster analysis and
+reliability analysis, although others provide basic descriptive
+statistics.  Item Response Theory is done using factor analysis of
+tetrachoric and polychoric correlations.  It provides functions for
+analyzing data at multiple levels include within and between group
+statistics, including correlations and factor analysis; functions for
+simulating and testing particular item and test structures are
+included.  Several functions serve as a useful front end for
+structural equation modeling.  Graphical displays of path diagrams,
+factor analysis and structural equation models are created using basic
+graphics.  Some of the functions are written to support a book on
+psychometric theory as well as publications in personality research.
+For more information, see the @url{http://personality-project.org/r} web
+page.")
+    (license license:gpl2+)))
