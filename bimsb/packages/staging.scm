@@ -3049,3 +3049,32 @@ sequencing machines, calculating estimated posterior likelihoods of
 differential expression (or more complex hypotheses) via empirical
 Bayesian methods.")
     (license license:gpl3)))
+
+(define-public r-riboseqr
+  (package
+    (name "r-riboseqr")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "riboSeqR" version))
+       (sha256
+        (base32
+         "0fg2zn5az1djdjnsrli26rl53ljrrjzmspx02dmgwf1a7nm7qmfz"))))
+    (properties `((upstream-name . "riboSeqR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-abind" ,r-abind)
+       ("r-bayseq" ,r-bayseq)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-iranges" ,r-iranges)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-seqlogo" ,r-seqlogo)))
+    (home-page "https://bioconductor.org/packages/riboSeqR/")
+    (synopsis "Analysis of sequencing data from ribosome profiling experiments")
+    (description
+     "This package provides plotting functions, frameshift detection
+and parsing of genetic sequencing data from ribosome profiling
+experiments.")
+    (license license:gpl3)))
