@@ -3022,3 +3022,30 @@ arrays.  It also provides the functions @code{adrop}, @code{asub}, and
 @code{afill} for manipulating, extracting and replacing data in
 arrays.")
     (license license:lgpl2.0+)))
+
+(define-public r-bayseq
+  (package
+    (name "r-bayseq")
+    (version "2.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "baySeq" version))
+       (sha256
+        (base32
+         "1d918rmbzqncr7jw6byr3xyqybvcsgcyf96immqcl1c5xvgmqn5z"))))
+    (properties `((upstream-name . "baySeq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-abind" ,r-abind)
+       ("r-edger" ,r-edger)
+       ("r-genomicranges" ,r-genomicranges)))
+    (home-page "https://bioconductor.org/packages/baySeq/")
+    (synopsis "Empirical Bayesian analysis of patterns of differential expression in count data")
+    (description
+     "This package identifies differential expression in
+high-throughput count data, such as that derived from next-generation
+sequencing machines, calculating estimated posterior likelihoods of
+differential expression (or more complex hypotheses) via empirical
+Bayesian methods.")
+    (license license:gpl3)))
