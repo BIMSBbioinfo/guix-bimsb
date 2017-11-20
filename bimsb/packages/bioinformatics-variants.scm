@@ -392,3 +392,46 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
        ("python-notebook" ,python2-notebook)
        ;; TODO: this should be propagated by tornado
        ("python-certifi" ,python2-certifi)))))
+
+(define-public python2-cutadapt
+  (package
+    (name "python2-cutadapt")
+    (version "1.12")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/marcelm/cutadapt/archive/v"
+                    version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19smhh6444ikn4jlmyhvffw4m5aw7yg07rqsk7arg8dkwyga1i4v"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         ;; The tests must be run after installation.
+         (delete 'check)
+         (add-after 'install 'check
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (setenv "PYTHONPATH"
+                     (string-append
+                      (getenv "PYTHONPATH")
+                      ":" (assoc-ref outputs "out")
+                      "/lib/python"
+                      (string-take (string-take-right
+                                    (assoc-ref inputs "python") 5) 3)
+                      "/site-packages"))
+             (zero? (system* "nosetests" "-P" "tests")))))))
+    (propagated-inputs
+     `(("python2-xopen" ,python2-xopen)))
+    (native-inputs
+     `(("python2-cython" ,python2-cython)
+       ("python2-nose" ,python2-nose)))
+    (home-page "https://cutadapt.readthedocs.io/en/stable/")
+    (synopsis "Remove adapter sequences from nucleotide sequencing reads")
+    (description
+     "Cutadapt finds and removes adapter sequences, primers, poly-A tails and
+other types of unwanted sequence from high-throughput sequencing reads.")
+    (license license:expat)))
