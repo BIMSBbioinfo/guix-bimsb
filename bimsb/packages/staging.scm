@@ -2960,3 +2960,42 @@ assign to each column of the returned data frame.  The @code{sqldf} or
 into R even if the original files are larger than R itself can
 handle.")
     (license license:gpl2)))
+
+(define-public r-riboprofiling
+  (package
+    (name "r-riboprofiling")
+    (version "1.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RiboProfiling" version))
+       (sha256
+        (base32
+         "1w969imn7lizz56nsxaydfx678p01z457rf3rpc222qbm54p0ynn"))))
+    (properties `((upstream-name . "RiboProfiling")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biocgenerics" ,r-biocgenerics)
+       ("r-biostrings" ,r-biostrings)
+       ("r-data-table" ,r-data-table)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicalignments" ,r-genomicalignments)
+       ("r-genomicfeatures" ,r-genomicfeatures)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-ggbio" ,r-ggbio)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-iranges" ,r-iranges)
+       ("r-plyr" ,r-plyr)
+       ("r-reshape2" ,r-reshape2)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-sqldf" ,r-sqldf)))
+    (home-page "https://bioconductor.org/packages/RiboProfiling/")
+    (synopsis "Ribosome profiling data analysis")
+    (description "Starting with a BAM file, this package provides the
+necessary functions for quality assessment, read start position
+recalibration, the counting of reads on CDS, 3'UTR, and 5'UTR, and
+plotting of count data: pairs, log fold-change, codon frequency and
+coverage assessment, principal component analysis on codon coverage.")
+    (license license:gpl3)))
