@@ -33,6 +33,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages serialization))
 
