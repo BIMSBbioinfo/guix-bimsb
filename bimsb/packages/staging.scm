@@ -570,14 +570,19 @@ and a @{parcel} client.")
     (build-system python-build-system)
     (arguments
      `(#:python ,python-2
+       #:use-setuptools? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "setup.py"
-               ;; TODO: make this robust!
-               (("19.2") ,(package-version python2-setuptools))
-               (("3.5.0b1") ,(package-version python2-lxml)))
+               (("(lxml==).*," _ pre)
+                (string-append pre ,(package-version python2-lxml) "',\n"))
+               (("(PyYAML==).*," _ pre)
+                (string-append pre ,(package-version python2-pyyaml) "',\n"))
+               (("(jsonschema==).*," _ pre)
+                (string-append pre ,(package-version python2-jsonschema) "',\n"))
+               (("setuptools==") "setuptools>="))
              #t)))))
     (inputs
      `(("python2-parcel" ,python2-parcel-for-gdc-client)
