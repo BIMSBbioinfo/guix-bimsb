@@ -586,9 +586,11 @@ and a @{parcel} client.")
        ("python2-lxml" ,python2-lxml)
        ("python2-functools32" ,python2-functools32)
        ("python2-setuptools" ,python2-setuptools)))
-    (home-page "TODO")
-    (synopsis "TODO")
-    (description "TODO")
+    (home-page "https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool")
+    (synopsis "GDC data transfer tool")
+    (description "The gdc-client provides several convenience
+functions over the GDC API which provides general download/upload via
+HTTPS.")
     (license license:asl2.0)))
 
 (define-public umi-tools
