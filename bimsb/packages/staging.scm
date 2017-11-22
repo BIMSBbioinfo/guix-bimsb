@@ -489,21 +489,34 @@ providing a visual cue that processing is underway.")
     (build-system python-build-system)
     (arguments
      `(#:python ,python-2
+       #:use-setuptools? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "setup.py"
                ;; TODO: make this robust!
+               (("0.10.1") ,(package-version python2-flask))
                (("0.6.8") ,(package-version python2-cmd2))
                (("2.0.4") ,(package-version python2-intervaltree))
                (("2.5.1") ,(package-version python2-requests)))
              #t))
-         (add-before 'build 'set-HOME
-           (lambda _
+         (add-before 'build 'set-vars
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; This is needed to build the parcel library, which is
              ;; placed in $HOME/.parcel/lib.
              (setenv "HOME" "/tmp")
+             ;; The installer aborts if the target directory is not on
+             ;; PYTHONPATH.
+             (let* ((out (assoc-ref outputs "out"))
+                    (target (string-append out "/lib/python"
+                                           ((@@ (guix build python-build-system)
+                                                get-python-version)
+                                            (assoc-ref inputs "python"))
+                                           "/site-packages/")))
+               (mkdir-p target)
+               (setenv "PYTHONPATH"
+                       (string-append target ":" (getenv "PYTHONPATH"))))
              #t)))))
     (propagated-inputs
      `(("python2-cmd2" ,python2-cmd2)
