@@ -3125,3 +3125,31 @@ done by a non-linear piecewise function.  In addition to the areas
 under the curves, the curves themselves can also be computed and
 plotted by a specific S3-method.")
     (license license:gpl3)))
+
+(define-public r-wasabi
+  (let ((commit "f31c73eed6bcb9d0be43b607c14211dd899e5a6c")
+        (revision "1"))
+    (package
+      (name "r-wasabi")
+      (version (string-append "0.2-" revision "." (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/COMBINE-lab/wasabi.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1phmn030yi92z17ijpwj99q7p681k44nj2vr8q6vxcrl6qgriram"))))
+      (build-system r-build-system)
+      (propagated-inputs
+       `(("r-data-table" ,r-data-table)
+         ("r-rjson" ,r-rjson)
+         ("r-rhdf5" ,r-rhdf5)))
+      (home-page "https://github.com/COMBINE-lab/wasabi")
+      (synopsis "Prepare Sailfish and Salmon output for downstream analysis")
+      (description
+       "Wasabi allows you to easily prepare the output of the RNA-seq
+quantification tools Sailfish and Salmon output for downstream
+analysis.  Currently, its main purpose it to prepare output for
+downstream analysis with sleuth.")
+      (license license:bsd-3))))
