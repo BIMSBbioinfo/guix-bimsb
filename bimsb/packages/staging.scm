@@ -83,7 +83,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (bimsb packages variants)
-  #:use-module (bimsb packages bioinformatics-variants)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 (define-public rstudio-server
