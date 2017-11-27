@@ -3192,6 +3192,32 @@ allows testing in the context of experiments with complex designs, and
 supports interactive exploratory data analysis via sleuth live.")
     (license license:gpl3)))
 
+(define-public python2-nanoraw
+  (package
+    (name "python2-nanoraw")
+    (version "0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nanoraw" version))
+       (sha256
+        (base32
+         "1y974jjzb8w9q2y2vc0lijncp0qpzqqkrfwrsa18nglgq4n6dzj4"))))
+    (build-system python-build-system)
+    (arguments `(#:python ,python-2))
+    (propagated-inputs
+     `(("python2-numpy" ,python2-numpy)
+       ("python2-scipy" ,python2-scipy)
+       ("python2-h5py" ,python2-h5py)))
+    (native-inputs
+     `(("python2-nose2" ,python2-nose2)))
+    (home-page "https://github.com/marcus1487/nanoraw")
+    (synopsis "Analysis of nanopore sequencing data")
+    (description "This package provides tools for the analysis of raw
+nanopore sequencing data, including correction of basecalls and
+visualization.")
+    (license license:bsd-3)))
+
 (define-public libgff
   (package
     (name "libgff")
