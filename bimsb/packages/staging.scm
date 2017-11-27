@@ -43,6 +43,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gcc)
@@ -55,6 +56,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages ldc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -71,6 +73,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
@@ -3188,3 +3191,79 @@ Kallisto for accurate differential analysis of isoforms or genes,
 allows testing in the context of experiments with complex designs, and
 supports interactive exploratory data analysis via sleuth live.")
     (license license:gpl3)))
+
+(define-public rapmap
+  (let ((commit "salmon-v0.9.0")
+        (revision "20171127"))
+    (package
+      (name "rapmap")
+      (version (string-append "0." revision "." commit))
+      (source (origin
+                ;; There are no release tarballs.
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/COMBINE-lab/RapMap.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "15jgrn4bskw3gkpc9qbwsqmacr7jbraxwy9gv0wqc5dn7nk3ikqd"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:parallel-build? #f
+         #:configure-flags
+         (list "-DJELLYFISH_FOUND=1"
+               (string-append "-DJELLYFISH_ROOT="
+                              (assoc-ref %build-inputs "jellyfish"))
+               (string-append "-DJELLYFISH_INCLUDE_DIR="
+                              (assoc-ref %build-inputs "jellyfish")
+                              "/include/jellyfish-" ,(package-version jellyfish)))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-build
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; Don't fail, just warn
+                (("-Werror=return-type") "")
+                (("set\\(CMAKE_CXX_FLAGS \"\\$\\{CMAKE_CXX_FLAGS\\} \\$\\{WARNING_IGNORE_FLAGS\\}\"\\)") "")
+                ;; Don't prefer static libs
+                (("SET\\(CMAKE_FIND_LIBRARY_SUFFIXES.*") ""))
+              #t))
+           (add-after 'unpack 'use-system-jellyfish
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("include/RapMapIndex.hpp"
+                             "include/RapMapUtils.hpp"
+                             "include/SASearcher.hpp"
+                             "include/JFRaw.hpp"
+                             "src/RapMapSAIndexer.cpp"
+                             "src/RapMapMapper.cpp"
+                             "src/RapMapUtils.cpp"
+                             "src/RapMapSAMapper.cpp"
+                             "src/RapMapIndexer.cpp")
+                (("include \"(jellyfish/.*)\"" _ header)
+                 (string-append "include <" header ">")))
+              (substitute* "src/CMakeLists.txt"
+                (("\\$\\{GAT_SOURCE_DIR\\}/external/install/include/jellyfish-2.2.6")
+                 "${JELLYFISH_INCLUDE_DIRS}")
+                (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libjellyfish-2.0.a")
+                 (string-append (assoc-ref inputs "jellyfish")
+                                "/lib/libjellyfish-2.0.a")))
+              (substitute* "CMakeLists.txt"
+                (("find_package\\(Jellyfish.*") ""))
+              #t)))))
+      (inputs
+       `(("boost" ,boost)
+         ("jemalloc" ,jemalloc)
+         ("jellyfish" ,jellyfish)
+         ("cereal" ,cereal)
+         ("zlib" ,zlib)))
+      (native-inputs
+       `(("pkg-config" ,pkg-config)))
+      (home-page "https://github.com/COMBINE-lab/RapMap")
+      (synopsis "Rapid sensitive and accurate read mapping via quasi-mapping")
+      (description
+       "RapMap is a stand-alone quasi-mapper (and pseudo-aligner).  The idea
+of RapMap is to explore multiple different strategies in how to most rapidly
+determine all feasible or compatible locations for a sequencing read within
+the transcriptome.")
+      (license license:bsd-3))))
