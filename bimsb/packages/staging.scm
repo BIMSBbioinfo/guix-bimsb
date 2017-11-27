@@ -3152,3 +3152,39 @@ quantification tools Sailfish and Salmon output for downstream
 analysis.  Currently, its main purpose it to prepare output for
 downstream analysis with sleuth.")
       (license license:bsd-3))))
+
+(define-public r-sleuth
+  (package
+    (name "r-sleuth")
+    (version "0.29.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/pachterlab/sleuth/archive/v"
+                                  version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05qad0hc0gixrd41vd70xncb9a6hhq0zls746p0s1w7qm71m6b2d"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-ggplot2" ,r-ggplot2)
+       ("r-dplyr" ,r-dplyr)
+       ("r-data-table" ,r-data-table)
+       ("r-tidyr" ,r-tidyr)
+       ("r-reshape2" ,r-reshape2)
+       ("r-rhdf5" ,r-rhdf5)
+       ("r-lazyeval" ,r-lazyeval)
+       ("r-matrixstats" ,r-matrixstats)
+       ("r-shiny" ,r-shiny)
+       ("r-mass" ,r-mass)
+       ("r-testthat" ,r-testthat)
+       ("r-knitr" ,r-knitr)))
+    (home-page "http://pachterlab.github.io/sleuth")
+    (synopsis "Differential analysis of RNA-Seq data")
+    (description
+     "Sleuth is a program for differential analysis of RNA-Seq data.
+It makes use of quantification uncertainty estimates obtained via
+Kallisto for accurate differential analysis of isoforms or genes,
+allows testing in the context of experiments with complex designs, and
+supports interactive exploratory data analysis via sleuth live.")
+    (license license:gpl3)))
