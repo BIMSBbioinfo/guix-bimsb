@@ -3368,7 +3368,13 @@ of the string.")
                                 "/lib/libjellyfish-2.0.a")))
               (substitute* "CMakeLists.txt"
                 (("find_package\\(Jellyfish.*") ""))
-              #t)))))
+              #t))
+           (add-after 'install 'install-headers
+             (lambda* (#:key outputs #:allow-other-keys)
+               (copy-recursively "../source/include"
+                                 (string-append (assoc-ref outputs "out")
+                                                "/include"))
+               #t)))))
       (inputs
        `(("boost" ,boost)
          ("jemalloc" ,jemalloc)
