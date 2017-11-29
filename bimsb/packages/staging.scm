@@ -3328,7 +3328,7 @@ of the string.")
                   "15jgrn4bskw3gkpc9qbwsqmacr7jbraxwy9gv0wqc5dn7nk3ikqd"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:parallel-build? #f
+       `(#:parallel-build? #f ; won't build in parallel
          #:configure-flags
          (list "-DJELLYFISH_FOUND=1"
                (string-append "-DJELLYFISH_ROOT="
