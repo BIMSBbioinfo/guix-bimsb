@@ -3378,6 +3378,7 @@ of the string.")
       (inputs
        `(("boost" ,boost)
          ("jemalloc" ,jemalloc)
+         ("libdivsufsort" ,libdivsufsort)
          ("jellyfish" ,jellyfish)
          ("cereal" ,cereal)
          ("zlib" ,zlib)))
