@@ -3385,3 +3385,106 @@ of RapMap is to explore multiple different strategies in how to most rapidly
 determine all feasible or compatible locations for a sequencing read within
 the transcriptome.")
       (license license:bsd-3))))
+
+(define-public rapmap-for-sailfish
+  (let ((commit "sf-v0.10.1")
+        (revision "20171128"))
+    (package (inherit rapmap)
+      (name "rapmap")
+      (version (string-append "0." revision "." commit))
+      (source (origin
+                ;; There are no release tarballs nor tags.
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/COMBINE-lab/RapMap.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "1hv79l5i576ykv5a1srj2p0q36yvyl5966m0fcy2lbi169ipjakf"))))
+      (arguments
+       `(#:parallel-build? #f ; won't build in parallel
+         #:configure-flags
+         (list "-DJELLYFISH_FOUND=1"
+               (string-append "-DJELLYFISH_ROOT="
+                              (assoc-ref %build-inputs "jellyfish"))
+               (string-append "-DJELLYFISH_INCLUDE_DIR="
+                              (assoc-ref %build-inputs "jellyfish")
+                              "/include/jellyfish-" ,(package-version jellyfish-for-sailfish)))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'do-not-build-sparsehash
+             (lambda _
+               (substitute* "CMakeLists.txt"
+                 (("-Werror=return-type") "")
+                 (("set\\(CMAKE_CXX_FLAGS \"\\$\\{CMAKE_CXX_FLAGS\\} \\$\\{WARNING_IGNORE_FLAGS\\}\"\\)") "")
+                 (("ExternalProject_Add\\(libsparsehash" line)
+                  (string-append "if (0)\n" line))
+                 (("if \\(NOT CEREAL_ROOT\\)" line)
+                  (string-append "endif()\n" line))
+                 ;; Don't prefer static libs
+                 (("SET\\(CMAKE_FIND_LIBRARY_SUFFIXES.*") ""))
+               #t))
+           (add-after 'unpack 'build-shared-lib
+             (lambda _
+               (substitute* "src/CMakeLists.txt"
+                 (("add_executable\\(rapmap.*" line)
+                  (string-append line "
+add_library(rapmap-for-sailfish SHARED ${RAPMAP_MAIN_SRCS})
+install(TARGETS rapmap-for-sailfish ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
+
+target_link_libraries(rapmap-for-sailfish ${ZLIB_LIBRARY}
+    ${SUFFARRAY_LIB}
+    ${SUFFARRAY64_LIB}
+    ${JELLYFISH_LIB}
+    m
+    ${NON_APPLECLANG_LIBS}
+    ${FAST_MALLOC_LIB}
+    ${CMAKE_THREAD_LIBS_INIT}
+)")))
+               #t))
+           ;; This has been fixed in the upstream fmt library, but not
+           ;; in this bundled version.  See
+           ;; https://github.com/fmtlib/fmt/commit/abbefd71666055daac9e14e78262620f9e845850
+           (add-after 'unpack 'fix-name-collision
+             (lambda _
+               (substitute* "include/spdlog/details/format.cc"
+                 (("CHAR_WIDTH") "_CHAR_WIDTH")
+                 (("CHAR_SIZE")  "_CHAR_SIZE"))
+               #t))
+           (add-after 'unpack 'use-system-jellyfish
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* '("include/RapMapIndex.hpp"
+                              "include/RapMapUtils.hpp"
+                              "include/SASearcher.hpp"
+                              "include/JFRaw.hpp"
+                              "src/RapMapSAIndexer.cpp"
+                              "src/RapMapMapper.cpp"
+                              "src/RapMapUtils.cpp"
+                              "src/RapMapSAMapper.cpp"
+                              "src/RapMapIndexer.cpp")
+                 (("include \"(jellyfish/.*)\"" _ header)
+                  (string-append "include <" header ">")))
+               (substitute* "src/CMakeLists.txt"
+                 (("\\$\\{GAT_SOURCE_DIR\\}/external/install/include/jellyfish-.....")
+                  "${JELLYFISH_INCLUDE_DIRS}")
+                 (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libjellyfish-2.0.a")
+                  (string-append (assoc-ref inputs "jellyfish")
+                                 "/lib/libjellyfish-2.0.a")))
+               (substitute* "CMakeLists.txt"
+                 (("find_package\\(Jellyfish.*") ""))
+               #t))
+           (add-after 'install 'install-headers
+             (lambda* (#:key outputs #:allow-other-keys)
+               (copy-recursively "../source/include"
+                                 (string-append (assoc-ref outputs "out")
+                                                "/include"))
+               #t)))))
+      (inputs
+       `(("boost" ,boost)
+         ("jemalloc" ,jemalloc)
+         ("libdivsufsort" ,libdivsufsort)
+         ("jellyfish" ,jellyfish-for-sailfish)
+         ("cereal" ,cereal)
+         ("sparsehash" ,sparsehash)
+         ("zlib" ,zlib))))))
