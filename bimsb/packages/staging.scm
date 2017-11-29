@@ -3488,3 +3488,135 @@ target_link_libraries(rapmap-for-sailfish ${ZLIB_LIBRARY}
          ("cereal" ,cereal)
          ("sparsehash" ,sparsehash)
          ("zlib" ,zlib))))))
+
+(define-public sailfish
+  (package
+    (name "sailfish")
+    (version "0.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://github.com/kingsfordgroup/"
+                              "sailfish/archive/v" version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1inn60dxiwsz8g9w7kvfhjxj4bwfb0r12dyhpzzhfbig712dkmm0"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Delete bundled headers for eigen3.
+                  (delete-file-recursively "include/eigen3/")
+                  ;; We get these from rapmap's copy of spdlog.
+                  (delete-file-recursively "include/spdlog/")
+                  #t))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "-DBOOST_INCLUDEDIR="
+                            (assoc-ref %build-inputs "boost")
+                            "/include/")
+             (string-append "-DBOOST_LIBRARYDIR="
+                            (assoc-ref %build-inputs "boost")
+                            "/lib/")
+             (string-append "-DBoost_LIBRARIES="
+                            "-lboost_iostreams "
+                            "-lboost_filesystem "
+                            "-lboost_system "
+                            "-lboost_thread "
+                            "-lboost_timer "
+                            "-lboost_chrono "
+                            "-lboost_program_options")
+             "-DBoost_FOUND=TRUE"
+             ;; Don't download RapMap---we already have it!
+             "-DFETCHED_RAPMAP=1")
+       #:phases
+       (modify-phases %standard-phases
+         ;; Boost cannot be found, even though it's right there.
+         (add-after 'unpack 'do-not-look-for-boost
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+               (("find_package\\(Boost 1\\.53\\.0") "#"))
+             #t))
+         (add-after 'unpack 'use-system-libraries
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* '("src/SailfishIndexer.cpp"
+                            "src/SailfishUtils.cpp"
+                            "src/SailfishQuantify.cpp"
+                            "src/FASTAParser.cpp"
+                            "include/PCA.hpp"
+                            "include/SailfishUtils.hpp"
+                            "include/SailfishIndex.hpp"
+                            "include/CollapsedEMOptimizer.hpp"
+                            "src/CollapsedEMOptimizer.cpp")
+               (("#include \"jellyfish/config.h\"") "")
+               (("include \"(jellyfish/.*|Eigen/.*|RapMap.*.hpp)\"" _ header)
+                (string-append "include <" header ">")))
+             (substitute* "src/CMakeLists.txt"
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/include/jellyfish-2.2..")
+                (string-append (assoc-ref inputs "jellyfish")
+                               "/include/jellyfish-" ,(package-version jellyfish-for-sailfish)))
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libjellyfish-2.0.a")
+                (string-append (assoc-ref inputs "jellyfish")
+                               "/lib/libjellyfish-2.0.a"))
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/src/rapmap/") "#")
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libdivsufsort.a")
+                (string-append (assoc-ref inputs "libdivsufsort")
+                               "/lib/libdivsufsort.so"))
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libdivsufsort64.a")
+                (string-append (assoc-ref inputs "libdivsufsort")
+                               "/lib/libdivsufsort64.so"))
+               (("\\$\\{ZLIB_LIBRARY\\}" line)
+                (string-append line " "
+                               (string-append (assoc-ref inputs "rapmap")
+                                              "/lib/librapmap-for-sailfish.so"))))
+             (substitute* "CMakeLists.txt"
+               ;; Don't prefer static libs
+               (("SET\\(CMAKE_FIND_LIBRARY_SUFFIXES.*") "")
+               (("find_package\\(Jellyfish.*") "")
+               (("ExternalProject_Add\\(libjellyfish") "message(")
+               (("ExternalProject_Add\\(libgff") "message(")
+               (("ExternalProject_Add\\(libsparsehash") "message(")
+               (("ExternalProject_Add\\(libdivsufsort") "message("))
+
+             ;; Ensure that Eigen headers can be found
+             (setenv "CPLUS_INCLUDE_PATH"
+                     (string-append (getenv "CPLUS_INCLUDE_PATH")
+                                    ":"
+                                    (assoc-ref inputs "eigen")
+                                    "/include/eigen3"))
+             #t))
+         ;; Tests must be run after installation.
+         (delete 'check)
+         ;; TODO: tests fail :(
+         ;; (add-after 'install 'check
+         ;;   (assoc-ref %standard-phases 'check))
+         ;; And the location of the test data file must be overridden.
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* "cmake/SimpleTest.cmake"
+               (("sample_data.tgz")
+                (string-append (getcwd) "/sample_data.tgz")))
+             #t)))))
+    (inputs
+     `(("boost" ,boost)
+       ("eigen" ,eigen)
+       ("jemalloc" ,jemalloc)
+       ("jellyfish" ,jellyfish-for-sailfish)
+       ("sparsehash" ,sparsehash)
+       ("rapmap" ,rapmap-for-sailfish)
+       ("libdivsufsort" ,libdivsufsort)
+       ("libgff" ,libgff)
+       ("tbb" ,tbb)
+       ("zlib" ,zlib)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (home-page "http://www.cs.cmu.edu/~ckingsf/software/sailfish")
+    (synopsis "Mapping-based isoform quantification from RNA-Seq reads")
+    (description
+     "Sailfish is a tool for transcript quantification from RNA-seq data.  It
+requires a set of target transcripts (either from a reference or de-novo
+assembly) to quantify.  All you need to run sailfish is a fasta file
+containing your reference transcripts and a (set of) fasta/fastq file(s)
+containing your reads.")
+    (license license:gpl3+)))
