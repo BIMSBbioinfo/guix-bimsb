@@ -73,10 +73,12 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -3271,6 +3273,42 @@ constant-size alphabet.  The algorithm runs in O(n log n) worst-case
 time using only 5n+O(1) bytes of memory space, where n is the length
 of the string.")
     (license license:expat)))
+
+(define-public jellyfish-for-sailfish
+  (package (inherit jellyfish)
+    (name "jellyfish")
+    (version "2.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/gmarcais/Jellyfish/"
+                                  "releases/download/v" version
+                                  "/jellyfish-" version ".tar.gz"))
+              (sha256
+               (base32
+                "07nkwx2fms7fd0blf71lpr0zlnmknmkm4g4iz63xwpvdz8akyf75"))))
+    (build-system gnu-build-system)
+    (outputs '("out"      ;for library
+               "ruby"     ;for Ruby bindings
+               "python")) ;for Python bindings
+    (arguments
+     `(#:configure-flags
+       (list (string-append "--enable-ruby-binding="
+                            (assoc-ref %outputs "ruby"))
+             (string-append "--enable-python-binding="
+                            (assoc-ref %outputs "python")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-SHELL-variable
+           (lambda _
+             ;; generator_manager.hpp either uses /bin/sh or $SHELL
+             ;; to run tests.
+             (setenv "SHELL" (which "bash"))
+             #t)))))
+    (native-inputs
+     `(("bc" ,bc)
+       ("time" ,time)
+       ("ruby" ,ruby)
+       ("python" ,python-2)))))
 
 (define-public rapmap
   (let ((commit "salmon-v0.9.0")
