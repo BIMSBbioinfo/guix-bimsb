@@ -3627,3 +3627,38 @@ assembly) to quantify.  All you need to run sailfish is a fasta file
 containing your reference transcripts and a (set of) fasta/fastq file(s)
 containing your reads.")
     (license license:gpl3+)))
+
+(define-public python-pyfasta
+  (package
+    (name "python-pyfasta")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyfasta" version))
+       (sha256
+        (base32
+         "0n5j8l7dys3bqfyz6vkryhc2gjlwbmymc41xjf8vqlq2m5gxf25b"))))
+    (build-system python-build-system)
+    ;; The tests cannot be run even after setting PYTHONPATH.  That's
+    ;; because of relative module imports.
+    (arguments `(#:tests? #f))
+    (propagated-inputs
+     `(("python-numpy" ,python-numpy)))
+    (native-inputs
+     `(("python-nose" ,python-nose)))
+    (home-page "https://github.com/brentp/pyfasta/")
+    (synopsis "Pythonic access to fasta sequence files")
+    (description
+     "This library provides fast, memory-efficient, pythonic (and
+command-line) access to fasta sequence files.  It stores a flattened
+version of a fasta sequence file without spaces or headers and uses
+either a @code{mmap} in numpy binary format or
+@code{fseek}/@code{fread} so the sequence data is never read into
+memory.  It saves a pickle (@code{.gdx}) of the start and stop (for
+@code{fseek}/@code{mmap}) locations of each header in the fasta file
+for internal use.")
+    (license license:expat)))
+
+(define-public python2-pyfasta
+  (package-with-python2 python-pyfasta))
