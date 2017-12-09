@@ -552,7 +552,19 @@ applicable."
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0mk0lg3bl6k7kbn675hinwby3jrb17mml7nms4srikhi3mbamb4x"))))))
+         "0mk0lg3bl6k7kbn675hinwby3jrb17mml7nms4srikhi3mbamb4x"))))
+    (arguments
+     '(#:test-target "test"
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
+               (for-each (lambda (file)
+                           (install-file file bin))
+                         (find-files "bin" ".*")))
+             #t)))))))
 
 ;; Patched version of bedtools 2.25.0, which segfaults on some
 ;; RCAS/dorina test datasets in Bed6+ format.
@@ -570,7 +582,19 @@ applicable."
        (sha256
         (base32
          "1ywcy3yfwzhl905b51l0ffjia55h75vv3mw5xkvib04pp6pj548m"))
-       (patches (list (search-patch "bedtools-fix-null-segfault.patch")))))))
+       (patches (list (search-patch "bedtools-fix-null-segfault.patch")))))
+    (arguments
+     '(#:test-target "test"
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
+               (for-each (lambda (file)
+                           (install-file file bin))
+                         (find-files "bin" ".*")))
+             #t)))))))
 
 (define-public samtools-1.1
   (package
