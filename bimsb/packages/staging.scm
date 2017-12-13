@@ -3715,6 +3715,170 @@ performance as the primary goal.")
            ;; no "configure" script
           (delete 'configure))))))
 
+(define-public salmon
+  (package
+    (name "salmon")
+    (version "0.9.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/COMBINE-lab/salmon.git")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1zi1ff4i7y2ykk0vdzysgwzzzv166vg2x77pj1mf4baclavxj87a"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Delete bundled headers for eigen3.
+                  (delete-file-recursively "include/eigen3/")
+                  #t))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "-DBOOST_INCLUDEDIR="
+                            (assoc-ref %build-inputs "boost")
+                            "/include/")
+             (string-append "-DBOOST_LIBRARYDIR="
+                            (assoc-ref %build-inputs "boost")
+                            "/lib/")
+             (string-append "-DBoost_LIBRARIES="
+                            "-lboost_iostreams "
+                            "-lboost_filesystem "
+                            "-lboost_system "
+                            "-lboost_thread "
+                            "-lboost_timer "
+                            "-lboost_chrono "
+                            "-lboost_program_options")
+             "-DBoost_FOUND=TRUE"
+             "-DTBB_LIBRARIES=tbb tbbmalloc"
+             ;; Don't download RapMap---we already have it!
+             "-DFETCHED_RAPMAP=1")
+       #:parallel-build? #f ; TODO
+       #:phases
+       (modify-phases %standard-phases
+         ;; Boost cannot be found, even though it's right there.
+         (add-after 'unpack 'do-not-look-for-boost
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+               (("find_package\\(Boost 1\\.53\\.0") "#"))
+             #t))
+         (add-after 'unpack 'use-system-libraries
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* '("include/Transcript.hpp"
+                            "include/SalmonIndex.hpp"
+                            "include/UnpairedRead.hpp"
+                            "include/AlignmentModel.hpp"
+                            "include/MultithreadedBAMParser.hpp"
+                            "include/SBModel.hpp")
+               (("include \"(jellyfish/.*|Eigen/.*|tbb/.*|rapmap/.*|io_lib/.*|RapMap.*.hpp|Staden.*.hpp|bwa.*.hpp)\"" _ header)
+                (string-append "include <" header ">")))
+             ;; Fix bwa includes
+             (substitute* '("include/SalmonIndex.hpp"
+                            "include/ReadExperiment.hpp"
+                            "include/BWAUtils.hpp"
+                            "include/KmerIntervalMap.hpp"
+                            "src/SalmonQuantify.cpp"
+                            "src/bwtindex.c"
+                            "src/bwt_gen.c"
+                            "src/QSufSort.c"
+                            "include/FastxParser.hpp"
+                            "src/bwt_gen.c"
+                            "src/is.c")
+               (("include \"QSufSort.h\"") "include <bwa/QSufSort.h>")
+               (("include \"bntseq.h\"") "include <bwa/bntseq.h>")
+               (("include \"bwa.h\"") "include <bwa/bwa.h>")
+               (("include \"kseq.h\"") "include <bwa/kseq.h>")
+               (("include \"ksort.h\"") "include <bwa/ksort.h>")
+               (("include \"bwt.h\"") "include <bwa/bwt.h>")
+               (("include \"bwamem.h\"") "include <bwa/bwamem.h>")
+               (("include \"malloc_wrap.h\"") "include <bwa/malloc_wrap.h>")
+               (("include \"utils.h\"") "include <bwa/utils.h>")
+               (("include \"kvec.h\"") "include <bwa/kvec.h>"))
+             (substitute* "src/CMakeLists.txt"
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/include/jellyfish-2.2..")
+                (string-append (assoc-ref inputs "jellyfish")
+                               "/include/jellyfish-" ,(package-version jellyfish)))
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libjellyfish-2.0.a")
+                (string-append (assoc-ref inputs "jellyfish")
+                               "/lib/libjellyfish-2.0.a"))
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/src/rapmap/") "#")
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libdivsufsort.a")
+                (string-append (assoc-ref inputs "libdivsufsort")
+                               "/lib/libdivsufsort.so"))
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libstaden-read.a")
+                (string-append (assoc-ref inputs "libstadenio-for-salmon")
+                               "/lib/libstaden-read.a"))
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libbwa.a")
+                (string-append (assoc-ref inputs "bwa") "/lib/libbwa.a"))
+               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libdivsufsort64.a")
+                (string-append (assoc-ref inputs "libdivsufsort")
+                               "/lib/libdivsufsort64.so"))
+               (("\\$\\{ZLIB_LIBRARY\\}" line)
+                (string-append line " "
+                               (string-append (assoc-ref inputs "rapmap")
+                                              "/lib/librapmap-for-salmon.so"))))
+             (substitute* "CMakeLists.txt"
+               ;; Don't prefer static libs
+               (("SET\\(CMAKE_FIND_LIBRARY_SUFFIXES.*") "")
+               (("set\\(TBB_LIBRARIES") "message(")
+               (("find_package\\(Jellyfish.*") "")
+               (("ExternalProject_Add\\(libcereal") "message(")
+               (("ExternalProject_Add\\(libbwa") "message(")
+               (("ExternalProject_Add\\(libjellyfish") "message(")
+               (("ExternalProject_Add\\(libgff") "message(")
+               (("ExternalProject_Add\\(libtbb") "message(")
+               (("ExternalProject_Add\\(libspdlog") "message(")
+               (("ExternalProject_Add\\(libdivsufsort") "message(")
+               (("ExternalProject_Add\\(libstadenio") "message(")
+               (("ExternalProject_Add_Step\\(") "message("))
+
+             ;; Ensure that all headers can be found
+             (setenv "CPLUS_INCLUDE_PATH"
+                     (string-append (getenv "CPLUS_INCLUDE_PATH")
+                                    ":"
+                                    (assoc-ref inputs "eigen")
+                                    "/include/eigen3"
+                                    ":"
+                                    (assoc-ref inputs "rapmap")
+                                    "/include/rapmap"))
+             #t))
+         ;; CMAKE_INSTALL_PREFIX does not exist when the tests are
+         ;; run.  It only exists after the install phase.
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* "src/CMakeLists.txt"
+               (("DTOPLEVEL_DIR=\\$\\{CMAKE_INSTALL_PREFIX")
+                "DTOPLEVEL_DIR=${GAT_SOURCE_DIR"))
+             #t)))))
+    (inputs
+     `(("boost" ,boost)
+       ("bwa" ,bwa-for-salmon)
+       ("bzip2" ,bzip2)
+       ("cereal" ,cereal)
+       ("eigen" ,eigen)
+       ("rapmap" ,rapmap-for-salmon)
+       ("jemalloc" ,jemalloc)
+       ("jellyfish" ,jellyfish)
+       ("libgff" ,libgff)
+       ("tbb" ,tbb)
+       ("libdivsufsort" ,libdivsufsort)
+       ("libstadenio-for-salmon" ,libstadenio-for-salmon)
+       ("spdlog-for-salmon" ,spdlog-for-salmon)
+       ("xz" ,xz)
+       ("zlib" ,zlib)))
+    (home-page "https://github.com/COMBINE-lab/salmon")
+    (synopsis "Quantification from RNA-seq reads using lightweight alignments")
+    (description
+     "Salmon is a program to produce a highly-accurate, transcript-level
+quantification estimates from RNA-seq data.  Salmon achieves its accuracy and
+speed via a number of different innovations, including the use of lightweight
+alignments (accurate but fast-to-compute proxies for traditional read
+alignments) and massively-parallel stochastic collapsed variational
+inference.")
+    (license license:gpl3+)))
+
 (define-public python-pyfasta
   (package
     (name "python-pyfasta")
