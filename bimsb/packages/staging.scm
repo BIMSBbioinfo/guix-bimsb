@@ -3280,9 +3280,9 @@ of the string.")
        ("ruby" ,ruby)
        ("python" ,python-2)))))
 
-(define-public rapmap
-  (let ((commit "salmon-v0.9.0")
-        (revision "20171127"))
+(define-public rapmap-for-salmon
+  (let ((commit "salmon-v0.9.1")
+        (revision "20171213"))
     (package
       (name "rapmap")
       (version (string-append "0." revision "." commit))
@@ -3295,7 +3295,7 @@ of the string.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "15jgrn4bskw3gkpc9qbwsqmacr7jbraxwy9gv0wqc5dn7nk3ikqd"))))
+                  "1yc12yqsz6f0r8sg1qnk57xg34aqwc9jbqq6gd5ys28xw3plj98p"))))
       (build-system cmake-build-system)
       (arguments
        `(#:parallel-build? #f ; won't build in parallel
@@ -3339,11 +3339,30 @@ of the string.")
               (substitute* "CMakeLists.txt"
                 (("find_package\\(Jellyfish.*") ""))
               #t))
+           (add-after 'unpack 'build-shared-lib
+             (lambda _
+               (substitute* "src/CMakeLists.txt"
+                 (("add_executable\\(rapmap.*" line)
+                  (string-append line "
+add_library(rapmap-for-salmon SHARED ${RAPMAP_MAIN_SRCS})
+install(TARGETS rapmap-for-salmon ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
+
+target_link_libraries(rapmap-for-salmon ${ZLIB_LIBRARY}
+    ${SUFFARRAY_LIB}
+    ${SUFFARRAY64_LIB}
+    ${JELLYFISH_LIB}
+    m
+    ${NON_APPLECLANG_LIBS}
+    ${FAST_MALLOC_LIB}
+    ${CMAKE_THREAD_LIBS_INIT}
+)")))
+               #t))
            (add-after 'install 'install-headers
              (lambda* (#:key outputs #:allow-other-keys)
-               (copy-recursively "../source/include"
-                                 (string-append (assoc-ref outputs "out")
-                                                "/include"))
+               (let ((target (string-append (assoc-ref outputs "out")
+                                            "/include/rapmap")))
+                 (mkdir-p target)
+                 (copy-recursively "../source/include" target))
                #t)))))
       (inputs
        `(("boost" ,boost)
@@ -3366,7 +3385,7 @@ the transcriptome.")
 (define-public rapmap-for-sailfish
   (let ((commit "sf-v0.10.1")
         (revision "20171128"))
-    (package (inherit rapmap)
+    (package (inherit rapmap-for-salmon)
       (name "rapmap")
       (version (string-append "0." revision "." commit))
       (source (origin
