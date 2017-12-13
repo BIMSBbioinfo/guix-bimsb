@@ -3676,6 +3676,45 @@ File) reading interface.  The following file formats are supported:
 performance as the primary goal.")
     (license license:expat)))
 
+(define-public bwa-for-salmon
+  (package (inherit bwa)
+    (name "bwa")
+    (version "0.7.12.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/COMBINE-lab/bwa.git")
+                    (commit (string-append "v" version))))
+              (file-name (string-append "bwa-for-salmon-" version "-checkout"))
+              (sha256
+               (base32
+                "1z2qa64y0c5hky10510x137mnzlhz6k8qf27csw4w9j6qihq95gb"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ;no "check" target
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (lib (string-append out "/lib"))
+                    (doc (string-append out "/share/doc/bwa"))
+                    (man (string-append out "/share/man/man1"))
+                    (inc (string-append out "/include/bwa")))
+               (install-file "bwa" bin)
+               (install-file "README.md" doc)
+               (install-file "bwa.1" man)
+               (install-file "libbwa.a" lib)
+               (mkdir-p lib)
+               (mkdir-p inc)
+               (for-each (lambda (file)
+                           (install-file file inc))
+                         (find-files "." "\\.h$")))
+             #t))
+           ;; no "configure" script
+          (delete 'configure))))))
+
 (define-public python-pyfasta
   (package
     (name "python-pyfasta")
