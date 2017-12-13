@@ -3617,6 +3617,45 @@ containing your reference transcripts and a (set of) fasta/fastq file(s)
 containing your reads.")
     (license license:gpl3+)))
 
+(define-public libstadenio-for-salmon
+  (package
+    (name "libstadenio")
+    (version "1.14.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/COMBINE-lab/staden-io_lib.git")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1x8kxxqxl892vwfbprlbyfwkkv7c34ggkc94892x9x0g37x5nbwx"))))
+    (build-system gnu-build-system)
+    (arguments '(#:parallel-tests? #f))
+    (inputs
+     `(("zlib" ,zlib)))
+    (native-inputs
+     `(("perl" ,perl)))                 ; for tests
+    (home-page "https://github.com/COMBINE-lab/staden-io_lib")
+    (synopsis "")
+    (description "This package provides a library of file reading and
+writing code to provide a general purpose trace file (and Experiment
+File) reading interface.  The following file formats are supported:
+
+@enumerate
+@item SCF trace files
+@item ABI trace files
+@item ALF trace files
+@item ZTR trace files
+@item SFF trace archives
+@item SRF trace archives
+@item Experiment files
+@item Plain text files
+@item SAM/BAM sequence files
+@item CRAM sequence files
+@end enumerate
+")
+    (license license:bsd-3)))
+
 (define-public python-pyfasta
   (package
     (name "python-pyfasta")
