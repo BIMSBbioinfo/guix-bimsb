@@ -3656,6 +3656,26 @@ File) reading interface.  The following file formats are supported:
 ")
     (license license:bsd-3)))
 
+(define-public spdlog-for-salmon
+  (package
+    (name "spdlog")
+    (version "0.14.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/COMBINE-lab/spdlog.git")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "13730429gwlabi432ilpnja3sfvy0nn2719vnhhmii34xcdyc57q"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/COMBINE-lab/spdlog")
+    (synopsis "Very fast, header only, C++ logging library")
+    (description "Spdlog is a very fast C++ logging library with
+performance as the primary goal.")
+    (license license:expat)))
+
 (define-public python-pyfasta
   (package
     (name "python-pyfasta")
