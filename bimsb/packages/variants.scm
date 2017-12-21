@@ -222,6 +222,17 @@ OTHER-PERL instead of \"perl-\", when applicable."
 (define (perl-5.14-package-name name)
   (other-perl-package-name perl-5.14))
 
+(define-public (package-for-other-perl other-perl pkg)
+  ;; This is a procedure to replace PERL by OTHER-PERL, recursively.
+  ;; It also ensures that rewritten packages are built with OTHER-PERL.
+  (let* ((rewriter (package-input-rewriting `((,perl . ,other-perl))
+                                            (other-perl-package-name other-perl)))
+         (new (rewriter pkg)))
+    (package (inherit new)
+      (arguments `(#:perl ,other-perl
+                   #:tests? #f ; oh well...
+                   ,@(package-arguments new))))))
+
 (define-public (package-for-perl-5.14 pkg)
   ;; This is a procedure to replace PERL by PERL-5.14, recursively.
   ;; It also ensures that rewritten packages are built with PERL-5.14.
