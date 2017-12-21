@@ -207,6 +207,18 @@
     (home-page "http://www.perl.org/")
     (license license:gpl1+)))
 
+(define (other-perl-package-name other-perl)
+  "Return a procedure that returns NAME with a new prefix for
+OTHER-PERL instead of \"perl-\", when applicable."
+  (let ((other-perl-version (version-major+minor
+                             (package-version other-perl))))
+    (lambda (name)
+      (if (string-prefix? "perl-" name)
+          (string-append "perl" other-perl-version "-"
+                         (string-drop name
+                                      (string-length "perl-")))
+          name))))
+
 (define (perl-5.14-package-name name)
   "Return NAME with a \"perl5.14-\" prefix instead of \"perl-\", when
 applicable."
