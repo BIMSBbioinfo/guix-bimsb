@@ -107,6 +107,106 @@
                            (chmod dso #o755))
                          (find-files lib "\\.so$"))))))))))
 
+;; For Harm.
+(define-public perl-5.24
+  (package
+    (name "perl")
+    (version "5.24.0")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://cpan/src/5.0/perl-"
+                                 version ".tar.gz"))
+             (sha256
+              (base32
+               "00jj8zr8fnihrxxhl8h936ssczv5x86qb618yz1ig40d1rp0qhvy"))
+             (patches (search-patches
+                       "perl-5.24-no-sys-dirs.patch"
+                       "perl-autosplit-default-time.patch"
+                       "perl-deterministic-ordering.patch"
+                       "perl-reproducible-build-date.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f
+       #:configure-flags
+       (let ((out  (assoc-ref %outputs "out"))
+             (libc (assoc-ref %build-inputs "libc")))
+         (list
+          (string-append "-Dprefix=" out)
+          (string-append "-Dman1dir=" out "/share/man/man1")
+          (string-append "-Dman3dir=" out "/share/man/man3")
+          "-de" "-Dcc=gcc"
+          "-Uinstallusrbinperl"
+          "-Dinstallstyle=lib/perl5"
+          "-Duseshrplib"
+          (string-append "-Dlocincpth=" libc "/include")
+          (string-append "-Dloclibpth=" libc "/lib")
+          "-Dusethreads"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'setup-configure
+           (lambda _
+             ;; Use the right path for `pwd'.
+             (substitute* "dist/PathTools/Cwd.pm"
+               (("/bin/pwd")
+                (which "pwd")))
+
+             ;; Build in GNU89 mode to tolerate C++-style comment in libc's
+             ;; <bits/string3.h>.
+             (substitute* "cflags.SH"
+               (("-std=c89")
+                "-std=gnu89"))
+             #t))
+         (replace 'configure
+           (lambda* (#:key configure-flags #:allow-other-keys)
+             (format #t "Perl configure flags: ~s~%" configure-flags)
+             (zero? (apply system* "./Configure" configure-flags))))
+         (add-before
+          'strip 'make-shared-objects-writable
+          (lambda* (#:key outputs #:allow-other-keys)
+            ;; The 'lib/perl5' directory contains ~50 MiB of .so.  Make them
+            ;; writable so that 'strip' actually strips them.
+            (let* ((out (assoc-ref outputs "out"))
+                   (lib (string-append out "/lib")))
+              (for-each (lambda (dso)
+                          (chmod dso #o755))
+                        (find-files lib "\\.so$")))))
+
+         (add-after 'install 'remove-extra-references
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out     (assoc-ref outputs "out"))
+                    (libc    (assoc-ref inputs "libc"))
+                    (config1 (car (find-files (string-append out "/lib/perl5")
+                                              "^Config_heavy\\.pl$")))
+                    (config2 (find-files (string-append out "/lib/perl5")
+                                         "^Config\\.pm$")))
+               ;; Force the library search path to contain only libc because
+               ;; it is recorded in Config.pm and Config_heavy.pl; we don't
+               ;; want to keep a reference to everything that's in
+               ;; $LIBRARY_PATH at build time (GCC, Binutils, bzip2, file,
+               ;; etc.)
+               (substitute* config1
+                 (("^incpth=.*$")
+                  (string-append "incpth='" libc "/include'\n"))
+                 (("^(libpth|plibpth|libspath)=.*$" _ variable)
+                  (string-append variable "='" libc "/lib'\n")))
+
+               (for-each (lambda (file)
+                           (substitute* config2
+                             (("libpth => .*$")
+                              (string-append "libpth => '" libc
+                                             "/lib',\n"))))
+                         config2)
+               #t))))))
+    (native-search-paths (list (search-path-specification
+                                (variable "PERL5LIB")
+                                (files '("lib/perl5/site_perl")))))
+    (synopsis "Implementation of the Perl programming language")
+    (description
+     "Perl 5 is a highly capable, feature-rich programming language with over
+24 years of development.")
+    (home-page "http://www.perl.org/")
+    (license license:gpl1+)))
+
 (define (perl-5.14-package-name name)
   "Return NAME with a \"perl5.14-\" prefix instead of \"perl-\", when
 applicable."
