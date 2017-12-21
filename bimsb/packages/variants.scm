@@ -220,13 +220,7 @@ OTHER-PERL instead of \"perl-\", when applicable."
           name))))
 
 (define (perl-5.14-package-name name)
-  "Return NAME with a \"perl5.14-\" prefix instead of \"perl-\", when
-applicable."
-  (if (string-prefix? "perl-" name)
-      (string-append "perl5.14-"
-                     (string-drop name
-                                  (string-length "perl-")))
-      name))
+  (other-perl-package-name perl-5.14))
 
 (define-public (package-for-perl-5.14 pkg)
   ;; This is a procedure to replace PERL by PERL-5.14, recursively.
