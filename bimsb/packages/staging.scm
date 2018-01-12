@@ -3646,8 +3646,8 @@ performance as the primary goal.")
                            (install-file file inc))
                          (find-files "." "\\.h$")))
              #t))
-           ;; no "configure" script
-          (delete 'configure))))))
+         ;; no "configure" script
+         (delete 'configure))))))
 
 (define-public salmon
   (package
