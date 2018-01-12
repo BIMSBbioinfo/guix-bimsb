@@ -3316,108 +3316,6 @@ of the string.")
        ("ruby" ,ruby)
        ("python" ,python-2)))))
 
-(define-public rapmap-for-salmon
-  (let ((commit "salmon-v0.9.1")
-        (revision "20171213"))
-    (package
-      (name "rapmap")
-      (version (string-append "0." revision "." commit))
-      (source (origin
-                ;; There are no release tarballs.
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/COMBINE-lab/RapMap.git")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "1yc12yqsz6f0r8sg1qnk57xg34aqwc9jbqq6gd5ys28xw3plj98p"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f ; won't build in parallel
-         #:configure-flags
-         (list "-DJELLYFISH_FOUND=1"
-               (string-append "-DJELLYFISH_ROOT="
-                              (assoc-ref %build-inputs "jellyfish"))
-               (string-append "-DJELLYFISH_INCLUDE_DIR="
-                              (assoc-ref %build-inputs "jellyfish")
-                              "/include/jellyfish-" ,(package-version jellyfish)))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-build
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                ;; Don't fail, just warn
-                (("-Werror=return-type") "")
-                (("set\\(CMAKE_CXX_FLAGS \"\\$\\{CMAKE_CXX_FLAGS\\} \\$\\{WARNING_IGNORE_FLAGS\\}\"\\)") "")
-                ;; Don't prefer static libs
-                (("SET\\(CMAKE_FIND_LIBRARY_SUFFIXES.*") ""))
-              #t))
-           (add-after 'unpack 'use-system-jellyfish
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* '("include/RapMapIndex.hpp"
-                             "include/RapMapUtils.hpp"
-                             "include/SASearcher.hpp"
-                             "include/JFRaw.hpp"
-                             "src/RapMapSAIndexer.cpp"
-                             "src/RapMapMapper.cpp"
-                             "src/RapMapUtils.cpp"
-                             "src/RapMapSAMapper.cpp"
-                             "src/RapMapIndexer.cpp")
-                (("include \"(jellyfish/.*)\"" _ header)
-                 (string-append "include <" header ">")))
-              (substitute* "src/CMakeLists.txt"
-                (("\\$\\{GAT_SOURCE_DIR\\}/external/install/include/jellyfish-2.2.6")
-                 "${JELLYFISH_INCLUDE_DIRS}")
-                (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libjellyfish-2.0.a")
-                 (string-append (assoc-ref inputs "jellyfish")
-                                "/lib/libjellyfish-2.0.a")))
-              (substitute* "CMakeLists.txt"
-                (("find_package\\(Jellyfish.*") ""))
-              #t))
-           (add-after 'unpack 'build-shared-lib
-             (lambda _
-               (substitute* "src/CMakeLists.txt"
-                 (("add_executable\\(rapmap.*" line)
-                  (string-append line "
-add_library(rapmap-for-salmon SHARED ${RAPMAP_MAIN_SRCS})
-install(TARGETS rapmap-for-salmon ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
-
-target_link_libraries(rapmap-for-salmon ${ZLIB_LIBRARY}
-    ${SUFFARRAY_LIB}
-    ${SUFFARRAY64_LIB}
-    ${JELLYFISH_LIB}
-    m
-    ${NON_APPLECLANG_LIBS}
-    ${FAST_MALLOC_LIB}
-    ${CMAKE_THREAD_LIBS_INIT}
-)")))
-               #t))
-           (add-after 'install 'install-headers
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((target (string-append (assoc-ref outputs "out")
-                                            "/include/rapmap")))
-                 (mkdir-p target)
-                 (copy-recursively "../source/include" target))
-               #t)))))
-      (inputs
-       `(("boost" ,boost)
-         ("jemalloc" ,jemalloc)
-         ("libdivsufsort" ,libdivsufsort)
-         ("jellyfish" ,jellyfish)
-         ("cereal" ,cereal)
-         ("zlib" ,zlib)))
-      (native-inputs
-       `(("pkg-config" ,pkg-config)))
-      (home-page "https://github.com/COMBINE-lab/RapMap")
-      (synopsis "Rapid sensitive and accurate read mapping via quasi-mapping")
-      (description
-       "RapMap is a stand-alone quasi-mapper (and pseudo-aligner).  The idea
-of RapMap is to explore multiple different strategies in how to most rapidly
-determine all feasible or compatible locations for a sequencing read within
-the transcriptome.")
-      (license license:bsd-3))))
-
 (define-public rapmap-for-sailfish
   (let ((commit "sf-v0.10.1")
         (revision "20171128"))
@@ -3791,55 +3689,43 @@ performance as the primary goal.")
              "-DTBB_LIBRARIES=tbb tbbmalloc"
              ;; Don't download RapMap---we already have it!
              "-DFETCHED_RAPMAP=1")
-       #:parallel-build? #f ; TODO
        #:phases
        (modify-phases %standard-phases
          ;; Boost cannot be found, even though it's right there.
          (add-after 'unpack 'do-not-look-for-boost
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "CMakeLists.txt"
-               (("find_package\\(Boost 1\\.53\\.0") "#"))
-             #t))
+               (("find_package\\(Boost 1\\.53\\.0") "#"))))
+         (add-after 'unpack 'do-not-phone-home
+           (lambda _
+             (substitute* "src/Salmon.cpp"
+               (("getVersionMessage\\(\\)") "\"\""))))
+         (add-after 'unpack 'prepare-rapmap
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((src "external/install/src/rapmap/")
+                   (include "external/install/include/rapmap/")
+                   (rapmap (assoc-ref inputs "rapmap")))
+               (mkdir-p src)
+               (mkdir-p include)
+               (for-each (lambda (file)
+                           (install-file file src))
+                         (find-files (string-append rapmap "/src") "\\.(c|cpp)"))
+               (copy-recursively (string-append rapmap "/include") include)
+               (for-each delete-file '("external/install/include/rapmap/xxhash.h"
+                                       "external/install/include/rapmap/FastxParser.hpp"
+                                       "external/install/include/rapmap/concurrentqueue.h"
+                                       "external/install/include/rapmap/FastxParserThreadUtils.hpp"
+                                       "external/install/src/rapmap/FastxParser.cpp"
+                                       "external/install/src/rapmap/xxhash.c")))))
          (add-after 'unpack 'use-system-libraries
            (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("include/Transcript.hpp"
-                            "include/SalmonIndex.hpp"
-                            "include/UnpairedRead.hpp"
-                            "include/AlignmentModel.hpp"
-                            "include/MultithreadedBAMParser.hpp"
-                            "include/SBModel.hpp")
-               (("include \"(jellyfish/.*|Eigen/.*|tbb/.*|rapmap/.*|io_lib/.*|RapMap.*.hpp|Staden.*.hpp|bwa.*.hpp)\"" _ header)
-                (string-append "include <" header ">")))
-             ;; Fix bwa includes
-             (substitute* '("include/SalmonIndex.hpp"
-                            "include/ReadExperiment.hpp"
-                            "include/BWAUtils.hpp"
-                            "include/KmerIntervalMap.hpp"
-                            "src/SalmonQuantify.cpp"
-                            "src/bwtindex.c"
-                            "src/bwt_gen.c"
-                            "src/QSufSort.c"
-                            "include/FastxParser.hpp"
-                            "src/bwt_gen.c"
-                            "src/is.c")
-               (("include \"QSufSort.h\"") "include <bwa/QSufSort.h>")
-               (("include \"bntseq.h\"") "include <bwa/bntseq.h>")
-               (("include \"bwa.h\"") "include <bwa/bwa.h>")
-               (("include \"kseq.h\"") "include <bwa/kseq.h>")
-               (("include \"ksort.h\"") "include <bwa/ksort.h>")
-               (("include \"bwt.h\"") "include <bwa/bwt.h>")
-               (("include \"bwamem.h\"") "include <bwa/bwamem.h>")
-               (("include \"malloc_wrap.h\"") "include <bwa/malloc_wrap.h>")
-               (("include \"utils.h\"") "include <bwa/utils.h>")
-               (("include \"kvec.h\"") "include <bwa/kvec.h>"))
              (substitute* "src/CMakeLists.txt"
                (("\\$\\{GAT_SOURCE_DIR\\}/external/install/include/jellyfish-2.2..")
                 (string-append (assoc-ref inputs "jellyfish")
-                               "/include/jellyfish-" ,(package-version jellyfish)))
+                               "/include/jellyfish-" ,(package-version jellyfish-for-salmon)))
                (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libjellyfish-2.0.a")
                 (string-append (assoc-ref inputs "jellyfish")
                                "/lib/libjellyfish-2.0.a"))
-               (("\\$\\{GAT_SOURCE_DIR\\}/external/install/src/rapmap/") "#")
                (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libdivsufsort.a")
                 (string-append (assoc-ref inputs "libdivsufsort")
                                "/lib/libdivsufsort.so"))
@@ -3850,11 +3736,7 @@ performance as the primary goal.")
                 (string-append (assoc-ref inputs "bwa") "/lib/libbwa.a"))
                (("\\$\\{GAT_SOURCE_DIR\\}/external/install/lib/libdivsufsort64.a")
                 (string-append (assoc-ref inputs "libdivsufsort")
-                               "/lib/libdivsufsort64.so"))
-               (("\\$\\{ZLIB_LIBRARY\\}" line)
-                (string-append line " "
-                               (string-append (assoc-ref inputs "rapmap")
-                                              "/lib/librapmap-for-salmon.so"))))
+                               "/lib/libdivsufsort64.so")))
              (substitute* "CMakeLists.txt"
                ;; Don't prefer static libs
                (("SET\\(CMAKE_FIND_LIBRARY_SUFFIXES.*") "")
@@ -3874,11 +3756,17 @@ performance as the primary goal.")
              (setenv "CPLUS_INCLUDE_PATH"
                      (string-append (getenv "CPLUS_INCLUDE_PATH")
                                     ":"
-                                    (assoc-ref inputs "eigen")
-                                    "/include/eigen3"
+                                    (assoc-ref inputs "bwa")
+                                    "/include/bwa"
                                     ":"
-                                    (assoc-ref inputs "rapmap")
-                                    "/include/rapmap"))
+                                    (assoc-ref inputs "eigen")
+                                    "/include/eigen3"))
+             (setenv "CPATH"
+                     (string-append (assoc-ref inputs "bwa")
+                                    "/include/bwa"
+                                    ":"
+                                    (assoc-ref inputs "eigen")
+                                    "/include/eigen3"))
              #t))
          ;; CMAKE_INSTALL_PREFIX does not exist when the tests are
          ;; run.  It only exists after the install phase.
@@ -3894,9 +3782,20 @@ performance as the primary goal.")
        ("bzip2" ,bzip2)
        ("cereal" ,cereal)
        ("eigen" ,eigen)
-       ("rapmap" ,rapmap-for-salmon)
+       ("rapmap"
+        ,(let ((commit "salmon-v0.9.1"))
+           (origin
+             ;; There are no release tarballs.
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/COMBINE-lab/RapMap.git")
+                   (commit commit)))
+             (file-name (string-append name "-" version "-checkout"))
+             (sha256
+              (base32
+               "1yc12yqsz6f0r8sg1qnk57xg34aqwc9jbqq6gd5ys28xw3plj98p")))))
        ("jemalloc" ,jemalloc)
-       ("jellyfish" ,jellyfish)
+       ("jellyfish" ,jellyfish-for-salmon)
        ("libgff" ,libgff)
        ("tbb" ,tbb)
        ("libdivsufsort" ,libdivsufsort)
