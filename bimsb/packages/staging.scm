@@ -3704,18 +3704,15 @@ performance as the primary goal.")
        ("bzip2" ,bzip2)
        ("cereal" ,cereal)
        ("eigen" ,eigen)
-       ("rapmap"
-        ,(let ((commit "salmon-v0.9.1"))
-           (origin
-             ;; There are no release tarballs.
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/COMBINE-lab/RapMap.git")
-                   (commit commit)))
-             (file-name (string-append name "-" version "-checkout"))
-             (sha256
-              (base32
-               "1yc12yqsz6f0r8sg1qnk57xg34aqwc9jbqq6gd5ys28xw3plj98p")))))
+       ("rapmap" ,(origin
+                    (method git-fetch)
+                    (uri (git-reference
+                          (url "https://github.com/COMBINE-lab/RapMap.git")
+                          (commit (string-append "salmon-v" version))))
+                    (file-name (string-append "rapmap-salmon-v" version "-checkout"))
+                    (sha256
+                     (base32
+                      "1yc12yqsz6f0r8sg1qnk57xg34aqwc9jbqq6gd5ys28xw3plj98p"))))
        ("jemalloc" ,jemalloc)
        ("jellyfish" ,jellyfish-for-salmon)
        ("libgff" ,libgff)
