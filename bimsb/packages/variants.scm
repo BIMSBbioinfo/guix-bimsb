@@ -1010,6 +1010,19 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                  (install-file "STARlong" bin))
                #t))))))))
 
+(define-public starlong/ivano
+  (package (inherit starlong)
+    (name "starlong-ivano")
+    (arguments
+     (substitute-keyword-arguments (package-arguments starlong)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'make-extra-long
+             (lambda _
+               (substitute* "source/IncludeDefine.h"
+                 (("(#define DEF_readNameLengthMax ).*" _ match)
+                  (string-append match "900000\n")))))))))))
+
 (define-public jupyter-with-python2
   (package (inherit jupyter)
     (name "jupyter-python2")
