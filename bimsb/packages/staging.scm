@@ -3932,3 +3932,92 @@ once.  This package provides tools to perform Drop-seq analyses.")
                (sha256
                 (base32
                  "1mw4nm8bq5ia4wia56dv48h8806s74bghgp8i0gh6f4q3j983adw")))))))
+
+(define-public pigx-scrnaseq
+  (package
+    (name "pigx-scrnaseq")
+    (version "0.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/BIMSBbioinfo/"
+                                  "pigx_scrnaseq/releases/download/v"
+                                  version "/pigx_scrnaseq-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1p3594b51v4nd9k3w9djrhf24r3234qcm6jk3h2hc5gjj7kc12d1"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "PICARDJAR=" (assoc-ref %build-inputs "java-picard")
+                            "/share/java/picard.jar")
+             (string-append "DROPSEQJAR=" (assoc-ref %build-inputs "dropseq-tools")
+                            "/share/java/dropseq-tools/dropseq.jar"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-CLASSPATH
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CLASSPATH" (string-append (assoc-ref inputs "java-picard")
+                                                "/share/java/picard.jar:"
+                                                (assoc-ref inputs "dropseq-tools")
+                                                "/share/java/dropseq-tools/dropseq.jar"))
+             #t))
+         (add-after 'install 'wrap-executable
+           ;; Make sure the executable finds all R modules.
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (wrap-program (string-append out "/bin/pigx-scrnaseq")
+                 `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))
+                 `("PYTHONPATH"  ":" = (,(getenv "PYTHONPATH")))
+                 `("CLASSPATH"   ":" = (,(getenv "CLASSPATH")))))
+             #t)))))
+    (native-inputs
+     `(("javac" ,icedtea-8 "jdk")))
+    (inputs
+     `(("dropseq-tools" ,dropseq-tools)
+       ("fastqc" ,fastqc)
+       ("java-picard" ,java-picard)
+       ("java" ,icedtea-8)
+       ("python-wrapper" ,python-wrapper)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-pandas" ,python-pandas)
+       ("python-numpy" ,python-numpy)
+       ("python-loompy" ,python-loompy)
+       ("ghc-pandoc" ,ghc-pandoc)
+       ("ghc-pandoc-citeproc" ,ghc-pandoc-citeproc)
+       ("snakemake" ,snakemake)
+       ("star" ,star)
+       ("r-minimal" ,r-minimal)
+       ("r-argparser" ,r-argparser)
+       ("r-cowplot" ,r-cowplot)
+       ("r-data-table" ,r-data-table)
+       ("r-delayedarray" ,r-delayedarray)
+       ("r-delayedmatrixstats" ,r-delayedmatrixstats)
+       ("r-dplyr" ,r-dplyr)
+       ("r-dropbead" ,old-r-dropbead)
+       ("r-dt" ,r-dt)
+       ("r-genomicalignments" ,r-genomicalignments)
+       ("r-genomicfiles" ,r-genomicfiles)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-hdf5array" ,r-hdf5array)
+       ("r-pheatmap" ,r-pheatmap)
+       ("r-rmarkdown" ,r-rmarkdown)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-rtsne" ,r-rtsne)
+       ("r-scater" ,r-scater)
+       ("r-scran" ,r-scran)
+       ("r-singlecellexperiment" ,r-singlecellexperiment)
+       ("r-stringr" ,r-stringr)
+       ("r-yaml" ,r-yaml)))
+    (home-page "https://github.com/BIMSBbioinfo/pigx_scrnaseq/")
+    (synopsis "Analysis pipeline for single-cell RNA sequencing experiments")
+    (description "PiGX scRNAseq is an analysis pipeline for
+preprocessing and quality control for single cell RNA sequencing
+experiments.  The inputs are read files from the sequencing
+experiment, and a configuration file which describes the experiment.
+It produces processed files for downstream analysis and interactive
+quality reports.  The pipeline is designed to work with UMI based
+methods.")
+    (license license:gpl3+)))
