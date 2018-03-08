@@ -1717,29 +1717,6 @@ various other algorithms.")
 efficiently analyze genomic data resulting from various experiments.")
     (license license:gpl2)))
 
-(define-public r-laeken
-  (package
-    (name "r-laeken")
-    (version "0.4.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "laeken" version))
-       (sha256
-        (base32
-         "1rhkv1kk508pwln1d325iq4fink2ncssps0ypxi52j9d7wk78la6"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-boot" ,r-boot)
-       ("r-mass" ,r-mass)))
-    (home-page "http://cran.r-project.org/web/packages/laeken")
-    (synopsis "Estimation of indicators on social exclusion and poverty")
-    (description
-     "This package provides tools for the estimation of indicators on
-social exclusion and poverty, as well as an implementation of Pareto
-tail modeling for empirical income distributions.")
-    (license license:gpl2+)))
-
 (define-public r-vcd
   (package
     (name "r-vcd")
