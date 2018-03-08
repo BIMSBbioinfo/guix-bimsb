@@ -1780,31 +1780,6 @@ classification, regression and information measures are implemented.")
     ;; later can be used.
     (license license:gpl2+)))
 
-(define-public r-ttr
-  (package
-    (name "r-ttr")
-    (version "0.23-1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "TTR" version))
-       (sha256
-        (base32
-         "1bmj0ngd3i3a9l2zsanifq3irz3rhsyd2rvvlhyndsgadkq9i5v9"))))
-    (properties `((upstream-name . "TTR")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-xts" ,r-xts)
-       ("r-zoo" ,r-zoo)))
-    (native-inputs
-     `(("gfortran" ,gfortran)))
-    (home-page "https://github.com/joshuaulrich/TTR")
-    (synopsis "Technical trading rules")
-    (description
-     "This package provides functions and data to construct technical
-trading rules with R.")
-    (license license:gpl2)))
-
 (define-public r-smoother
   (package
     (name "r-smoother")
