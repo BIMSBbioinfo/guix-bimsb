@@ -1479,64 +1479,6 @@ The BBTools suite includes programs such as:
     ;; actually permitted.
     (license license:bsd-3)))
 
-;; FIXME: This package includes pre-built Java classes.
-(define-public fastqc
-  (package
-    (name "fastqc")
-    (version "0.11.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://www.bioinformatics.babraham.ac.uk/"
-                           "projects/fastqc/fastqc_v"
-                           version "_source.zip"))
-       (sha256
-        (base32
-         "18rrlkhcrxvvvlapch4dpj6xc6mpayzys8qfppybi8jrpgx5cc5f"))))
-    (build-system ant-build-system)
-    (arguments
-     `(#:tests? #f ; there are no tests
-       #:build-target "build"
-       #:phases
-       (modify-phases %standard-phases
-         ;; There is no installation target
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bin   (string-append out "/bin"))
-                    (share (string-append out "/share/fastqc/")))
-               (for-each mkdir-p (list bin share))
-               (copy-recursively "bin" share)
-               (chmod (string-append share "/fastqc") #o555)
-               (symlink (string-append share "/fastqc")
-                        (string-append bin "/fastqc"))
-               #t))))))
-    (inputs
-     `(("perl" ,perl)))  ; needed for the wrapper script
-    (native-inputs
-     `(("unzip" ,unzip)))
-    (home-page "http://www.bioinformatics.babraham.ac.uk/projects/fastqc/")
-    (synopsis "Quality control tool for high throughput sequence data")
-    (description
-     "FastQC aims to provide a simple way to do some quality control
-checks on raw sequence data coming from high throughput sequencing
-pipelines.  It provides a modular set of analyses which you can use to
-give a quick impression of whether your data has any problems of which
-you should be aware before doing any further analysis.
-
-The main functions of FastQC are:
-
-@itemize
-@item Import of data from BAM, SAM or FastQ files (any variant);
-@item Providing a quick overview to tell you in which areas there may
-  be problems;
-@item Summary graphs and tables to quickly assess your data;
-@item Export of results to an HTML based permanent report;
-@item Offline operation to allow automated generation of reports
-  without running the interactive application.
-@end itemize\n")
-    (license license:gpl3+)))
-
 (define-public htslib-for-sambamba
   (let ((commit "2f3c3ea7b301f9b45737a793c0b2dcf0240e5ee5"))
     (package
