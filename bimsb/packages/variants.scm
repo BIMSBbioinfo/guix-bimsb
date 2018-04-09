@@ -280,6 +280,7 @@ OTHER-PERL instead of \"perl-\", when applicable."
                    '()))
        #:phases
        (modify-phases %standard-phases
+         (delete 'bootstrap)
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -338,6 +339,7 @@ OTHER-PERL instead of \"perl-\", when applicable."
                    '()))
        #:phases
        (modify-phases %standard-phases
+         (delete 'bootstrap)
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -390,6 +392,7 @@ OTHER-PERL instead of \"perl-\", when applicable."
                             (assoc-ref %outputs "out") "/lib"))
        #:phases
        (modify-phases %standard-phases
+         (delete 'bootstrap)
          ;; See https://svn.boost.org/trac/boost/ticket/6165
          (add-after 'unpack 'fix-threads-detection
            (lambda _
