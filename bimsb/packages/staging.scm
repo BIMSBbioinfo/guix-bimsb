@@ -3429,3 +3429,42 @@ across several packages maintained by the Tanay lab.")
 methods for storing and manipulating genomic interaction data from
 Hi-C and ChIA-PET experiments.")
     (license license:gpl3)))
+
+(define-public r-genomicinteractions
+  (package
+    (name "r-genomicinteractions")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "GenomicInteractions" version))
+       (sha256
+        (base32
+         "0f0ki2zsaxg6f4qr47xgyhxm6jvms0s1zab7f0vcnw8jd7vhmnzn"))))
+    (properties
+     `((upstream-name . "GenomicInteractions")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biobase" ,r-biobase)
+       ("r-biocgenerics" ,r-biocgenerics)
+       ("r-data-table" ,r-data-table)
+       ("r-dplyr" ,r-dplyr)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-gridextra" ,r-gridextra)
+       ("r-gviz" ,r-gviz)
+       ("r-igraph" ,r-igraph)
+       ("r-interactionset" ,r-interactionset)
+       ("r-iranges" ,r-iranges)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-stringr" ,r-stringr)))
+    (home-page "https://github.com/ComputationalRegulatoryGenomicsICL/GenomicInteractions/")
+    (synopsis "R package for handling genomic interaction data")
+    (description
+     "This R package provides tools for handling Genomic interaction
+data, such as ChIA-PET/Hi-C, annotating genomic features with
+interaction information and producing various plots / statistics.")
+    (license license:gpl3)))
