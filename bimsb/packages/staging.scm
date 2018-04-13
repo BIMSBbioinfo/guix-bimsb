@@ -3397,3 +3397,35 @@ methods.")
      "This package provides simple utility functions that are shared
 across several packages maintained by the Tanay lab.")
     (license license:gpl3)))
+
+(define-public r-interactionset
+  (package
+    (name "r-interactionset")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "InteractionSet" version))
+       (sha256
+        (base32
+         "1wmp4dqxj19dbd97r6zfzv81j06vh9j7bpypcxib8f2lyx26cwm9"))))
+    (properties
+     `((upstream-name . "InteractionSet")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biocgenerics" ,r-biocgenerics)
+       ("r-genomeinfodb" ,r-genomeinfodb)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-iranges" ,r-iranges)
+       ("r-matrix" ,r-matrix)
+       ("r-rcpp" ,r-rcpp)
+       ("r-s4vectors" ,r-s4vectors)
+       ("r-summarizedexperiment" ,r-summarizedexperiment)))
+    (home-page "https://bioconductor.org/packages/InteractionSet")
+    (synopsis "Base classes for storing genomic interaction data")
+    (description
+     "This packages provides the @code{GInteractions},
+@code{InteractionSet} and @code{ContactMatrix} objects and associated
+methods for storing and manipulating genomic interaction data from
+Hi-C and ChIA-PET experiments.")
+    (license license:gpl3)))
