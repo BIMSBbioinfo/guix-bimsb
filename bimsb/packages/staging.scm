@@ -66,6 +66,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
@@ -3468,3 +3469,134 @@ Hi-C and ChIA-PET experiments.")
 data, such as ChIA-PET/Hi-C, annotating genomic features with
 interaction information and producing various plots / statistics.")
     (license license:gpl3)))
+
+(define-public ensembl-vep
+  (let* ((api-version "92")
+         (api-module
+          (lambda (name hash)
+            (origin (method git-fetch)
+                    (uri (git-reference
+                          (url (string-append "https://github.com/Ensembl/"
+                                              name ".git"))
+                          (commit (string-append "release/" api-version))))
+                    (file-name (string-append name "-" api-version "-checkout"))
+                    (sha256 (base32 hash))))))
+    (package
+      (name "ensembl-vep")
+      (version (string-append api-version ".1"))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Ensembl/ensembl-vep.git")
+               (commit (string-append "release/" version))))
+         (sha256
+          (base32
+           "0qsqjvbvcapfkhadicr95npkg98fp0c60zm2jafw6z4v79174cs5"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:modules ((guix build gnu-build-system)
+                    (guix build utils)
+                    (ice-9 match))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (delete 'build)
+           ;; Tests need to run after installation
+           (delete 'check)
+           (replace 'install
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((modules '(("ensembl" "/")
+                                 ("ensembl-variation" "/Variation")
+                                 ("ensembl-funcgen"   "/Funcgen")
+                                 ("ensembl-io"        "/IO")))
+                      (scripts '(("convert_cache.pl" "vep_convert_cache.pl")
+                                 ("INSTALL.pl"       "vep_install.pl")
+                                 ("haplo"            #f)
+                                 ("variant_recoder"  #f)
+                                 ("filter_vep"       #f)
+                                 ("vep"              #f)))
+                      (out  (assoc-ref outputs "out"))
+                      (bin  (string-append out "/bin"))
+                      (perl (string-append out "/lib/perl5/site_perl")))
+                 (for-each
+                  (match-lambda
+                    ((name path)
+                     (let ((dir (string-append perl "/Bio/EnsEMBL" path)))
+                       (mkdir-p dir)
+                       (copy-recursively
+                        (string-append (assoc-ref inputs (string-append "api-module-" name))
+                                       "/modules/Bio/EnsEMBL" path)
+                        dir))))
+                  modules)
+                 (copy-recursively "modules/" perl)
+                 (mkdir-p bin)
+                 (for-each
+                  (match-lambda
+                    ((script new-name)
+                     (let ((location (string-append bin "/"
+                                                    (or new-name (basename script)))))
+                       (copy-file script location)
+                       (chmod location #o555)
+                       (wrap-program location
+                         `("PERL5LIB" ":" = (,(getenv "PERL5LIB")
+                                             ,perl))))))
+                  scripts)
+
+                 ;; Fix path to tools
+                 (with-directory-excursion (string-append perl "/Bio/EnsEMBL")
+                   (substitute* '("Funcgen/RunnableDB/ProbeMapping/PrePipelineChecks.pm"
+                                  "VEP/BaseRunner.pm"
+                                  "VEP/Utils.pm"
+                                  "VEP/AnnotationSource/Cache/VariationTabix.pm"
+                                  "VEP/AnnotationSource/Cache/BaseSerialized.pm"
+                                  "Variation/Utils/BaseVepTabixPlugin.pm"
+                                  "Variation/Utils/VEP.pm"
+                                  "Variation/Pipeline/ReleaseDataDumps/PreRunChecks.pm")
+                     (("`which")
+                      (string-append "`"
+                                     (assoc-ref inputs "which")
+                                     "/bin/which"))))
+                 #t)))
+           ;; FIXME: there are test, but they are tricky to run.
+           (add-after 'install 'check
+             (lambda* (#:key outputs #:allow-other-keys)
+               (invoke (string-append (assoc-ref outputs "out")
+                                      "/bin/vep")
+                       "--help"))))))
+      ;; TODO: haplo needs Set/IntervalTree.pm
+      (inputs
+       `(("bioperl-minimal" ,bioperl-minimal)
+         ("perl-dbi" ,perl-dbi)
+         ("perl-dbd-mysql" ,perl-dbd-mysql)
+         ("perl-libwww" ,perl-libwww)
+         ("perl-http-tiny" ,perl-http-tiny)
+         ("perl-json" ,perl-json)
+         ("which" ,(@ (gnu packages base) which))))
+      (propagated-inputs
+       `(("kentutils" ,kentutils)))
+      (native-inputs
+       `(("unzip" ,unzip)
+         ("api-module-ensembl"
+          ,(api-module "ensembl"
+                       "106yz0kg38zqxxdsrppisbw6d4gx0r9bn7nh4xvh3h0pmlc21smj"))
+         ("api-module-ensembl-variation"
+          ,(api-module "ensembl-variation"
+                       "0vxsigcgqqdg9jdzrsl48g1gd97ps25a7nas9bckfwj8qjvrg9ni"))
+         ("api-module-ensembl-funcgen"
+          ,(api-module "ensembl-funcgen"
+                       "0hhzvam51gcywr0s7pamw23nniag2wby4vnpql83mzwlnlrsrf98"))
+         ("api-module-ensembl-io"
+          ,(api-module "ensembl-io"
+                       "1gylvpik0npgarfppccxw0kmrz9lw30rgzz7vbdb2x4b2cxygbkz"))
+         ("perl-test-harness" ,perl-test-harness)
+         ("perl-test-exception" ,perl-test-exception)))
+      (home-page "http://www.ensembl.org/vep")
+      (synopsis "Predict functional effects of genomic variants")
+      (description
+       "This package provides a Variant Effect Predictor, which predicts
+the functional effects of genomic variants.  It also provides
+Haplosaurus, which uses phased genotype data to predict
+whole-transcript haplotype sequences, and Variant Recoder, which
+translates between different variant encodings.")
+      (license license:asl2.0))))
