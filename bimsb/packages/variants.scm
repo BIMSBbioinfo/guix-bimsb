@@ -451,37 +451,6 @@ OTHER-PERL instead of \"perl-\", when applicable."
      `(("gcc" ,gcc-4.9)
        ,@(package-native-inputs boost-1.55)))))
 
-;; Guix commit 6f9ba4c91c096a2fb95da111be0657d99ef2b683 removed this
-;; for security reasons.  However, rapidstorm from staging depends on
-;; this version.
-(define-public wxwidgets-2
-  (package
-    (inherit wxwidgets)
-    (version "2.8.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/wxWidgets/wxWidgets/"
-                           "releases/download/v" version
-                           "/wxGTK-" version ".tar.gz"))
-       (sha256
-        (base32 "1gjs9vfga60mk4j4ngiwsk9h6c7j22pw26m3asxr1jwvqbr8kkqk"))))
-    (inputs
-     `(("gtk" ,gtk+-2)
-       ("libjpeg" ,libjpeg)
-       ("libtiff" ,libtiff)
-       ("libmspack" ,libmspack)
-       ("sdl" ,sdl)
-       ("unixodbc" ,unixodbc)))
-    (arguments
-     `(#:configure-flags
-       '("--enable-unicode" "--with-regex=sys" "--with-sdl")
-       #:make-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib"))
-       ;; No 'check' target.
-       #:tests? #f))))
-
 (define-public rsem-latest
   (package (inherit rsem)
     (name "rsem")
