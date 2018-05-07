@@ -755,43 +755,49 @@ non-coding regions.")
 
 (define-public nucleoatac
   (package
-  (name "nucleoatac")
-  (version "0.3.1")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/GreenleafLab/NucleoATAC/"
-                          "archive/v" version ".tar.gz"))
-      (file-name (string-append name "-" version ".tar.gz"))
-      (sha256
-       (base32
-        "1r2r4f5c9mhl722gkyxq0yb1pmk7jqgvjqn8bwlcr7jbbys51afh"))))
-  (build-system python-build-system)
-  (arguments
-   `(#:python ,python-2
-     #:phases
-     (modify-phases %standard-phases
-       (add-before 'check 'set-HOME
-         ;; The tests need a valid HOME directory
-         (lambda _ (setenv "HOME" (getcwd)) #t)))))
-  (inputs
-   `(("python-pandas" ,python2-pandas)
-     ("python-numpy" ,python2-numpy)
-     ("python-scipy" ,python2-scipy)
-     ("python-matplotlib" ,python2-matplotlib)
-     ("python-pysam" ,python2-pysam)))
-  (native-inputs
-   `(("python-setuptools" ,python2-setuptools)
-     ("python-pytz" ,python2-pytz)
-     ("python-mock" ,python2-mock)
-     ("python-cython" ,python2-cython)))
-  (home-page "https://github.com/GreenleafLab/NucleoATAC")
-  (synopsis "Nucleosome calling using ATAC-seq data")
-  (description "This package provides tools for calling nucleosomes
+    (name "nucleoatac")
+    (version "0.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GreenleafLab/NucleoATAC.git")
+             (commit (string-append "v" version))))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32
+         "00mmyyiyagviksqs9rk12saa3949wxy25bllwhvia0sqj56v6shn"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           ;; The tests need a valid HOME directory
+           (lambda _ (setenv "HOME" (getcwd)) #t))
+         ;; The default check phase just tells us to run "python
+         ;; tests.py", so that's what we're doing.
+         (replace 'check
+           (lambda _ (invoke "python" "tests.py"))))))
+    (inputs
+     `(("python-pandas" ,python2-pandas)
+       ("python-numpy" ,python2-numpy)
+       ("python-scipy" ,python2-scipy)
+       ("python-matplotlib" ,python2-matplotlib)
+       ("python-pysam" ,python2-pysam)))
+    (native-inputs
+     `(("python-setuptools" ,python2-setuptools)
+       ("python-nose" ,python2-nose)
+       ("python-pytz" ,python2-pytz)
+       ("python-mock" ,python2-mock)
+       ("python-cython" ,python2-cython)))
+    (home-page "https://github.com/GreenleafLab/NucleoATAC")
+    (synopsis "Nucleosome calling using ATAC-seq data")
+    (description "This package provides tools for calling nucleosomes
 using ATAC-Seq data.  It also includes general scripts for working
 with paired-end ATAC-Seq data (or potentially other paired-end
 data).")
-  (license license:expat)))
+    (license license:expat)))
 
 (define-public lammps
   (package
