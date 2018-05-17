@@ -271,6 +271,7 @@ of the @code{libR} shared library."))))
        ("qtsensors" ,qtsensors)
        ("qtxmlpatterns" ,qtxmlpatterns)
        ("qtwebkit" ,qtwebkit)
+       ("qtwebchannel" ,qtwebchannel)
        ,@(package-inputs rstudio-server)))
     (synopsis "Integrated development environment (IDE) for R (desktop version)")))
 
