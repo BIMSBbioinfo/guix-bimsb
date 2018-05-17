@@ -94,16 +94,16 @@
 (define-public rstudio-server
   (package
     (name "rstudio-server")
-    (version "1.1.220")
+    (version "1.1.453")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/rstudio/rstudio/archive/v"
-                    version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rstudio/rstudio.git")
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "00aqkz392l754n9h6z23f4yd5z7s5bfj57c0v0c5zf0y828fiawq"))
-              (file-name (string-append name "-" version ".tar.gz"))))
+                "0caz8c0p7kgz0s524r37jycsv7clpry4k54xg02jbwzw37imag30"))
+              (file-name (string-append name "-" version "-checkout"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DRSTUDIO_TARGET=Server")
