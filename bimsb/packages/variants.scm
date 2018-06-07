@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2016, 2017, 2018 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -994,6 +994,31 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                (substitute* "source/IncludeDefine.h"
                  (("(#define DEF_readNameLengthMax ).*" _ match)
                   (string-append match "900000\n")))))))))))
+
+(define-public star-2.5.2
+  (package (inherit star)
+    (name "star")
+    (version "2.5.2b")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alexdobin/STAR.git")
+                    (commit version)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0ipxr7mnc5ckanvis74ypfybd2ai0k12y6nai0mmmk4igfxd2zry"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "source/Makefile"
+                    (("/bin/rm") "rm"))
+                  ;; Remove pre-built binaries and bundled htslib sources.
+                  (delete-file-recursively "bin/MacOSX_x86_64")
+                  (delete-file-recursively "bin/Linux_x86_64")
+                  (delete-file-recursively "bin/Linux_x86_64_static")
+                  (delete-file-recursively "source/htslib")
+                  #t))))))
 
 (define-public jupyter-with-python2
   (package (inherit jupyter)
