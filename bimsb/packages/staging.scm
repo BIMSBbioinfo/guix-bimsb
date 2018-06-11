@@ -42,6 +42,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages bioinformatics)
+  #:use-module (gnu packages bioconductor)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
