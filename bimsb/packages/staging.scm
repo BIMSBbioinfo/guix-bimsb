@@ -1610,7 +1610,7 @@ various other algorithms.")
 (define-public r-misha
   (package
     (name "r-misha")
-    (version "3.5.4")
+    (version "3.5.6")
     (source
      (origin
        (method url-fetch)
@@ -1618,7 +1618,7 @@ various other algorithms.")
                            "gpatterns/misha_" version ".tar.gz"))
        (sha256
         (base32
-         "1df4i0cisqj3szg08didmzk99awgvzjmzi55kasji5fw21z8qan6"))
+         "1w9ppvhv6g0x3yyaaljs5hkn7x5yw74nj6f780avxr89yi9kx5qd"))
        ;; Delete bundled executable.
        (snippet
         '(begin
