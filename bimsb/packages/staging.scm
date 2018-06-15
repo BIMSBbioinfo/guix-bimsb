@@ -2340,18 +2340,21 @@ method (weighted Fisher's method), and Sidak correction.")
 (define-public r-sleuth
   (package
     (name "r-sleuth")
-    (version "0.29.0")
+    (version "0.30.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/pachterlab/sleuth/archive/v"
-                                  version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pachterlab/sleuth.git")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "05qad0hc0gixrd41vd70xncb9a6hhq0zls746p0s1w7qm71m6b2d"))))
+                "1zk9y8llv8s751lc37smzlk8q8f980l67j3pmnxqmmw9f4v1lm51"))))
     (build-system r-build-system)
     (propagated-inputs
-     `(("r-ggplot2" ,r-ggplot2)
+     `(("r-aggregation" ,r-aggregation)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-pheatmap" ,r-pheatmap)
        ("r-dplyr" ,r-dplyr)
        ("r-data-table" ,r-data-table)
        ("r-tidyr" ,r-tidyr)
@@ -2363,7 +2366,7 @@ method (weighted Fisher's method), and Sidak correction.")
        ("r-mass" ,r-mass)
        ("r-testthat" ,r-testthat)
        ("r-knitr" ,r-knitr)))
-    (home-page "http://pachterlab.github.io/sleuth")
+    (home-page "https://pachterlab.github.io/sleuth")
     (synopsis "Differential analysis of RNA-Seq data")
     (description
      "Sleuth is a program for differential analysis of RNA-Seq data.
