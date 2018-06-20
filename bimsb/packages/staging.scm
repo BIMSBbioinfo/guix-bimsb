@@ -2752,3 +2752,25 @@ Haplosaurus, which uses phased genotype data to predict
 whole-transcript haplotype sequences, and Variant Recoder, which
 translates between different variant encodings.")
       (license license:asl2.0))))
+
+(define-public kissplice
+  (package
+    (name "kissplice")
+    (version "2.4.0-p1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "ftp://pbil.univ-lyon1.fr/pub/logiciel/"
+                                  "kissplice/download/kissplice-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1xvn2rjb8c009i6xrsx904i0kbyb7wyqhgsw5ax0xcfh9i29nmpl"))))
+    (build-system cmake-build-system)
+    (inputs
+     `(("zlib" ,zlib)
+       ("python" ,python-2)))
+    (home-page "http://kissplice.prabi.fr/")
+    (synopsis "De-novo calling alternative splicing events from RNA-seq data")
+    (description "This package provides a program whose purpose is to
+detect alternative splicing events from RNA-seq data.")
+    (license license:cecill)))
