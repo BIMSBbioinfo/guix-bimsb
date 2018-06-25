@@ -29,6 +29,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages gcc)
@@ -1090,3 +1091,15 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
      "Cutadapt finds and removes adapter sequences, primers, poly-A tails and
 other types of unwanted sequence from high-throughput sequencing reads.")
     (license license:expat)))
+
+(define-public cmake-3.7.2
+  (package (inherit cmake)
+    (version "3.7.2")
+    (source (origin
+              (inherit (package-source cmake))
+              (uri (string-append "https://www.cmake.org/files/v"
+                                  (version-major+minor version)
+                                  "/cmake-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1q6a60695prpzzsmczm2xrgxdb61fyjznb04dr6yls6iwv24c4nw"))))))
