@@ -2774,3 +2774,140 @@ translates between different variant encodings.")
     (description "This package provides a program whose purpose is to
 detect alternative splicing events from RNA-seq data.")
     (license license:cecill)))
+
+(define-public trinityrnaseq
+  (package
+    (name "trinityrnaseq")
+    (version "2.6.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/trinityrnaseq/trinityrnaseq.git")
+                    (commit (string-append "Trinity-v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r9pnhkzdmk23xc6rv7n6ma78s1lalm9s65pz36795s9z9i06jv4"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:modules ((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 match)
+                  (srfi srfi-1))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "Chrysalis/Makefile"
+               (("\\$\\(BUILD_DATETIME\\)") "0")
+               (("\\$\\(DATE\\)") "0")
+               (("\\$\\(OS_RELEASE\\)") "Guix"))
+             (substitute* "Chrysalis/MakeDepend.cc"
+               (("/bin/rm") (which "rm")))
+             (setenv "SHELL" (which "sh"))
+             (setenv "CONFIG_SHELL" (which "sh"))
+             #t))
+         (add-after 'unpack 'unpack-plugins
+           (lambda _
+             (with-directory-excursion "trinity-plugins"
+               (invoke "tar" "xvf" "seqtk-trinity.v0.0.2.tar.gz")
+               (invoke "tar" "xvf" "ParaFly-0.1.0.tar.gz")
+               (substitute* "Makefile"
+                 (("tar ") "echo tar ")))
+             (for-each patch-shebang (find-files "." ".*"))
+             (substitute* '("Inchworm/configure"
+                            "Inchworm/missing"
+                            "trinity-plugins/ParaFly-0.1.0/config.status"
+                            "trinity-plugins/ParaFly-0.1.0/missing")
+               (("(-| )/bin/sh" _ m) (string-append m (which "sh"))))
+             #t))
+         (add-after 'build 'build-plugins
+           (lambda _
+             ;; Run this in the subdirectory to avoid running the
+             ;; tests right here.
+             (with-directory-excursion "trinity-plugins"
+               (invoke "make" "plugins")) #t))
+         ;; The install script uses rsync, provides no overrides for
+         ;; the default location at /usr/local/bin, and patching it
+         ;; would change all lines that do something.
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out   (assoc-ref outputs "out"))
+                    (share (string-append out "/share/trinity/"))
+                    (bin   (string-append out "/bin/")))
+               (mkdir-p bin)
+               (copy-recursively "." share)
+               (wrap-program (string-append share "Trinity")
+                 `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))
+                 `("PERL5LIB"    ":" = (,(getenv "PERL5LIB")))
+                 `("PYTHONPATH"  ":" = (,(getenv "PYTHONPATH")))
+                 `("PATH"        ":" =
+                   ,(cons (string-append out "share/trinity/trinity-plugins/BIN")
+                          (filter-map (match-lambda
+                                        ((name . dir)
+                                         (string-append dir "/bin")))
+                                      inputs))))
+               (symlink (string-append share "Trinity")
+                        (string-append bin "Trinity")))
+             #t))
+         (add-before 'reset-gzip-timestamps 'make-gzip-archive-writable
+           (lambda* (#:key outputs #:allow-other-keys)
+             (map (lambda (file)
+                    (make-file-writable file))
+                  (find-files (assoc-ref outputs "out") ".*\\.gz$"))
+             #t)))))
+    (inputs
+     `(("glibc-static" ,glibc-2.26 "static") ; FIXME for libieee.a
+       ("perl" ,perl)
+       ("perl-uri-escape" ,(@ (gnu packages perl-web) perl-uri-escape))
+       ("java" ,icedtea-8)
+       ("python" ,python-wrapper)
+       ("python-numpy" ,python-numpy)
+       ("r-tidyverse" ,r-tidyverse)
+       ("r-edger" ,r-edger)
+       ("r-fastcluster" ,r-fastcluster)
+       ("r-deseq2" ,r-deseq2)
+       ("r-ape" ,r-ape)
+       ("r-ctc" ,r-ctc)
+       ("r-gplots" ,r-gplots)
+       ("r-biobase" ,r-biobase)
+       ("r-qvalue" ,r-qvalue)
+       ("r-goseq" ,r-goseq)
+       ("r-glimma" ,r-glimma)
+       ("r-rots" ,r-rots)
+       ("r-goplot" ,r-goplot)
+       ("r-argparse" ,r-argparse)
+       ("r-sm" ,r-sm)
+       ("r-minimal" ,r-minimal)
+       ("sra-tools" ,sra-tools)
+       ("kallisto" ,kallisto)
+       ("multiqc" ,multiqc)
+       ("rsem" ,rsem)
+       ("bowtie" ,bowtie)
+       ("samtools" ,samtools)
+       ("jellyfish" ,jellyfish)
+       ("star" ,star)
+       ("hisat" ,hisat)
+       ("salmon" ,salmon)
+       ("fastqc" ,fastqc)
+       ("blast+" ,blast+)
+       ("zlib" ,zlib)))
+    (propagated-inputs
+     `(("which" ,(@ (gnu packages base) which))
+       ("coreutils" ,coreutils)
+       ("gzip" ,gzip)))
+    (home-page "https://github.com/trinityrnaseq/trinityrnaseq/wiki")
+    (synopsis "Trinity RNA-Seq de novo transcriptome assembly")
+    (description "Trinity assembles transcript sequences from Illumina
+RNA-Seq data.  Trinity represents a novel method for the efficient and
+robust de novo reconstruction of transcriptomes from RNA-seq data.
+Trinity combines three independent software modules: Inchworm,
+Chrysalis, and Butterfly, applied sequentially to process large
+volumes of RNA-seq reads.  Trinity partitions the sequence data into
+many individual de Bruijn graphs, each representing the
+transcriptional complexity at a given gene or locus, and then
+processes each graph independently to extract full-length splicing
+isoforms and to tease apart transcripts derived from paralogous
+genes.")
+    (license license:bsd-3)))
