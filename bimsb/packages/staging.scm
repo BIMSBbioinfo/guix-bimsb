@@ -2462,6 +2462,26 @@ for internal use.")
 (define-public python2-pyfasta
   (package-with-python2 python-pyfasta))
 
+(define-public python-mappy
+  (package
+    (name "python-mappy")
+    (version "2.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mappy" version))
+       (sha256
+        (base32
+         "0wwm4x9kqi6d5igl99236hw4nb05hwgn5m189aqlg90cxy1m6r2l"))))
+    (build-system python-build-system)
+    (inputs
+     `(("zlib" ,zlib)))
+    (home-page "https://github.com/lh3/minimap2")
+    (synopsis "Minimap2 python binding")
+    (description "This package provides Python bindings to Minimap2,
+an aligner for genomic and spliced nucleotide sequences.")
+    (license license:expat)))
+
 (define-public python2-ont-tombo
   (package
     (name "python2-ont-tombo")
