@@ -2482,28 +2482,29 @@ for internal use.")
 an aligner for genomic and spliced nucleotide sequences.")
     (license license:expat)))
 
-(define-public python2-ont-tombo
+(define-public python-ont-tombo
   (package
-    (name "python2-ont-tombo")
-    (version "1.0")
+    (name "python-ont-tombo")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ont-tombo" version))
        (sha256
         (base32
-         "07ixvxw2nwv8g2skg8anlacdkxk7vrl4w9999gjzaaj87adda3p7"))))
+         "1y9ms01gxh6agbh97x9gz1ax1hdy6qbd9ndxas5r2rn8znk9q0ih"))))
     (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
     (propagated-inputs
-     `(("python-h5py" ,python2-h5py)
-       ("python-numpy" ,python2-numpy)
-       ("python-scipy" ,python2-scipy)
-       ("python-scikit-learn" ,python2-scikit-learn)))
+     `(("python-h5py" ,python-h5py)
+       ("python-numpy" ,python-numpy)
+       ("python-scipy" ,python-scipy)
+       ("python-scikit-learn" ,python-scikit-learn)
+       ("python-tqdm" ,python-tqdm)
+       ("python-future" ,python-future)
+       ("python-mappy" ,python-mappy)))
     (native-inputs
-     `(("python-nose2" ,python2-nose2)
-       ("python-cython" ,python2-cython)))
+     `(("python-nose2" ,python-nose2)
+       ("python-cython" ,python-cython)))
     (home-page "https://github.com/nanoporetech/tombo")
     (synopsis "Analysis of raw nanopore sequencing data")
     (description "Tombo is a suite of tools primarily for the
@@ -2511,6 +2512,9 @@ identification of modified nucleotides from nanopore sequencing
 data. Tombo also provides tools for the analysis and visualization of
 raw nanopore signal.")
     (license license:mpl2.0)))
+
+(define-public python2-ont-tombo
+  (package-with-python2 python-ont-tombo))
 
 (define-public r-tgutil
   (package
