@@ -2020,6 +2020,36 @@ scripts for manipulating 3C/4C/5C/Hi-C data.")
 PDF files.")
     (license license:lgpl2.1+)))
 
+(define-public squid
+  (package
+    (name "squid")
+    (version "latest")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "http://eddylab.org/software/squid/squid.tar.gz")
+       (sha256
+        (base32
+         "19ywv1h581a84yyjnp64gwww99vhgbxi8v4rl37xp92ag7l44brh"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-perl-search-path
+           (lambda _
+             ;; Work around "dotless @INC" build failure.
+             (setenv "PERL5LIB"
+                     (string-append (getcwd) "/Testsuite:"
+                                    (getenv "PERL5LIB")))
+             #t)))))
+    (inputs
+      `(("perl" ,perl)))
+    (home-page "http://eddylab.org/software.html")
+    (synopsis "C function library for sequence analysis")
+    (description "SQUID is Sean Eddy's personal library of C functions and
+utility programs for sequence analysis.")
+    (license license:gpl2)))
+
 (define htslib-1.3
   (package
     (inherit htslib)
