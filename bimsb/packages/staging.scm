@@ -207,7 +207,7 @@
        ("clang" ,clang-3.5)
        ("boost" ,boost)
        ("libuuid" ,util-linux)
-       ("pandoc" ,ghc-pandoc-1)
+       ("pandoc" ,ghc-pandoc)
        ("openssl" ,openssl)
        ("pam" ,linux-pam)
        ("zlib" ,zlib)))
