@@ -2072,6 +2072,19 @@ collection of molecular @dfn{Quantitative Trait Loci} (QTLs) in few
 easy-to-perform steps.")
     (license license:gpl3+)))
 
+(define-public qtltools-old
+  (package (inherit qtltools)
+    (name "qtltools")
+    (version "1.0")
+    (source (origin
+              (method url-fetch/tarbomb)
+              (uri (string-append "https://qtltools.github.io/qtltools/"
+                                  "binaries/QTLtools_" version
+                                  "_source.tar.gz"))
+              (sha256
+               (base32
+                "1drckp02jgpl8lswa09w10xa6fyd7r8nlg08yhg6c5hls0zbm277"))))))
+
 (define-public python2-pyml
   (package
     (name "python2-pyml")
