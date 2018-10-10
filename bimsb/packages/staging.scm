@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017, 2018 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
+;;; Copyright © 2018 Marcel Schilling <marcel.schilling@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -1995,6 +1996,95 @@ Viewer (SAV) files, access data, and generate QC plots.")
     (description "This package is a collection of Perl, Python, and R
 scripts for manipulating 3C/4C/5C/Hi-C data.")
     (license license:asl2.0)))
+
+(define-public perl-pdf-api2
+  (package
+    (name "perl-pdf-api2")
+    (version "2.033")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/S/SS/SSIMMS/"
+                           "PDF-API2-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1817knk32xrimks4nvv0rss06ncjwvdmqpyaz8xgflrh3bn6c24w"))))
+    (build-system perl-build-system)
+    (propagated-inputs
+      `(("perl-font-ttf" ,perl-font-ttf)
+        ("perl-test-exception" ,perl-test-exception)
+        ("perl-test-memory-cycle" ,perl-test-memory-cycle)))
+    (home-page "https://metacpan.org/release/PDF-API2")
+    (synopsis "Facilitates the creation and modification of PDF files")
+    (description "This module facilitates the creation and modification of
+PDF files.")
+    (license license:lgpl2.1+)))
+
+(define-public squid
+  (package
+    (name "squid")
+    (version "latest")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "http://eddylab.org/software/squid/squid.tar.gz")
+       (sha256
+        (base32
+         "19ywv1h581a84yyjnp64gwww99vhgbxi8v4rl37xp92ag7l44brh"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-perl-search-path
+           (lambda _
+             ;; Work around "dotless @INC" build failure.
+             (setenv "PERL5LIB"
+                     (string-append (getcwd) "/Testsuite:"
+                                    (getenv "PERL5LIB")))
+             #t)))))
+    (inputs
+      `(("perl" ,perl)))
+    (home-page "http://eddylab.org/software.html")
+    (synopsis "C function library for sequence analysis")
+    (description "SQUID is Sean Eddy's personal library of C functions and
+utility programs for sequence analysis.")
+    (license license:gpl2)))
+
+(define-public randfold
+  (package
+    (name "randfold")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://bioinformatics.psb.ugent.be/"
+                           "supplementary_data/erbon/nov2003/downloads/"
+                           "randfold-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0gqixl4ncaibrxmn25d6lm2hrw4ml2fj13nrc9q1kilsxdfi91mj"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ;; no tests provided
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let*  ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin")))
+               (mkdir-p bin)
+               (install-file "randfold" bin)
+               #t))))))
+    (inputs
+      `(("squid" ,squid)))
+    (home-page (string-append "http://bioinformatics.psb.ugent.be/"
+                              "supplementary_data/erbon/nov2003"))
+    (synopsis "Minimum free energy of folding randomization test software")
+    (description "randfold computes the probability that, for a given
+sequence, the Minimum Free Energy (MFE) of the secondary structure is
+different from MFE computed with random sequences.")
+    (license license:gpl2)))
 
 (define htslib-1.3
   (package
