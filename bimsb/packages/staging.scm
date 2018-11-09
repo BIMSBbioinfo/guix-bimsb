@@ -2505,31 +2505,6 @@ nanopore sequencing data, including correction of basecalls and
 visualization.")
     (license license:bsd-3)))
 
-(define-public libgff
-  (package
-    (name "libgff")
-    (version "1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/Kingsford-Group/"
-                    "libgff/archive/v" version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0vc4nxyhlm6g9vvmx5l4lfs5pnvixsv1hiiy4kddf2y3p6jna8ls"))))
-    (build-system cmake-build-system)
-    (arguments `(#:tests? #f)) ; no tests included
-    (home-page "https://github.com/Kingsford-Group/libgff")
-    (synopsis "Parser library for reading/writing GFF files")
-    (description
-     "This is a simple \"libraryfication\" of the GFF/GTF parsing code that is
-used in the Cufflinks codebase.  The goal of this library is to provide this
-functionality without the necessity of drawing in a heavy-weight dependency
-like SeqAn.")
-    (license (license:x11-style "http://www.boost.org/LICENSE_1_0.txt"
-                                "Some components have other similar licences."))))
-
 (define-public python-pyfasta
   (package
     (name "python-pyfasta")
