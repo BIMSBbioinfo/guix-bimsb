@@ -296,13 +296,14 @@ of the @code{libR} shared library."))))
     (version "3.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/WebLogo/weblogo/archive/"
-                           version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/WebLogo/weblogo.git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0sxrrr0ybp22zdy0ii5qa89pryxryiavgbfxc6zi5hr7wr31wwv8"))))
+         "14hpkpzrm5prgd392c047r15p674912d9mg79scvzs2rkf8ayp6n"))))
     (build-system python-build-system)
     (arguments
      `(#:python ,python-2
