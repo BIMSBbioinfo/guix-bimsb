@@ -143,29 +143,32 @@
              (with-directory-excursion "dependencies/common"
                (mkdir "dictionaries")
                (mkdir "pandoc") ; TODO: only to appease the cmake stuff
-               (zero? (system* "unzip" "-qd" "dictionaries"
-                               (assoc-ref inputs "dictionaries"))))))
+               (invoke "unzip" "-qd" "dictionaries"
+                       (assoc-ref inputs "dictionaries")))
+             #t))
          (add-after 'unpack 'unpack-mathjax
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "dependencies/common"
                (mkdir "mathjax-26")
-               (zero? (system* "unzip" "-qd" "mathjax-26"
-                               (assoc-ref inputs "mathjax"))))))
+               (invoke "unzip" "-qd" "mathjax-26"
+                       (assoc-ref inputs "mathjax")))
+             #t))
          (add-after 'unpack 'unpack-gin
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "src/gwt"
                (install-file (assoc-ref inputs "junit") "lib")
                (mkdir-p "lib/gin/1.5")
-               (zero? (system* "unzip" "-qd" "lib/gin/1.5"
-                               (assoc-ref inputs "gin"))))))
+               (invoke "unzip" "-qd" "lib/gin/1.5"
+                       (assoc-ref inputs "gin")))
+             #t))
          (add-after 'unpack 'unpack-gwt
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "src/gwt"
                (mkdir-p "lib/gwt")
-	       (system* "unzip" "-qd" "lib/gwt"
-			(assoc-ref inputs "gwt"))
+	           (invoke "unzip" "-qd" "lib/gwt"
+			           (assoc-ref inputs "gwt"))
                (rename-file "lib/gwt/gwt-2.7.0" "lib/gwt/2.7.0"))
-	     #t)))))
+	         #t)))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("unzip" ,unzip)
