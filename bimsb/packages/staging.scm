@@ -109,13 +109,22 @@
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DRSTUDIO_TARGET=Server")
+       #:modules ((guix build cmake-build-system)
+                  (guix build utils)
+                  (ice-9 match))
        #:tests? #f ; no tests
        #:phases
        (modify-phases %standard-phases
-         (add-before 'build 'set-java-home
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "JAVA_HOME" (assoc-ref inputs "jdk"))
-            #t))
+         (add-before 'build 'set-environment-variables
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; This is needed for Java, obviously.
+             (setenv "JAVA_HOME" (assoc-ref inputs "jdk"))
+             (match (string-split ,version #\.)
+               ((major minor patch)
+                (setenv "RSTUDIO_VERSION_MAJOR" major)
+                (setenv "RSTUDIO_VERSION_MINOR" minor)
+                (setenv "RSTUDIO_VERSION_PATCH" patch)))
+             #t))
          (add-after 'unpack 'fix-dependencies
            (lambda _
              ;; Disable checks for bundled dependencies.  We take care of them by other means.
