@@ -37,6 +37,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module ((gnu packages base) #:hide (which))
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -49,6 +50,7 @@
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages ghostscript)
@@ -2845,3 +2847,46 @@ processes each graph independently to extract full-length splicing
 isoforms and to tease apart transcripts derived from paralogous
 genes.")
     (license license:bsd-3)))
+
+(define-public idr-legacy
+  (package
+    (name "idr-legacy")
+    (version "0")
+    (source (origin
+              (method url-fetch)
+              (uri "https://doc-0g-1g-docs.googleusercontent.com/docs/\
+securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/\
+3550tf52kpea6u7drvem675lb6ei70hr/1545393600000/03153225161791433675/\
+*/0B_ssVVyXv8ZSX3luT0xhV3ZQNWc?e=download")
+              (file-name (string-append "idr-legacy-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1d4zxh860in3sf6nkwwz427srh8p3hx35a7x1izbf73hlfbjk6a5"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; there are no tests
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'build)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share/idr-legacy")))
+               (mkdir-p share)
+               (copy-recursively "." share)
+               #t))))))
+    (propagated-inputs
+     `(("bash" ,bash)
+       ("coreutils" ,coreutils)
+       ("gawk" ,gawk)
+       ("grep" ,grep)
+       ("r-minimal" ,r-minimal)))
+    (home-page "https://sites.google.com/site/anshulkundaje/projects/idr/deprecated")
+    (synopsis "Legacy pipeline for measuring the Irreproducible Discovery Rate")
+    (description "The IDR (Irreproducible Discovery Rate) framework is
+a unified approach to measure the reproducibility of findings
+identified from replicate experiments and provide highly stable
+thresholds based on reproducibility.  This package provides the
+original implementation of a pipeline using this method.")
+    (license license:gpl2+)))
