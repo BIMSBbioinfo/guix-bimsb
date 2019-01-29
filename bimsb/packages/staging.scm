@@ -50,6 +50,7 @@
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages fabric-management)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
@@ -88,6 +89,7 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
@@ -2891,3 +2893,138 @@ identified from replicate experiments and provide highly stable
 thresholds based on reproducibility.  This package provides the
 original implementation of a pipeline using this method.")
     (license license:gpl2+)))
+
+(define-public psm/patched
+  (package
+    (name "psm")
+    (version "3.3.20170428")
+    (home-page "https://github.com/intel/psm")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url home-page)
+                           (commit "604758e76dc31e68d1de736ccf5ddf16cb22355b")))
+       (file-name (string-append "psm-" version ".tar.gz"))
+       (sha256
+        (base32 "0nsb325dmhn5ia3d2cnksqr0gdvrrx2hmvlylfgvmaqdpq76zm85"))
+       (patches (search-patches
+                 "psm-arch.patch"     ; uname -p returns "unknown" on Debian 9
+                 "psm-ldflags.patch"  ; build shared lib with LDFLAGS
+                 "psm-repro.patch"))))  ; reproducibility
+    (build-system gnu-build-system)
+    (inputs `(("libuuid" ,util-linux)))
+    (arguments
+     '(#:make-flags `("PSM_USE_SYS_UUID=1" "CC=gcc" "WERROR="
+                      ,(string-append "INSTALL_PREFIX=" %output)
+                      ,(string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (add-after 'unpack 'patch-/usr/include
+                    (lambda _
+                      (substitute* "Makefile"
+                        (("\\$\\{DESTDIR}/usr/include")
+                         (string-append %output "/include")))
+                      (substitute* "Makefile"
+                        (("/lib64") "/lib"))
+                      #t))
+                  (add-after 'unpack 'patch-sysmacros
+                    (lambda _
+                      (substitute* "ipath/ipath_proto.c"
+                        (("#include <sys/poll.h>" m)
+                         (string-append m "\n"
+                                        "#include <sys/sysmacros.h>")))
+                      #t)))))
+    (synopsis "Intel Performance Scaled Messaging (PSM) Libraries")
+    (description
+     "The PSM Messaging API, or PSM API, is Intel's low-level user-level
+communications interface for the True Scale family of products.  PSM users are
+enabled with mechanisms necessary to implement higher level communications
+interfaces in parallel environments.")
+    ;; Only Intel-compatable processors are supported.
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (license (list license:bsd-2 license:gpl2))))
+
+(define-public openmpi-4
+  (package (inherit openmpi)
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.open-mpi.org/software/ompi/v"
+                           (version-major+minor version)
+                           "/downloads/openmpi-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0srnjwzsmyhka9hhnmqm86qck4w3xwjm8g6sbns58wzbrwv8l2rg"))))
+    (inputs
+     `(("hwloc" ,hwloc "lib")
+       ("gfortran" ,gfortran)
+       ("libfabric" ,libfabric)
+       ("opensm" ,opensm)
+       ("psm" ,psm/patched)
+       ("psm2" ,psm2)
+       ("rdma-core" ,rdma-core)
+       ("valgrind" ,valgrind)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("perl" ,perl)))
+    (outputs '("out" "debug"))
+    (arguments
+     `(#:configure-flags `("--enable-mpi-ext=affinity" ;cr doesn't work
+                           "--enable-memchecker"
+                           "--with-sge"
+
+                           ;; VampirTrace is obsoleted by scorep and disabling
+                           ;; it reduces the closure size considerably.
+                           "--disable-vt"
+
+                           "--enable-openib-control-hdr-padding"
+                           "--enable-openib-dynamic-sl"
+                           "--enable-openib-udcm"
+                           "--enable-openib-rdmacm"
+                           "--enable-openib-rdmacm-ibaddr"
+                           ,(string-append "--with-psm="
+                                           (assoc-ref %build-inputs "psm"))
+                           ,(string-append "--with-valgrind="
+                                           (assoc-ref %build-inputs "valgrind"))
+                           ,(string-append "--with-hwloc="
+                                           (assoc-ref %build-inputs "hwloc")))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'use-infiniband
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (setenv "C_INCLUDE_PATH"
+                              (string-append (assoc-ref inputs "opensm")
+                                             "/include/infiniband/:"
+                                             (getenv "C_INCLUDE_PATH")))
+                      (setenv "CPLUS_INCLUDE_PATH"
+                              (string-append (assoc-ref inputs "opensm")
+                                             "/include/infiniband/:"
+                                             (getenv "CPLUS_INCLUDE_PATH")))
+                      #t))
+                  (add-before 'build 'remove-absolute
+                    (lambda _
+                      ;; Remove compiler absolute file names (OPAL_FC_ABSOLUTE
+                      ;; etc.) to reduce the closure size.  See
+                      ;; <https://lists.gnu.org/archive/html/guix-devel/2017-07/msg00388.html>
+                      ;; and
+                      ;; <https://www.mail-archive.com/users@lists.open-mpi.org//msg31397.html>.
+                      (substitute* '("orte/tools/orte-info/param.c"
+                                     "oshmem/tools/oshmem_info/param.c"
+                                     "ompi/tools/ompi_info/param.c")
+                        (("_ABSOLUTE") ""))
+                      #t))
+                  (add-before 'build 'scrub-timestamps ;reproducibility
+                    (lambda _
+                      (substitute* '("ompi/tools/ompi_info/param.c"
+                                     "orte/tools/orte-info/param.c"
+                                     "oshmem/tools/oshmem_info/param.c")
+                        ((".*(Built|Configured) on.*") ""))
+                      #t))
+                  (add-after 'install 'remove-logs ;reproducibility
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (for-each delete-file (find-files out "config.log"))
+                        #t))))))
+    (home-page "http://www.open-mpi.org")
+    (license license:bsd-2)))
