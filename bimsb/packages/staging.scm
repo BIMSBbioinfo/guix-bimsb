@@ -626,27 +626,30 @@ HTTPS.")
 
 (define-public umi-tools
   (package
-  (name "umi-tools")
-  (version "0.2.3")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "umi_tools" version))
-      (sha256
-       (base32
-        "0ms8jfql7ypivrs9wwn3nn33cfkav706min1k3fjn3n6zhx58dab"))))
-  (build-system python-build-system)
-  (inputs
-   `(("python-pandas" ,python-pandas)
-     ("python-numpy" ,python-numpy)
-     ("python-future" ,python-future)
-     ("python-pysam" ,python-pysam)))
-  (native-inputs
-   `(("python-setuptools" ,python-setuptools)
-     ("python-cython" ,python-cython)))
-  (home-page "https://github.com/CGATOxford/UMI-tools")
-  (synopsis "Tools for analyzing unique modular identifiers")
-  (description "This package provides tools for dealing with
+    (name "umi-tools")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "umi_tools" version))
+       (sha256
+        (base32
+         "04i9cxj3jf08pr0pafh7b0h4rn8cnkrsb2lzsai8zj9hgnka0dd5"))))
+    (build-system python-build-system)
+    (inputs
+     `(("python-setuptools" ,python-setuptools)
+       ("python-pandas" ,python-pandas)
+       ("python-future" ,python-future)
+       ("python-scipy" ,python-scipy)
+       ("python-matplotlib" ,python-matplotlib)
+       ("python-regex" ,python-regex)
+       ("python-pysam" ,python-pysam)))
+    (native-inputs
+     `(("python-setuptools" ,python-setuptools)
+       ("python-cython" ,python-cython)))
+    (home-page "https://github.com/CGATOxford/UMI-tools")
+    (synopsis "Tools for analyzing unique modular identifiers")
+    (description "This package provides tools for dealing with
 @dfn{Unique Molecular Identifiers} (UMIs) and @dfn{Random Molecular
 Tags} (RMTs) in genetic sequences.  Currently, there are two tools:
 
@@ -654,7 +657,7 @@ Tags} (RMTs) in genetic sequences.  Currently, there are two tools:
 @item extract: flexible removal of UMI sequences from fastq reads;
 @item dedup: implementation of various UMI deduplication methods.
 @end enumerate\n")
-  (license license:expat)))
+    (license license:expat)))
 
 (define-public metal
   (package
@@ -2187,27 +2190,6 @@ classifier performance.")
 the t-SNE algorithm.  The implementation is described here:
 @url{http://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf}.")
       (license license:bsd-3))))
-
-(define-public umi-tools5
-  (package
-  (inherit umi-tools)
-  (name "umi-tools")
-  (version "0.5.0")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "umi_tools" version))
-      (sha256
-       (base32
-        "04i9cxj3jf08pr0pafh7b0h4rn8cnkrsb2lzsai8zj9hgnka0dd5"))))
-  (inputs
-  `(("python-setuptools" ,python-setuptools)
-    ("python-pandas" ,python-pandas)
-    ("python-future" ,python-future)
-    ("python-scipy" ,python-scipy)
-    ("python-matplotlib" ,python-matplotlib)
-    ("python-regex" ,python-regex)
-    ("python-pysam" ,python-pysam)))))
 
 (define-public footprint-pipeline
   (package
