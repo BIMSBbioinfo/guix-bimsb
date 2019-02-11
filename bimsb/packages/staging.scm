@@ -627,14 +627,15 @@ HTTPS.")
 (define-public umi-tools
   (package
     (name "umi-tools")
-    (version "0.5.0")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "umi_tools" version))
        (sha256
         (base32
-         "04i9cxj3jf08pr0pafh7b0h4rn8cnkrsb2lzsai8zj9hgnka0dd5"))))
+         "1jxwiagbqm3a91anmrqkhvsgicawdr6hain3v8hcqv47kfv2nhnr"))
+       (patches (search-patches "umi-tools-importlib.patch"))))
     (build-system python-build-system)
     (inputs
      `(("python-setuptools" ,python-setuptools)
