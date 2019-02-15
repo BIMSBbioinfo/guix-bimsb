@@ -31,6 +31,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gtk)
@@ -1104,3 +1105,25 @@ other types of unwanted sequence from high-throughput sequencing reads.")
               (sha256
                (base32
                 "1q6a60695prpzzsmczm2xrgxdb61fyjznb04dr6yls6iwv24c4nw"))))))
+
+(define-public r-seurat-next
+  (let ((commit "3acf1655fa12f0ecd74b97c22f649c68eecab1b0")
+        (revision "1"))
+    (package (inherit r-seurat)
+      (name "r-seurat-next")
+      (version (git-version "2.9.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/satijalab/seurat.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ri4y776fpkh1w4ndbq03w3bqmv2jm6m325cgxrrjpi56g2cmi78"))))
+      (propagated-inputs
+       `(("r-future" ,r-future)
+         ("r-future-apply" ,r-future-apply)
+         ("r-ggrepel" ,r-ggrepel)
+         ("r-rsvd" ,r-rsvd)
+         ,@(package-propagated-inputs r-seurat))))))
