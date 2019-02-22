@@ -2928,86 +2928,9 @@ interfaces in parallel environments.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license (list license:bsd-2 license:gpl2))))
 
-(define-public openmpi-4
+(define-public openmpi-with-hwloc2
   (package (inherit openmpi)
-    (version "4.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.open-mpi.org/software/ompi/v"
-                           (version-major+minor version)
-                           "/downloads/openmpi-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "0srnjwzsmyhka9hhnmqm86qck4w3xwjm8g6sbns58wzbrwv8l2rg"))))
+    (name "openmpi-with-hwloc2")
     (inputs
-     `(("hwloc" ,hwloc "lib")
-       ("gfortran" ,gfortran)
-       ("libfabric" ,libfabric)
-       ("opensm" ,opensm)
-       ("psm" ,psm/patched)
-       ("psm2" ,psm2)
-       ("rdma-core" ,rdma-core)
-       ("valgrind" ,valgrind)))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("perl" ,perl)))
-    (outputs '("out" "debug"))
-    (arguments
-     `(#:configure-flags `("--enable-mpi-ext=affinity" ;cr doesn't work
-                           "--enable-memchecker"
-                           "--with-sge"
-
-                           ;; VampirTrace is obsoleted by scorep and disabling
-                           ;; it reduces the closure size considerably.
-                           "--disable-vt"
-
-                           "--enable-openib-control-hdr-padding"
-                           "--enable-openib-dynamic-sl"
-                           "--enable-openib-udcm"
-                           "--enable-openib-rdmacm"
-                           "--enable-openib-rdmacm-ibaddr"
-                           ,(string-append "--with-psm="
-                                           (assoc-ref %build-inputs "psm"))
-                           ,(string-append "--with-valgrind="
-                                           (assoc-ref %build-inputs "valgrind"))
-                           ,(string-append "--with-hwloc="
-                                           (assoc-ref %build-inputs "hwloc")))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'use-infiniband
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (setenv "C_INCLUDE_PATH"
-                              (string-append (assoc-ref inputs "opensm")
-                                             "/include/infiniband/:"
-                                             (getenv "C_INCLUDE_PATH")))
-                      (setenv "CPLUS_INCLUDE_PATH"
-                              (string-append (assoc-ref inputs "opensm")
-                                             "/include/infiniband/:"
-                                             (getenv "CPLUS_INCLUDE_PATH")))
-                      #t))
-                  (add-before 'build 'remove-absolute
-                    (lambda _
-                      ;; Remove compiler absolute file names (OPAL_FC_ABSOLUTE
-                      ;; etc.) to reduce the closure size.  See
-                      ;; <https://lists.gnu.org/archive/html/guix-devel/2017-07/msg00388.html>
-                      ;; and
-                      ;; <https://www.mail-archive.com/users@lists.open-mpi.org//msg31397.html>.
-                      (substitute* '("orte/tools/orte-info/param.c"
-                                     "oshmem/tools/oshmem_info/param.c"
-                                     "ompi/tools/ompi_info/param.c")
-                        (("_ABSOLUTE") ""))
-                      #t))
-                  (add-before 'build 'scrub-timestamps ;reproducibility
-                    (lambda _
-                      (substitute* '("ompi/tools/ompi_info/param.c"
-                                     "orte/tools/orte-info/param.c"
-                                     "oshmem/tools/oshmem_info/param.c")
-                        ((".*(Built|Configured) on.*") ""))
-                      #t))
-                  (add-after 'install 'remove-logs ;reproducibility
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (for-each delete-file (find-files out "config.log"))
-                        #t))))))
-    (home-page "http://www.open-mpi.org")
-    (license license:bsd-2)))
+     `(("hwloc" ,hwloc-2.0 "lib")
+       ,@(package-inputs openmpi)))))
