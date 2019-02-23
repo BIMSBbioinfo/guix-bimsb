@@ -247,6 +247,87 @@ OTHER-PERL instead of \"perl-\", when applicable."
                    #:tests? #f
                    ,@(package-arguments new))))))
 
+(define-public boost-1.68
+  (package
+    (name "boost")
+    (version "1.68.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://sourceforge/boost/boost/" version "/boost_"
+                    (string-map (lambda (x) (if (eq? x #\.) #\_ x)) version)
+                    ".tar.bz2"))
+              (sha256
+               (base32
+                "1dyqsr9yb01y0nnjdq9b8q5s2kvhxbayk34832k5cpzn7jy30qbz"))
+              (patches (search-patches "boost-fix-icu-build.patch"))))
+    (build-system gnu-build-system)
+    (inputs `(("icu4c" ,icu4c)
+              ("zlib" ,zlib)))
+    (native-inputs
+     `(("perl" ,perl)
+       ("python" ,python-2)
+       ("tcsh" ,tcsh)))
+    (arguments
+     `(#:tests? #f
+       #:make-flags
+       (list "threading=multi" "link=shared"
+             "cxxflags=-std=c++14"
+
+             ;; Set the RUNPATH to $libdir so that the libs find each other.
+             (string-append "linkflags=-Wl,-rpath="
+                            (assoc-ref %outputs "out") "/lib"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'bootstrap)
+         (replace 'configure
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((icu (assoc-ref inputs "icu4c"))
+                   (out (assoc-ref outputs "out")))
+               (substitute* '("libs/config/configure"
+                              "libs/spirit/classic/phoenix/test/runtest.sh"
+                              "tools/build/src/engine/execunix.c"
+                              "tools/build/src/engine/Jambase"
+                              "tools/build/src/engine/jambase.c")
+                 (("/bin/sh") (which "sh")))
+
+               (setenv "SHELL" (which "sh"))
+               (setenv "CONFIG_SHELL" (which "sh"))
+
+               (invoke "./bootstrap.sh"
+                       (string-append "--prefix=" out)
+                       ;; Auto-detection looks for ICU only in traditional
+                       ;; install locations.
+                       (string-append "--with-icu=" icu)
+                       "--with-toolset=gcc"))))
+         (replace 'build
+           (lambda* (#:key make-flags #:allow-other-keys)
+             (apply invoke "./b2"
+                    (format #f "-j~a" (parallel-job-count))
+                    make-flags)))
+         (replace 'install
+           (lambda* (#:key make-flags #:allow-other-keys)
+             (apply invoke "./b2" "install" make-flags)))
+         (add-after 'install 'provide-libboost_python
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               ;; Boost can build support for both Python 2 and Python 3 since
+               ;; version 1.67.0, and suffixes each library with the Python
+               ;; version.  Many consumers only check for libboost_python
+               ;; however, so we provide it here as suggested in
+               ;; <https://github.com/boostorg/python/issues/203>.
+               (with-directory-excursion (string-append out "/lib")
+                 (symlink "libboost_python27.so" "libboost_python.so"))
+               #t))))))
+
+    (home-page "https://www.boost.org")
+    (synopsis "Peer-reviewed portable C++ source libraries")
+    (description
+     "A collection of libraries intended to be widely useful, and usable
+across a broad spectrum of applications.")
+    (license (license:x11-style "https://www.boost.org/LICENSE_1_0.txt"
+                                "Some components have other similar licences."))))
+
 (define-public boost-1.58
   (package (inherit boost)
     (name "boost")
