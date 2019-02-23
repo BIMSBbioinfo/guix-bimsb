@@ -98,6 +98,8 @@
   #:use-module (bimsb packages variants)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
+;; We can't upgrade to 1.2.x because that depends on qtwebengine,
+;; which bundles Chromium.
 (define-public rstudio-server
   (package
     (name "rstudio-server")
@@ -120,6 +122,20 @@
        #:tests? #f ; no tests
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-type-error
+           (lambda _
+             (substitute* "src/cpp/core/DateTime.cpp"
+               (("return time_t_epoch \\+ seconds\\(sec\\);")
+                "return time_t_epoch + seconds(static_cast<long>(sec));"))
+             (substitute* "src/cpp/core/file_lock/FileLock.cpp"
+               (("= boost::posix_time::seconds\\((timeoutInterval|refreshRate)\\)" _ val)
+                (string-append "= boost::posix_time::seconds(static_cast<long>("
+                               val "))"))
+               (("FileLock::s_timeoutInterval\\(kDefaultTimeoutInterval\\)")
+                "FileLock::s_timeoutInterval(static_cast<long>(kDefaultTimeoutInterval))")
+               (("FileLock::s_refreshRate\\(kDefaultRefreshRate\\)")
+                "FileLock::s_refreshRate(static_cast<long>(kDefaultRefreshRate))"))
+             #t))
          (add-before 'build 'set-environment-variables
            (lambda* (#:key inputs #:allow-other-keys)
              ;; This is needed for Java, obviously.
@@ -223,7 +239,10 @@
        ("r-rmarkdown" ,r-rmarkdown) ; TODO: must be linked to another location
        ;;("r-rsconnect" ,r-rsconnect) ; TODO: must be linked to another location
        ("clang" ,clang-3.5)
-       ("boost" ,boost)
+       ;; Boost 1.69 no longer offers Boost.Signals; Rstudio does not
+       ;; yet support Boost.Signals2, so we need to use an older
+       ;; version of Boost.
+       ("boost" ,boost-1.68)
        ("libuuid" ,util-linux)
        ("pandoc" ,ghc-pandoc)
        ("openssl" ,openssl)
