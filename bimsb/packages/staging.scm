@@ -1893,14 +1893,14 @@ different methods.")
     (name "perl-cworld-dekker")
     (version "1.01")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/dekkerlab/"
-                                  "cworld-dekker/archive/v" version
-                                  ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dekkerlab/cworld-dekker.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h35y42yix2ivja2fi9xw7sbldy19xwyf4zaxbccismxbcqjszji"))))
+                "1dvh23fx52m59y6304xi2j2pl2hiqadlqg8jyv2pm14j1hy71ych"))))
     (build-system perl-build-system)
     (arguments
      `(#:modules ((guix build perl-build-system)
