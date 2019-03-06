@@ -1060,13 +1060,14 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
     (version "1.1.10")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/YangLab/CIRCexplorer/"
-                           "archive/" version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/YangLab/CIRCexplorer.git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0945cbg4w2m148f0invni8gbkxrsxap0hy2yhjfy1qw63sncn2ag"))))
+         "1d98xmc5pmbzgrzpmb68q20p2qphaa2qfrsnhmqj4nsss25gh1aa"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
