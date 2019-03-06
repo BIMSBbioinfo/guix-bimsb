@@ -851,13 +851,14 @@ data).")
     (version "r15407")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/lammps/lammps/archive/"
-                           version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lammps/lammps.git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1z2h7ja6h8m5q2vd8six4m6iv1nk2i2vrhfpdv20b53cjxpinfsz"))))
+         "16x8xz68y3fxnk0g6dnq17fjf48a1pkd7s6jbywnnz8qprg5pblp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no check target
