@@ -524,13 +524,14 @@ providing a visual cue that processing is underway.")
     (version "0.2.13")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/LabAdvComp/parcel/"
-                           "archive/v" version ".tar.gz"))
-       (file-name (string-append "python2-parcel-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LabAdvComp/parcel.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1k9wy7dx7frxz9cliahxri74nfc19lh97iqlwsgbq469bd8iai73"))))
+         "1r99c075m4a3j1h0hsi7bxm37cp1fsr6x7lkwhwcl5c13hn0wsml"))))
     (build-system python-build-system)
     (arguments
      `(#:python ,python-2
