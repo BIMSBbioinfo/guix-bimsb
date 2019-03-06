@@ -1752,13 +1752,14 @@ files.")
     (version "0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/pkathail/magic/"
-                           "archive/" version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkathail/magic.git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "14v2ykxlc6yscj3s7bxgmbz7lc6pr2ab469w3qcxzh4lgvh3mq0m"))))
+         "0ll9m7ivcfb56n6yhzww03x37kpmr3jd9a50nvjh342hjd4zhqpk"))))
     (build-system python-build-system)
     ;; No tests included.
     (arguments `(#:tests? #f))
