@@ -606,13 +606,14 @@ and a @{parcel} client.")
     (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/NCI-GDC/gdc-client/"
-                           "archive/v" version ".tar.gz"))
-       (file-name (string-append "gdc-client-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/NCI-GDC/gdc-client.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0i24zlj764r16rn6jw82l9cffndm2ixw7d91s780vk5ihrmmwd3h"))))
+         "10822bd1n75b7iqcf74ddx05izl3lz0cc5ckr6s7a7yrnzjvqzcx"))))
     (build-system python-build-system)
     (arguments
      `(#:python ,python-2
