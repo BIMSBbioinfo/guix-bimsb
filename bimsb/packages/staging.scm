@@ -1077,6 +1077,11 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
              (substitute* "circ/CIRCexplorer.py"
                (("from genomic_interval import Interval")
                 "from circ.genomic_interval import Interval"))
+             #t))
+         (add-before 'check 'set-PYTHONPATH
+           (lambda _
+             (setenv "PYTHONPATH" (string-append (getcwd) "/test:"
+                                                 (getenv "PYTHONPATH")))
              #t)))))
     (inputs
      `(("python-pysam" ,python-pysam)
