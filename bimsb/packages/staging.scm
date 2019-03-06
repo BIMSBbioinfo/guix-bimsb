@@ -1860,13 +1860,14 @@ technology.  Its features include:
     (version "0.5.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/vtraag/louvain-igraph/"
-                           "archive/v" version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vtraag/louvain-igraph.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hc4rjgcajm1fnq4r6xf5s4h5583c4r2qmd1ycz9i9nmxr8ymi0v"))))
+         "0s9j2am8kn1lzby6drprci4yx3l6nb4lzdzc0qr7v0m1wrfk1lib"))))
     (build-system python-build-system)
     ;; There are no tests.
     (arguments '(#:tests? #f))
