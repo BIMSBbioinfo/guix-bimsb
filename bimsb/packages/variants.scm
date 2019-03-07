@@ -38,6 +38,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
@@ -1208,3 +1209,10 @@ other types of unwanted sequence from high-throughput sequencing reads.")
          ("r-ggrepel" ,r-ggrepel)
          ("r-rsvd" ,r-rsvd)
          ,@(package-propagated-inputs r-seurat))))))
+
+(define-public openmpi-with-gcc8
+  (package (inherit openmpi)
+    (name "openmpi-with-gcc8")
+    (native-inputs
+     `(("gcc" ,gcc-8)
+       ,@(package-native-inputs openmpi)))))
