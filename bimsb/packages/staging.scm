@@ -2870,10 +2870,7 @@ genes.")
     (version "0")
     (source (origin
               (method url-fetch)
-              (uri "https://doc-0g-1g-docs.googleusercontent.com/docs/\
-securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/\
-3550tf52kpea6u7drvem675lb6ei70hr/1545393600000/03153225161791433675/\
-*/0B_ssVVyXv8ZSX3luT0xhV3ZQNWc?e=download")
+              (uri "https://docs.google.com/uc?export=download&id=0B_ssVVyXv8ZSX3luT0xhV3ZQNWc")
               (file-name (string-append "idr-legacy-" version ".tar.gz"))
               (sha256
                (base32
