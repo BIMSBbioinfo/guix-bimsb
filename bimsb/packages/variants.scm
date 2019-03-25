@@ -1064,34 +1064,6 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                  (base32
                   "061yx5lgm5c37v9asnvbl4wxay04791cbxs52ar16x0a0gd13p53")))))))
 
-(define-public starlong
-  (package (inherit star)
-    (name "starlong")
-    (arguments
-     (substitute-keyword-arguments (package-arguments star)
-       ((#:make-flags flags)
-        `(list "STARlong"))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-                 (install-file "STARlong" bin))
-               #t))))))))
-
-(define-public starlong/ivano
-  (package (inherit starlong)
-    (name "starlong-ivano")
-    (arguments
-     (substitute-keyword-arguments (package-arguments starlong)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'make-extra-long
-             (lambda _
-               (substitute* "source/IncludeDefine.h"
-                 (("(#define DEF_readNameLengthMax ).*" _ match)
-                  (string-append match "900000\n")))))))))))
-
 (define-public star-2.5.2
   (package (inherit star)
     (name "star")
