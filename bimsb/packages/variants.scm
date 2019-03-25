@@ -49,8 +49,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages shells)
-  #:use-module (gnu packages wxwidgets)
-  #:use-module (bimsb packages staging))
+  #:use-module (gnu packages wxwidgets))
 
 ;; An older version of Perl is required for Bcl2Fastq version 1.x
 (define-public perl-5.14
