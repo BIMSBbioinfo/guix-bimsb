@@ -2886,6 +2886,11 @@ genes.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (share (string-append out "/share/idr-legacy")))
+               (substitute* '("batch-consistency-plot.r"
+                              "batch-consistency-plot-merged2.r"
+                              "batch-consistency-analysis.r")
+                 (("source\\(\"functions-all-clayton-12-13.r\"\\)")
+                  (string-append "source(\"" share "/functions-all-clayton-12-13.r\")")))
                (mkdir-p share)
                (copy-recursively "." share)
                #t))))))
