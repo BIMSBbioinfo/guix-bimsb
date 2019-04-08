@@ -136,6 +136,15 @@
                (("FileLock::s_refreshRate\\(kDefaultRefreshRate\\)")
                 "FileLock::s_refreshRate(static_cast<long>(kDefaultRefreshRate))"))
              #t))
+         (add-after 'unpack 'override-tmpdir
+           (lambda _
+             ;; The location of the server cookie is hardcoded to
+             ;; /tmp/rstudio-server; this makes it impossible for
+             ;; different users on the same machine to use R Studio.
+             (substitute* "src/cpp/server/ServerSecureKeyFile.cpp"
+               (("\"/tmp/rstudio-server\"")
+                "getenv(\"HOME\")"))
+             #t))
          (add-before 'build 'set-environment-variables
            (lambda* (#:key inputs #:allow-other-keys)
              ;; This is needed for Java, obviously.
