@@ -2936,6 +2936,11 @@ interfaces in parallel environments.")
 (define-public openmpi-with-hwloc2
   (package (inherit openmpi)
     (name "openmpi-with-hwloc2")
+    (arguments
+     (substitute-keyword-arguments (package-arguments openmpi)
+       ((#:configure-flags flags)
+        `(cons "--enable-orterun-prefix-by-default"
+               ,flags))))
     (inputs
      `(("hwloc" ,hwloc-2.0 "lib")
        ,@(package-inputs openmpi)))))
