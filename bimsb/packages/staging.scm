@@ -2939,8 +2939,9 @@ interfaces in parallel environments.")
     (arguments
      (substitute-keyword-arguments (package-arguments openmpi)
        ((#:configure-flags flags)
-        `(cons "--enable-orterun-prefix-by-default"
-               ,flags))))
+        `(cons* "--enable-orterun-prefix-by-default"
+                "--with-orte"
+                ,flags))))
     (inputs
      `(("hwloc" ,hwloc-2.0 "lib")
        ,@(package-inputs openmpi)))))
