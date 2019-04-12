@@ -2959,3 +2959,18 @@ interfaces in parallel environments.")
      `(("hwloc" ,hwloc-2.0 "lib")
        ("psm" ,psm)
        ,@(alist-delete "psm2" (package-inputs openmpi))))))
+
+(define-public openmpi-psm2-only
+  (package (inherit openmpi)
+    (name "openmpi-psm2-only")
+    (arguments
+     (substitute-keyword-arguments (package-arguments openmpi)
+       ((#:configure-flags flags)
+        `(cons* "--enable-orterun-prefix-by-default"
+                "--with-orte"
+                "--with-psm2"
+                ,flags))))
+    (inputs
+     `(("hwloc" ,hwloc-2.0 "lib")
+       ("psm2" ,psm2)
+       ,@(alist-delete "psm" (package-inputs openmpi))))))
