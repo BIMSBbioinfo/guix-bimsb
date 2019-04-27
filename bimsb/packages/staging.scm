@@ -618,42 +618,6 @@ functions over the GDC API which provides general download/upload via
 HTTPS.")
     (license license:asl2.0)))
 
-(define-public umi-tools
-  (package
-    (name "umi-tools")
-    (version "0.5.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "umi_tools" version))
-       (sha256
-        (base32
-         "1jxwiagbqm3a91anmrqkhvsgicawdr6hain3v8hcqv47kfv2nhnr"))
-       (patches (search-patches "umi-tools-importlib.patch"))))
-    (build-system python-build-system)
-    (inputs
-     `(("python-setuptools" ,python-setuptools)
-       ("python-pandas" ,python-pandas)
-       ("python-future" ,python-future)
-       ("python-scipy" ,python-scipy)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-regex" ,python-regex)
-       ("python-pysam" ,python-pysam)))
-    (native-inputs
-     `(("python-setuptools" ,python-setuptools)
-       ("python-cython" ,python-cython)))
-    (home-page "https://github.com/CGATOxford/UMI-tools")
-    (synopsis "Tools for analyzing unique modular identifiers")
-    (description "This package provides tools for dealing with
-@dfn{Unique Molecular Identifiers} (UMIs) and @dfn{Random Molecular
-Tags} (RMTs) in genetic sequences.  Currently, there are two tools:
-
-@enumerate
-@item extract: flexible removal of UMI sequences from fastq reads;
-@item dedup: implementation of various UMI deduplication methods.
-@end enumerate\n")
-    (license license:expat)))
-
 (define-public metal
   (package
     (name "metal")
