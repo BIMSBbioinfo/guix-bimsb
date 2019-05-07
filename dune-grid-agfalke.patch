@@ -1,0 +1,14 @@
+diff -Naur dune-grid-2.6.0rc1/dune/grid/io/file/vtk/vtksequencewriterbase.hh dune-grid/dune/grid/io/file/vtk/vtksequencewriterbase.hh
+--- dune-grid-2.6.0rc1/dune/grid/io/file/vtk/vtksequencewriterbase.hh	2017-12-18 11:20:26.000000000 +0100
++++ dune-grid/dune/grid/io/file/vtk/vtksequencewriterbase.hh	2018-10-26 10:48:43.430388000 +0200
+@@ -79,6 +79,10 @@
+     {
+       vtkWriter_->addCellData(v, name, ncomps);
+     }
++    
++    void clear(void) {
++        vtkWriter_->clear();
++    }
+ 
+     /** \brief Adds a field of vertex data to the VTK file */
+     void addVertexData (const std::shared_ptr<const typename VTKWriter<GridView>::VTKFunction> &p)
