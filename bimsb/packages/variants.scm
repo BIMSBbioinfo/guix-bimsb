@@ -1112,9 +1112,12 @@ other types of unwanted sequence from high-throughput sequencing reads.")
      `(("gcc" ,gcc-8)
        ,@(package-native-inputs openmpi)))))
 
-(define-public dune-grid-agfalke
+(define-public dune-grid-agfalcke
   (package (inherit dune-grid)
-    (name "dune-grid-agfalke")
+    (name "dune-grid-agfalcke")
     (version "2.6.0")
     (source (origin (inherit (package-source dune-grid))
-                    (patches (search-patches "dune-grid-agfalke.patch"))))))
+                    (patches (search-patches "dune-grid-agfalcke.patch"))))))
+
+(define-public dune-grid-agfalke
+  (deprecated-package "dune-grid-agfalke" dune-grid-agfalcke))
