@@ -2667,7 +2667,7 @@ detect alternative splicing events from RNA-seq data.")
 (define-public trinityrnaseq
   (package
     (name "trinityrnaseq")
-    (version "2.6.6")
+    (version "2.8.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2676,7 +2676,7 @@ detect alternative splicing events from RNA-seq data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r9pnhkzdmk23xc6rv7n6ma78s1lalm9s65pz36795s9z9i06jv4"))))
+                "0ikf1ndwfnd43g5g2bvh372gfhvndld7aaaqy0x95jrf5my10320"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -2684,32 +2684,13 @@ detect alternative splicing events from RNA-seq data.")
                   (guix build utils)
                   (ice-9 match)
                   (srfi srfi-1))
+       #:make-flags '("CC=gcc")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "Chrysalis/Makefile"
-               (("\\$\\(BUILD_DATETIME\\)") "0")
-               (("\\$\\(DATE\\)") "0")
-               (("\\$\\(OS_RELEASE\\)") "Guix"))
-             (substitute* "Chrysalis/MakeDepend.cc"
-               (("/bin/rm") (which "rm")))
+           (lambda _
              (setenv "SHELL" (which "sh"))
              (setenv "CONFIG_SHELL" (which "sh"))
-             #t))
-         (add-after 'unpack 'unpack-plugins
-           (lambda _
-             (with-directory-excursion "trinity-plugins"
-               (invoke "tar" "xvf" "seqtk-trinity.v0.0.2.tar.gz")
-               (invoke "tar" "xvf" "ParaFly-0.1.0.tar.gz")
-               (substitute* "Makefile"
-                 (("tar ") "echo tar ")))
-             (for-each patch-shebang (find-files "." ".*"))
-             (substitute* '("Inchworm/configure"
-                            "Inchworm/missing"
-                            "trinity-plugins/ParaFly-0.1.0/config.status"
-                            "trinity-plugins/ParaFly-0.1.0/missing")
-               (("(-| )/bin/sh" _ m) (string-append m (which "sh"))))
              #t))
          (add-after 'build 'build-plugins
            (lambda _
@@ -2727,6 +2708,9 @@ detect alternative splicing events from RNA-seq data.")
                     (bin   (string-append out "/bin/")))
                (mkdir-p bin)
                (copy-recursively "." share)
+               (delete-file (string-append share "/Chrysalis/build/CMakeFiles/CMakeOutput.log"))
+               (delete-file (string-append share "/Inchworm/build/CMakeFiles/CMakeOutput.log"))
+
                (wrap-program (string-append share "Trinity")
                  `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))
                  `("PERL5LIB"    ":" = (,(getenv "PERL5LIB")))
@@ -2747,8 +2731,7 @@ detect alternative splicing events from RNA-seq data.")
                   (find-files (assoc-ref outputs "out") ".*\\.gz$"))
              #t)))))
     (inputs
-     `(("glibc-static" ,glibc-2.26 "static") ; FIXME for libieee.a
-       ("perl" ,perl)
+     `(("perl" ,perl)
        ("perl-uri-escape" ,(@ (gnu packages perl-web) perl-uri-escape))
        ("java" ,icedtea-8)
        ("python" ,python-wrapper)
@@ -2786,6 +2769,8 @@ detect alternative splicing events from RNA-seq data.")
      `(("which" ,(@ (gnu packages base) which))
        ("coreutils" ,coreutils)
        ("gzip" ,gzip)))
+    (native-inputs
+     `(("cmake" ,cmake)))
     (home-page "https://github.com/trinityrnaseq/trinityrnaseq/wiki")
     (synopsis "Trinity RNA-Seq de novo transcriptome assembly")
     (description "Trinity assembles transcript sequences from Illumina
