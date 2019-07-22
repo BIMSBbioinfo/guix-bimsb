@@ -1800,26 +1800,25 @@ technology.  Its features include:
 (define-public python-louvain-igraph
   (package
     (name "python-louvain-igraph")
-    (version "0.5.3")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/vtraag/louvain-igraph.git")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0s9j2am8kn1lzby6drprci4yx3l6nb4lzdzc0qr7v0m1wrfk1lib"))))
+         "0w31537sifkf65sck1iaip5i6d8g64pa3wdwad83d6p9jwkck57k"))))
     (build-system python-build-system)
-    ;; There are no tests.
-    (arguments '(#:tests? #f))
     (propagated-inputs
      `(("python-igraph" ,python-igraph)))
     (inputs
      `(("igraph" ,igraph)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("python-ddt" ,python-ddt)
+       ("pkg-config" ,pkg-config)))
     (home-page "https://github.com/vtraag/louvain-igraph")
     (synopsis "Implementation of the Louvain algorithm")
     (description "This package implements the Louvain algorithm for
