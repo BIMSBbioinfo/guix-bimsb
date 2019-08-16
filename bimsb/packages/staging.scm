@@ -1395,15 +1395,17 @@ various other algorithms.")
 (define-public r-misha
   (package
     (name "r-misha")
-    (version "3.5.6")
+    (version "4.0.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://www.wisdom.weizmann.ac.il/~aviezerl/"
-                           "gpatterns/misha_" version ".tar.gz"))
+       (method hg-fetch)
+       (uri (hg-reference
+             (url "https://bitbucket.org/tanaylab/misha-package")
+             (changeset version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1w9ppvhv6g0x3yyaaljs5hkn7x5yw74nj6f780avxr89yi9kx5qd"))
+         "0xir6msfs3snn300ms1ywnxy5bld21l4zn6caf8nd1r195fqilrw"))
        ;; Delete bundled executable.
        (snippet
         '(begin
@@ -1419,35 +1421,10 @@ various other algorithms.")
                 (string-append "\""
                                (assoc-ref inputs "kentutils")
                                "/bin/bigWigToWig")))
-             #t))
-         (add-after 'unpack 'fix-isnan-error
-           (lambda _
-             (substitute* '("src/IncrementalWilcox.cpp"
-                            "src/BinFinder.h"
-                            "src/GenomeTrackImportWig.cpp"
-                            "src/GenomeTrackSparse.h"
-                            "src/GenomeTrackSmooth.cpp"
-                            "src/GenomeTrackPartition.cpp"
-                            "src/GenomeTrackArrays.cpp"
-                            "src/TrackExpressionVars.cpp"
-                            "src/GenomeTrackWilcox.cpp"
-                            "src/GenomeTrackSegmentation.cpp"
-                            "src/GTrackLiftover.cpp"
-                            "src/rdbutils.h"
-                            "src/GenomeTrackArrayImport.cpp"
-                            "src/GenomeTrackFixedBin.cpp"
-                            "src/GenomeTrackSummary.cpp"
-                            "src/BinsManager.h"
-                            "src/GenomeTrackQuantiles.cpp"
-                            "src/GenomeTrackArrays.h"
-                            "src/rdbinterval.cpp"
-                            "src/GenomeTrackBinnedTransform.cpp")
-               (("#define isnan ::isnan")
-                "#define isnan std::isnan"))
              #t)))))
     (inputs
      `(("kentutils" ,kentutils)))
-    (home-page "http://www.wisdom.weizmann.ac.il")
+    (home-page "https://bitbucket.org/tanaylab/misha-package")
     (synopsis "Toolkit for analysis of genomic data")
     (description "This package is intended to help users to
 efficiently analyze genomic data resulting from various experiments.")
