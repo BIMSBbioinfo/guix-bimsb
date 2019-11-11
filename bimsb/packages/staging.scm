@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
-;;; Copyright © 2018 Marcel Schilling <marcel.schilling@mdc-berlin.de>
+;;; Copyright © 2018, 2019 Marcel Schilling <marcel.schilling@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -2901,3 +2901,26 @@ interfaces in parallel environments.")
      `(("hwloc" ,hwloc-2.0 "lib")
        ("psm2" ,psm2)
        ,@(alist-delete "psm" (package-inputs openmpi))))))
+
+(define-public bustools
+  (package
+    (name "bustools")
+    (version "0.39.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BUStools/bustools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "111crf85g4gsickylqs99r5pqd5x851sfdylksl29xzypfsqmh3h"))))
+    (build-system cmake-build-system)
+    (arguments `(#:tests? #f))  ; no tests
+    (home-page "https://bustools.github.io")
+    (synopsis "Tools for working with BUS files")
+    (description "bustools is a program for manipulating BUS files for single
+cell RNA-Seq datasets.  It can be used to error correct barcodes, collapse
+UMIs, produce gene count or transcript compatibility count matrices, and is useful
+for many other tasks.")
+    (license license:bsd-2)))
