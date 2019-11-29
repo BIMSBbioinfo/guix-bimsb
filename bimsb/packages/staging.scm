@@ -2869,7 +2869,7 @@ interfaces in parallel environments.")
                 "--with-orte"
                 ,flags))))
     (inputs
-     `(("hwloc" ,hwloc-2.0 "lib")
+     `(("hwloc" ,hwloc-2 "lib")
        ,@(package-inputs openmpi)))))
 
 (define-public openmpi-psm-only
@@ -2883,7 +2883,7 @@ interfaces in parallel environments.")
                 "--with-psm"
                 ,flags))))
     (inputs
-     `(("hwloc" ,hwloc-2.0 "lib")
+     `(("hwloc" ,hwloc-2 "lib")
        ("psm" ,psm)
        ,@(alist-delete "psm2" (package-inputs openmpi))))))
 
@@ -2898,7 +2898,7 @@ interfaces in parallel environments.")
                 "--with-psm2"
                 ,flags))))
     (inputs
-     `(("hwloc" ,hwloc-2.0 "lib")
+     `(("hwloc" ,hwloc-2 "lib")
        ("psm2" ,psm2)
        ,@(alist-delete "psm" (package-inputs openmpi))))))
 
