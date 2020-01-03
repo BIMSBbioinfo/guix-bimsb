@@ -1151,3 +1151,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
        #:tests? #f))
     (propagated-inputs
      `(("python-dill" ,python2-dill)))))
+
+(define-public python2-pox
+  (package-with-python2 python-pox))
