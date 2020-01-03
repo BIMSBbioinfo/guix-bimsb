@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2019 Marcel Schilling <marcel.schilling@mdc-berlin.de>
+;;; Copyright © 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -1136,3 +1137,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
               (sha256
                (base32
                 "162jkrm3jpz8hkccjbzx3vgifg8z780awkapyrggp46iidmyydll"))))))
+
+(define-public python2-dill
+  (package-with-python2 python-dill))
