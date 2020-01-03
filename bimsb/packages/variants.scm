@@ -1157,3 +1157,24 @@ other types of unwanted sequence from high-throughput sequencing reads.")
 
 (define-public python2-ppft
   (package-with-python2 python-ppft))
+
+(define-public python2-pathos
+  (package (inherit python-pathos)
+           (name "python2-pathos")
+           (build-system python-build-system)
+           (arguments
+            `(#:python ,python-2
+              #:phases
+              (modify-phases %standard-phases
+                (replace 'check
+                  (lambda _
+                    (setenv "PYTHONPATH"
+                            (string-append (getcwd) ":" (getenv "PYTHONPATH")))
+                    (invoke "python2" "./tests/__main__.py"))))))
+           (propagated-inputs
+            `(("python-dill" ,python2-dill)
+              ("python-multiprocess" ,python2-multiprocess)
+              ("python-pox" ,python2-pox)
+              ("python-ppft" ,python2-ppft)))
+           (native-inputs
+            `(("python-pytest" ,python2-pytest)))))
