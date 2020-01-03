@@ -1154,3 +1154,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
 
 (define-public python2-pox
   (package-with-python2 python-pox))
+
+(define-public python2-ppft
+  (package-with-python2 python-ppft))
