@@ -1140,3 +1140,14 @@ other types of unwanted sequence from high-throughput sequencing reads.")
 
 (define-public python2-dill
   (package-with-python2 python-dill))
+
+(define-public python2-multiprocess
+  (package (inherit python-multiprocess)
+    (name "python2-multiprocess")
+    (build-system python-build-system)
+    ;; FIXME: it's not clear how to run the tests.
+    (arguments
+     `(#:python ,python-2
+       #:tests? #f))
+    (propagated-inputs
+     `(("python-dill" ,python2-dill)))))
