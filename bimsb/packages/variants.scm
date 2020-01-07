@@ -1199,3 +1199,20 @@ other types of unwanted sequence from high-throughput sequencing reads.")
 
 (define-public python2-pyfaidx
   (package-with-python2 python-pyfaidx))
+
+(define-public python2-gffutils
+  (let
+      ((gffutils
+        (package-with-python2
+         (strip-python2-variant python-gffutils))))
+    (package
+      (inherit gffutils)
+      (propagated-inputs
+       `(("python2-argcomplete" ,python2-argcomplete-temp)
+         ("python2-functools32" ,python2-functools32)
+         ("python2-argh" ,python2-argh)
+         ("python2-biopython" ,python2-biopython)
+         ("python2-pybedtools" ,python2-pybedtools)
+         ("python2-pyfaidx" ,python2-pyfaidx)
+         ("python2-simplejson" ,python2-simplejson)
+         ("python2-six" ,python2-six))))))
