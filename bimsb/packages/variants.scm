@@ -1193,3 +1193,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
      (native-inputs
       `(("python2-functools32" ,python2-functools32)
         ,@(package-native-inputs argcomplete))))))
+
+(define-public python2-argh
+  (package-with-python2 python-argh))
