@@ -1196,3 +1196,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
 
 (define-public python2-argh
   (package-with-python2 python-argh))
+
+(define-public python2-pyfaidx
+  (package-with-python2 python-pyfaidx))
