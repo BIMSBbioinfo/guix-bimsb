@@ -3164,3 +3164,27 @@ recursive k-means partitioning.")
 Tool (BLAST) to search genetic sequence data bases.  This includes interfaces to
 @code{blastn}, @code{blastp}, @code{blastx}, and @code{makeblastdb}.")
       (license license:gpl3))))
+
+(define-public r-bsgenome-hsapiens-ncbi-grch38
+  (package
+    (name "r-bsgenome-hsapiens-ncbi-grch38")
+    (version "1.3.1000")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri
+             "BSgenome.Hsapiens.NCBI.GRCh38"
+             version
+             'annotation))
+       (sha256 (base32 "0y75qdq578fh6420vbvsbwmdw8jvr3g06qli2h3vj3pxmjykh9c1"))))
+    (properties `((upstream-name . "BSgenome.Hsapiens.NCBI.GRCh38")))
+    (build-system r-build-system)
+    (propagated-inputs `(("r-bsgenome" ,r-bsgenome)))
+    (home-page
+     (string-append "https://bioconductor.org/packages/release/data/annotation/"
+                    "html/BSgenome.Hsapiens.NCBI.GRCh38.html"))
+    (synopsis "Full genome sequences for Homo sapiens (GRCh38)")
+    (description
+     "This package provides full genome sequences for Homo sapiens (Human) as
+provided by NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.")
+    (license license:artistic2.0)))
