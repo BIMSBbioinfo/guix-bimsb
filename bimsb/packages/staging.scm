@@ -3043,3 +3043,45 @@ exploration of single cell ATAC-seq sequencing data.")
      "This package creates lots of colorful plots in a multitude of variations.
 Try a demo of the LSD by running demotour().")
     (license #f))) ;unlimited
+
+(define-public r-fourcseq
+  (package
+    (name "r-fourcseq")
+    (version "1.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "FourCSeq" version))
+       (sha256
+        (base32 "0rnlgvxyi32g6nng8pkdsd13xy4x09lv6zg64m82m9s1zfaksclm"))))
+    (properties `((upstream-name . "FourCSeq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-biobase" ,r-biobase)
+       ("r-biostrings" ,r-biostrings)
+       ("r-deseq2" ,r-deseq2)
+       ("r-fda" ,r-fda)
+       ("r-genomicalignments" ,r-genomicalignments)
+       ("r-genomicranges" ,r-genomicranges)
+       ("r-ggbio" ,r-ggbio)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-gtools" ,r-gtools)
+       ("r-lsd" ,r-lsd)
+       ("r-matrix" ,r-matrix)
+       ("r-reshape2" ,r-reshape2)
+       ("r-rsamtools" ,r-rsamtools)
+       ("r-rtracklayer" ,r-rtracklayer)
+       ("r-summarizedexperiment" ,r-summarizedexperiment)))
+    (home-page
+     "https://bioconductor.org/packages/release/bioc/html/FourCSeq.html")
+    (synopsis "Analysis of multiplexed 4C sequencing data")
+    (description
+     "This package is an R package dedicated to the analysis of (multiplexed) 4C
+sequencing data.  @code{r-fourcseq} provides a pipeline to detect specific
+interactions between DNA elements and identify differential interactions between
+conditions.  The statistical analysis in R starts with individual bam files for
+each sample as inputs.  To obtain these files, the package contains a python
+script (extdata/python/demultiplex.py) to demultiplex libraries and trim off
+primer sequences.  With a standard alignment software the required bam files can
+be then be generated.")
+    (license license:gpl3+)))
