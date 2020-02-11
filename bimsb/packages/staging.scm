@@ -2,6 +2,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
 ;;; Copyright © 2018, 2019 Marcel Schilling <marcel.schilling@mdc-berlin.de>
+;;; Copyright © 2019, 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -3023,3 +3024,22 @@ analyzing large-scale single cell ATAC-seq data which includes quality control,
 normalization, clustering analysis, differential analysis, motif inference and
 exploration of single cell ATAC-seq sequencing data.")
       (license license:gpl3))))
+
+(define-public r-lsd
+  (package
+    (name "r-lsd")
+    (version "4.0-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "LSD" version))
+       (sha256
+        (base32 "0fsp3pwrnnic9mzkd6yxa4bnxbvg68712lb20vd42wf6jb39r2h3"))))
+    (properties `((upstream-name . "LSD")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/LSD/")
+    (synopsis "Lots of superior depictions tool creates colorful plots")
+    (description
+     "This package creates lots of colorful plots in a multitude of variations.
+Try a demo of the LSD by running demotour().")
+    (license #f))) ;unlimited
