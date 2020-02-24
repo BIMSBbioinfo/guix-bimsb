@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
 ;;; Copyright © 2018, 2019 Marcel Schilling <marcel.schilling@mdc-berlin.de>
 ;;; Copyright © 2019, 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -916,7 +916,13 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
          (add-before 'build 'build-guilabels
            (lambda _
              (with-directory-excursion "doc"
-               (zero? (system "xsltproc --nonet --novalid --path .: --xinclude -o guilabels.h rapidstorm_guilabels.xsl ./rapidstorm.xml")))))
+               (invoke "xsltproc"
+                       "--nonet"
+                       "--novalid"
+                       "--path" ".:"
+                       "--xinclude"
+                       "-o" "guilabels.h" "rapidstorm_guilabels.xsl"
+                       "./rapidstorm.xml"))))
          (add-after 'unpack 'fix-doc
            (lambda _
              ;; TODO: something's wrong with entities.  Not sure what,
