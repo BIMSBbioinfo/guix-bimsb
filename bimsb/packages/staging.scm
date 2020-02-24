@@ -2927,53 +2927,6 @@ UMIs, produce gene count or transcript compatibility count matrices, and is usef
 for many other tasks.")
     (license license:bsd-2)))
 
-(define-public r-iheatmapr
-  (package
-    (name "r-iheatmapr")
-    (version "0.4.12")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ropensci/iheatmapr.git")
-                    (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1y44z2gbrgbvdir66i66lacjm2i2wpg7jpgv9b0d246i8mnk0jdd"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-fastcluster" ,r-fastcluster)
-       ("r-ggdendro" ,r-ggdendro)
-       ("r-htmlwidgets" ,r-htmlwidgets)
-       ("r-jsonlite" ,r-jsonlite)
-       ("r-knitr" ,r-knitr)
-       ("r-magrittr" ,r-magrittr)
-       ("r-plyr" ,r-plyr)
-       ("r-rcolorbrewer" ,r-rcolorbrewer)
-       ("r-s4vectors" ,r-s4vectors)
-       ("r-scales" ,r-scales)))
-    (home-page "https://ropensci.github.io/iheatmapr/index.html")
-    (synopsis "Complex, interactive heatmaps in R")
-    (description
-     "iheatmapr is an R package for building complex, interactive
-heatmaps using modular building blocks. \"Complex\" heatmaps are
-heatmaps in which subplots along the rows or columns of the main heatmap
-add more information about each row or column. For example, a one column
-additional heatmap may indicate what group a particular row or column
-belongs to. Complex heatmaps may also include multiple side by side
-heatmaps which show different types of data for the same conditions.
-Interactivity can improve complex heatmaps by providing tooltips with
-information about each cell and enabling zooming into interesting
-features. iheatmapr uses the plotly library for interactivity.")
-    ;; Note: DESCRIPTION files says "MIT", but
-    ;; https://cran.r-project.org/web/packages/iheatmapr/index.html
-    ;; links to https://cran.r-project.org/web/licenses/MIT which
-    ;; states that it's based on http://opensource.org/licenses/MIT,
-    ;; which, according to
-    ;; https://en.wikipedia.org/wiki/MIT_License#Variants is the same
-    ;; as the "Expat License".
-    (license license:expat)))
-
 (define-public r-snapatac
   (let ((commit "c3ab177558f0fe9c47cbd68969df7b06de5b07d9")
         (revision "1"))
