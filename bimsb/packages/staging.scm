@@ -821,13 +821,14 @@ data).")
          (add-after 'configure 'configure-modules
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "../lib/h5md"
-               (system* "make" (string-append "HDF5_PATH="
-                                              (assoc-ref inputs "hdf5"))))
-             (zero? (system* "make"
-                             "yes-molecule"
-                             "yes-granular"
-                             "yes-user-h5md"
-                             "yes-user-misc"))))
+               (invoke "make" (string-append "HDF5_PATH="
+                                             (assoc-ref inputs "hdf5"))))
+             (invoke "make"
+                     "yes-molecule"
+                     "yes-granular"
+                     "yes-user-h5md"
+                     "yes-user-misc")
+             #t))
          (add-after 'unpack 'enter-dir
            (lambda _ (chdir "src") #t))
          (replace 'install
