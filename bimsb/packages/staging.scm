@@ -898,13 +898,14 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
     (version "3.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://idefix.biozentrum.uni-wuerzburg.de/"
-                           "software/rapidSTORM/source/rapidstorm-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stevewolter/rapidSTORM.git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kp0z7xllx3krdph5ch23grh25133sj7vhf18shpxnia3fyh6y0a"))))
+         "1rx3jidx8815ssrd7725j5f3zg2ydbc3swxm6r4sfgb63vccqadd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list "XSLT_FLAGS=--nonet --novalid"
@@ -959,9 +960,16 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
          ;; GCC 5.  See https://stackoverflow.com/a/30668880/519736
          (add-after 'unpack 'use-old-abi
            (lambda _
-             (substitute* "Makefile.in"
-               (("^CPPFLAGS = " line)
+             (substitute* "Makefile.am"
+               (("^rapidstorm_CPPFLAGS = " line)
                 (string-append line "-D_GLIBCXX_USE_CXX11_ABI=0 ")))
+             #t))
+         ;; aminclude.am triggers errors.  Since we don't build the
+         ;; documentation we can just disable it.
+         (add-after 'unpack 'do-not-include-aminclude.am
+           (lambda _
+             (substitute* "Makefile.am"
+               (("include aminclude.am") ""))
              #t)))))
     (inputs
      `(("boost" ,boost-1.55)
@@ -970,7 +978,7 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
        ;; tsf/Output.cpp:85:56: error: variable ?google::protobuf::io::CodedOutputStream coded_output? has initializer but incomplete type
        ;;   google::protobuf::io::CodedOutputStream coded_output(file.get());
        ;;("protobuf" ,protobuf)
-       ("eigen" ,eigen)
+       ("eigen" ,eigen-for-rapidstorm)
        ("gsl" ,gsl)
        ("tinyxml" ,tinyxml)
        ("libtiff" ,libtiff)
@@ -982,9 +990,14 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
        ;; dStorm/display/rapidstorm-store_image.o: In function `write_scale_bar':
        ;; /tmp/guix-build-rapidstorm-3.3.0.drv-0/rapidstorm-3.3.0/dStorm/display/store_image.cpp:202: undefined reference to `Magick::Image::annotate(std::string const&, Magick::Geometry const&, MagickLib::GravityType)'
        ;; collect2: error: ld returned 1 exit status
-       ("graphicsmagick" ,graphicsmagick)))
+       ("graphicsmagick" ,graphicsmagick)
+       ("zlib" ,zlib)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("autoconf" ,autoconf)
+       ("autoconf-archive" ,autoconf-archive)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)
        ;; For documentation
        ("docbook-xml" ,docbook-xml-4.2)
        ("docbook-xsl" ,docbook-xsl)
