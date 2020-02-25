@@ -1059,7 +1059,7 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                       (string-take (string-take-right
                                     (assoc-ref inputs "python") 5) 3)
                       "/site-packages"))
-             (zero? (system* "nosetests" "-P" "tests")))))))
+             (invoke "nosetests" "-P" "tests"))))))
     (propagated-inputs
      `(("python2-xopen" ,python2-xopen)))
     (native-inputs
