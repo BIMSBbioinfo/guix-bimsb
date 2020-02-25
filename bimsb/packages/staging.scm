@@ -893,130 +893,120 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
      (alist-delete "openmpi" (package-inputs lammps)))))
 
 (define-public rapidstorm
-  (package
-    (name "rapidstorm")
-    (version "3.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/stevewolter/rapidSTORM.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1rx3jidx8815ssrd7725j5f3zg2ydbc3swxm6r4sfgb63vccqadd"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags (list "XSLT_FLAGS=--nonet --novalid"
-                          "BIB2XML=touch")
-       #:configure-flags
-       (list "--enable-documentation=no")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-guilabels
-           (lambda _
-             (with-directory-excursion "doc"
-               (invoke "xsltproc"
-                       "--nonet"
-                       "--novalid"
-                       "--path" ".:"
-                       "--xinclude"
-                       "-o" "guilabels.h" "rapidstorm_guilabels.xsl"
-                       "./rapidstorm.xml"))))
-         (add-after 'unpack 'fix-doc
-           (lambda _
-             ;; TODO: something's wrong with entities.  Not sure what,
-             ;; so I'll just remove them for now.
-             (substitute* '("doc/rapidstorm.xml"
-                            "doc/ui.xml"
-                            "doc/usage-examples.xml"
-                            "doc/input-options.xml"
-                            "doc/engine_options.xml"
-                            "doc/output-options.xml"
-                            "doc/fundamentals.xml")
-               (("%version;") "")
-               (("&marketingversion;") "TODO")
-               (("&publicationyear;") "2016")
-               (("&publicationdate;") "2016")
-               (("&auml;") "a")
-               (("&uuml;") "u")
-               (("&eacute;") "e")
-               (("%isopub;") "")
-               (("%isonum;") "")
-               (("%isogrk1;") "")
-               (("%isolat1;") "")
-               (("&lgr;") "l")
-               (("&mgr;") "m")
-               (("&Dgr;") "D")
-               (("&sgr;") "s")
-               (("&ohgr;") "oh")
-               (("&hellip;") "...")
-               (("&middot;") ""))
-             #t))
-         ;; This is necessary for ABI compatibility when linking with
-         ;; the Boost 1.55 which has been built with GCC 4.9.  This
-         ;; wouldn't be necessary if we managed to build Boost with
-         ;; GCC 5.  See https://stackoverflow.com/a/30668880/519736
-         (add-after 'unpack 'use-old-abi
-           (lambda _
-             (substitute* "Makefile.am"
-               (("^rapidstorm_CPPFLAGS = " line)
-                (string-append line "-D_GLIBCXX_USE_CXX11_ABI=0 ")))
-             #t))
-         ;; aminclude.am triggers errors.  Since we don't build the
-         ;; documentation we can just disable it.
-         (add-after 'unpack 'do-not-include-aminclude.am
-           (lambda _
-             (substitute* "Makefile.am"
-               (("include aminclude.am") ""))
-             #t)))))
-    (inputs
-     `(("boost" ,boost-1.55)
-       ;; FIXME: the build fails when protobuf is used:
-       ;; tsf/Output.cpp: In member function ?virtual dStorm::output::Output::RunRequirements dStorm::tsf::{anonymous}::Output::announce_run(const dStorm::output::Output::RunAnnouncement&)?:
-       ;; tsf/Output.cpp:85:56: error: variable ?google::protobuf::io::CodedOutputStream coded_output? has initializer but incomplete type
-       ;;   google::protobuf::io::CodedOutputStream coded_output(file.get());
-       ;;("protobuf" ,protobuf)
-       ("eigen" ,eigen-for-rapidstorm)
-       ("gsl" ,gsl)
-       ("tinyxml" ,tinyxml)
-       ("libtiff" ,libtiff)
-       ("wxwidgets" ,wxwidgets-2)
-       ;; FIXME: this is currently broken:
-       ;;        dStorm/display/rapidstorm-store_image.o: In function `make_key_image':
-       ;; /tmp/guix-build-rapidstorm-3.3.0.drv-0/rapidstorm-3.3.0/dStorm/display/store_image.cpp:143: undefined reference to `Magick::Image::annotate(std::string const&, Magick::Geometry const&, MagickLib::GravityType, double)'
-       ;; /tmp/guix-build-rapidstorm-3.3.0.drv-0/rapidstorm-3.3.0/dStorm/display/store_image.cpp:153: undefined reference to `Magick::Image::annotate(std::string const&, Magick::Geometry const&, MagickLib::GravityType, double)'
-       ;; dStorm/display/rapidstorm-store_image.o: In function `write_scale_bar':
-       ;; /tmp/guix-build-rapidstorm-3.3.0.drv-0/rapidstorm-3.3.0/dStorm/display/store_image.cpp:202: undefined reference to `Magick::Image::annotate(std::string const&, Magick::Geometry const&, MagickLib::GravityType)'
-       ;; collect2: error: ld returned 1 exit status
-       ("graphicsmagick" ,graphicsmagick)
-       ("zlib" ,zlib)))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("autoconf-archive" ,autoconf-archive)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ;; For documentation
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ;;("doxygen" ,doxygen)
-       ("libxslt" ,libxslt)
-       ("texlive" ,texlive-tiny)
-       ("zip" ,zip)))
-    (home-page "https://stevewolter.github.io/rapidSTORM/")
-    (synopsis "Process single-molecule localization microscopy data")
-    (description "RapidSTORM provides fast and highly configurable
+  (let ((commit "f912ad5689220c32844fd8faa36d521a89271e60")
+        (revision "0"))
+    (package
+      (name "rapidstorm")
+      (version (git-version "3.3.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stevewolter/rapidSTORM.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0kngg83g6f4kcj2b656mgg4kgh2frinwwbgh5gjxkfiw01573rsi"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags (list "XSLT_FLAGS=--nonet --novalid"
+                            "BIB2XML=touch")
+         ;; There is one test and it fails because runtest cannot be
+         ;; found.  It also says this:
+         ;;     Test setup error: test unit with name 'gaussian_psf'
+         ;;     registered multiple times in the test suite 'Master
+         ;;     Test Suite'
+         #:tests? #f
+         #:configure-flags
+         (list "--enable-documentation=no")
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'build 'build-guilabels
+             (lambda _
+               (with-directory-excursion "doc"
+                 (invoke "xsltproc"
+                         "--nonet"
+                         "--novalid"
+                         "--path" ".:"
+                         "--xinclude"
+                         "-o" "guilabels.h" "rapidstorm_guilabels.xsl"
+                         "./rapidstorm.xml"))))
+           (add-after 'unpack 'fix-doc
+             (lambda _
+               ;; TODO: something's wrong with entities.  Not sure what,
+               ;; so I'll just remove them for now.
+               (substitute* '("doc/rapidstorm.xml"
+                              "doc/ui.xml"
+                              "doc/usage-examples.xml"
+                              "doc/input-options.xml"
+                              "doc/engine_options.xml"
+                              "doc/output-options.xml"
+                              "doc/fundamentals.xml")
+                 (("%version;") "")
+                 (("&marketingversion;") "TODO")
+                 (("&publicationyear;") "2016")
+                 (("&publicationdate;") "2016")
+                 (("&auml;") "a")
+                 (("&uuml;") "u")
+                 (("&eacute;") "e")
+                 (("%isopub;") "")
+                 (("%isonum;") "")
+                 (("%isogrk1;") "")
+                 (("%isolat1;") "")
+                 (("&lgr;") "l")
+                 (("&mgr;") "m")
+                 (("&Dgr;") "D")
+                 (("&sgr;") "s")
+                 (("&ohgr;") "oh")
+                 (("&hellip;") "...")
+                 (("&middot;") ""))
+               #t))
+           (add-after 'unpack 'fix-build-system
+             (lambda _
+               (substitute* "Makefile.am"
+                 (("doxygen-doc") ""))
+               (with-output-to-file "README" (const #t))
+               #t)))))
+      (inputs
+       `(("boost" ,boost)
+         ;; FIXME: the build fails when protobuf is used:
+         ;; tsf/Output.cpp: In member function ?virtual dStorm::output::Output::RunRequirements dStorm::tsf::{anonymous}::Output::announce_run(const dStorm::output::Output::RunAnnouncement&)?:
+         ;; tsf/Output.cpp:85:56: error: variable ?google::protobuf::io::CodedOutputStream coded_output? has initializer but incomplete type
+         ;;   google::protobuf::io::CodedOutputStream coded_output(file.get());
+         ;;("protobuf" ,protobuf)
+         ("eigen" ,eigen)
+         ("gsl" ,gsl)
+         ("tinyxml" ,tinyxml)
+         ("libtiff" ,libtiff)
+         ("wxwidgets" ,wxwidgets-2)
+         ("graphicsmagick" ,graphicsmagick)
+         ("zlib" ,zlib)))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("autoconf-archive" ,autoconf-archive)
+         ("automake" ,automake)
+         ("libtool" ,libtool)
+         ("pkg-config" ,pkg-config)
+         ;; For documentation
+         ("docbook-xml" ,docbook-xml-4.2)
+         ("docbook-xsl" ,docbook-xsl)
+         ("doxygen" ,doxygen)
+         ("libxslt" ,libxslt)
+         ("texlive" ,texlive-tiny)
+         ("zip" ,zip)))
+      (home-page "https://stevewolter.github.io/rapidSTORM/")
+      (synopsis "Process single-molecule localization microscopy data")
+      (description "RapidSTORM provides fast and highly configurable
 data processing for single-molecule localization microscopy such as
 dSTORM.  It provides both two-dimensional and three-dimensional,
 multi-color data analysis as well as a wide range of filtering and
 image generation capabilities.")
-    ;; Documentation is under fdl1.3+, most of rapidstorm is released
-    ;; under GPL; parts are released under LGPL.
-    (license (list license:gpl3+
-                   license:lgpl3+
-                   license:fdl1.3+))))
+      ;; Documentation is under fdl1.3+, most of rapidstorm is released
+      ;; under GPL; parts are released under LGPL.
+      (license (list license:gpl3+
+                     license:lgpl3+
+                     license:fdl1.3+)))))
 
 (define-public circ-explorer
   (package
