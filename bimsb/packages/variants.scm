@@ -518,17 +518,17 @@ across a broad spectrum of applications.")
                (setenv "SHELL" (which "sh"))
                (setenv "CONFIG_SHELL" (which "sh"))
 
-               (zero? (system* "./bootstrap.sh"
-                               (string-append "--prefix=" out)
-                               "--with-toolset=gcc")))))
+               (invoke "./bootstrap.sh"
+                       (string-append "--prefix=" out)
+                       "--with-toolset=gcc"))))
          (replace 'build
            (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (zero? (apply system* "./bjam"
-                           (format #f "-j~a" (parallel-job-count))
-                           make-flags))))
+             (apply invoke "./bjam"
+                    (format #f "-j~a" (parallel-job-count))
+                    make-flags)))
          (replace 'install
            (lambda* (#:key outputs make-flags #:allow-other-keys)
-	     (zero? (apply system* "./bjam" "install" make-flags)))))))
+	         (apply invoke "./bjam" "install" make-flags))))))
     (inputs
      `(("icu4c" ,icu4c)
        ,@(package-inputs boost-1.55)))
