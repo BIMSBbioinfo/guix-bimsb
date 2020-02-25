@@ -126,7 +126,7 @@
              (patches (search-patches
                        "perl-5.24-no-sys-dirs.patch"
                        "perl-autosplit-default-time.patch"
-                       "perl-deterministic-ordering.patch"
+                       "perl-5.24-deterministic-ordering.patch"
                        "perl-reproducible-build-date.patch"))))
     (build-system gnu-build-system)
     (arguments
