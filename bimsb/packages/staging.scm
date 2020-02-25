@@ -1343,7 +1343,7 @@ how to analyze iCLIP data.")
          (add-after 'build 'build-jni-extension
            (lambda _
              (with-directory-excursion "jni"
-               (zero? (system* "make" "-f" "makefile.linux")))))
+               (invoke "make" "-f" "makefile.linux"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
