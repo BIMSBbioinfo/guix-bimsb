@@ -163,7 +163,7 @@
          (replace 'configure
            (lambda* (#:key configure-flags #:allow-other-keys)
              (format #t "Perl configure flags: ~s~%" configure-flags)
-             (zero? (apply system* "./Configure" configure-flags))))
+             (apply invoke "./Configure" configure-flags)))
          (add-before
           'strip 'make-shared-objects-writable
           (lambda* (#:key outputs #:allow-other-keys)
