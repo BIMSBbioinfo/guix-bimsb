@@ -1647,7 +1647,7 @@ dimensionality reduction and gene expression visualization.")
 (define-public mageck
   (package
     (name "mageck")
-    (version "0.5.6")
+    (version "0.5.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/mageck/"
@@ -1655,7 +1655,7 @@ dimensionality reduction and gene expression visualization.")
                                   "/mageck-" version ".tar.gz"))
               (sha256
                (base32
-                "1sc1pwjh6hsxhkiq251vijnx7sp1k0f4dmqijbz3avpd5bpbdrh7"))))
+                "1gcjm41q3s3fqs47fg16n5dn0x9niy3j8ls5bqdi7m6iqkzfjfx8"))))
     (build-system python-build-system)
     (arguments
      `(#:use-setuptools? #f
@@ -1671,19 +1671,17 @@ dimensionality reduction and gene expression visualization.")
              (let ((out (assoc-ref outputs "out"))
                    (tests '(("demo1" "run.sh")
                             ("demo2" "runmageck.sh")
-                            ;; FIXME: these two tests fail with
-                            ;; ValueError: max() arg is an empty sequence
-                            ;;("demo3" "run.sh")
-                            ;;("demo4" "run.sh")
-                            )))
+                            ("demo3" "run.sh")
+                            ("demo4" "run.sh"))))
                (setenv "PATH"
                        (string-append out "/bin:"
                                       (getenv "PATH")))
-               (every (match-lambda
-                        ((dir script)
-                         (with-directory-excursion (string-append "demo/" dir)
-                           (zero? (system* "bash" script)))))
-                      tests)))))))
+               (for-each (match-lambda
+                           ((dir script)
+                            (with-directory-excursion (string-append "demo/" dir)
+                              (invoke "bash" script))))
+                         tests)
+               #t))))))
     (inputs
      `(("python-numpy" ,python-numpy)
        ("python-scipy" ,python-scipy)
