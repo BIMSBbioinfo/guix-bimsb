@@ -1005,9 +1005,13 @@ parallel particle simulator at the atomic, meso, or continuum scale.")
        ("libxslt" ,libxslt)
        ("texlive" ,texlive-tiny)
        ("zip" ,zip)))
-    (home-page "http://www.super-resolution.biozentrum.uni-wuerzburg.de/research_topics/rapidstorm/")
-    (synopsis "")
-    (description "")
+    (home-page "https://stevewolter.github.io/rapidSTORM/")
+    (synopsis "Process single-molecule localization microscopy data")
+    (description "RapidSTORM provides fast and highly configurable
+data processing for single-molecule localization microscopy such as
+dSTORM.  It provides both two-dimensional and three-dimensional,
+multi-color data analysis as well as a wide range of filtering and
+image generation capabilities.")
     ;; Documentation is under fdl1.3+, most of rapidstorm is released
     ;; under GPL; parts are released under LGPL.
     (license (list license:gpl3+
