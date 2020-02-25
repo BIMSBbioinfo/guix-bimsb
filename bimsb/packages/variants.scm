@@ -439,17 +439,17 @@ across a broad spectrum of applications.")
                (setenv "SHELL" (which "sh"))
                (setenv "CONFIG_SHELL" (which "sh"))
 
-               (zero? (system* "./bootstrap.sh"
-                               (string-append "--prefix=" out)
-                               "--with-toolset=gcc")))))
+               (invoke "./bootstrap.sh"
+                       (string-append "--prefix=" out)
+                       "--with-toolset=gcc"))))
          (replace 'build
            (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (zero? (apply system* "./b2"
-                           (format #f "-j~a" (parallel-job-count))
-                           make-flags))))
+             (apply invoke "./b2"
+                    (format #f "-j~a" (parallel-job-count))
+                    make-flags)))
          (replace 'install
            (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (zero? (apply system* "./b2" "install" make-flags)))))))
+             (apply invoke "./b2" "install" make-flags))))))
     (native-inputs
      `(("gcc-4" ,gcc-4.9)))))
 
