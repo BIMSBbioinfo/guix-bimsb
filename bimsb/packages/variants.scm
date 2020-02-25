@@ -82,25 +82,24 @@
                  (("/bin/pwd")
                   (which "pwd")))
 
-               (zero?
-                (system* "./Configure"
-                         (string-append "-Dprefix=" out)
-                         (string-append "-Dman1dir=" out "/share/man/man1")
-                         (string-append "-Dman3dir=" out "/share/man/man3")
-                         "-de" "-Dcc=gcc"
-                         "-Uinstallusrbinperl"
-                         "-Dinstallstyle=lib/perl5"
-                         "-Duseshrplib"
-                         (string-append "-Dlocincpth=" libc "/include")
-                         (string-append "-Dloclibpth=" libc "/lib")
+               (invoke "./Configure"
+                       (string-append "-Dprefix=" out)
+                       (string-append "-Dman1dir=" out "/share/man/man1")
+                       (string-append "-Dman3dir=" out "/share/man/man3")
+                       "-de" "-Dcc=gcc"
+                       "-Uinstallusrbinperl"
+                       "-Dinstallstyle=lib/perl5"
+                       "-Duseshrplib"
+                       (string-append "-Dlocincpth=" libc "/include")
+                       (string-append "-Dloclibpth=" libc "/lib")
 
-                         ;; Force the library search path to contain only libc
-                         ;; because it is recorded in Config.pm and
-                         ;; Config_heavy.pl; we don't want to keep a reference
-                         ;; to everything that's in $LIBRARY_PATH at build
-                         ;; time (Binutils, bzip2, file, etc.)
-                         (string-append "-Dlibpth=" libc "/lib")
-                         (string-append "-Dplibpth=" libc "/lib"))))))
+                       ;; Force the library search path to contain only libc
+                       ;; because it is recorded in Config.pm and
+                       ;; Config_heavy.pl; we don't want to keep a reference
+                       ;; to everything that's in $LIBRARY_PATH at build
+                       ;; time (Binutils, bzip2, file, etc.)
+                       (string-append "-Dlibpth=" libc "/lib")
+                       (string-append "-Dplibpth=" libc "/lib")))))
 
          (add-before 'strip 'make-shared-objects-writable
            (lambda* (#:key outputs #:allow-other-keys)
