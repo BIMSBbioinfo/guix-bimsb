@@ -1322,10 +1322,6 @@ how to analyze iCLIP data.")
        #:jdk ,icedtea-8
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'add-ecj-to-classpath
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CLASSPATH" (assoc-ref inputs "ecj"))
-             #t))
          (add-after 'unpack 'embed-paths
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -1364,14 +1360,7 @@ how to analyze iCLIP data.")
     (inputs
      `(("jre" ,icedtea-8)))
     (native-inputs
-     `(("ecj"
-        ,(origin
-           (method url-fetch)
-           (uri "http://central.maven.org/maven2/org/eclipse/\
-jdt/core/compiler/ecj/4.6.1/ecj-4.6.1.jar")
-           (sha256
-            (base32
-             "1q5dxv28izkg23wrfiyzazvd15z8ldhpnkplffg4dd51yisxmpcw"))))))
+     `(("java-ecj" ,java-ecj)))
     (home-page "http://jgi.doe.gov/data-and-tools/bbtools/")
     (synopsis "Aligner and other tools for short genomic reads")
     (description
