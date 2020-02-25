@@ -1215,3 +1215,18 @@ other types of unwanted sequence from high-throughput sequencing reads.")
          ("python2-pyfaidx" ,python2-pyfaidx)
          ("python2-simplejson" ,python2-simplejson)
          ("python2-six" ,python2-six))))))
+
+(define-public jamm-prerelease
+  (package (inherit jamm)
+    (name "jamm-prerelease")
+    (version "1.0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mahmoudibrahim/JAMM.git")
+             (commit (string-append "JAMMv" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pn3nkxfpq6h04p63rj06gzhp36q2g3j4xl5fh941d94kkynqqpc"))))))
