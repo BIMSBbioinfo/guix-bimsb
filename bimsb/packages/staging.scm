@@ -3065,3 +3065,34 @@ Tool (BLAST) to search genetic sequence data bases.  This includes interfaces to
     (description "@code{Louvain} algorithm, based on modularity optimization,
 can extract the community structure of large networks.")
     (license license:bsd-3)))
+
+(define-public python-snaptools
+  (package
+    (name "python-snaptools")
+    (version "1.4.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "snaptools" version))
+       (sha256
+        (base32
+         "1s5373g5jjbshh3q39zy7dlxr7nda6ksxq9d1gw46h82c4fsmfbn"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-future" ,python-future)
+       ("python-h5py" ,python-h5py)
+       ("python-louvain@0.14" ,python-louvain)
+       ("python-numpy" ,python-numpy)
+       ("python-pybedtools" ,python-pybedtools)
+       ("python-pysam" ,python-pysam)))
+    (home-page "https://github.com/r3fang/SnapTools")
+    (synopsis "Tools for processing snap files" )
+    (description
+     "@code{SnapTools} can operate on snap files the following types of opperations:
+@itemize
+@item index the reference genome before alingment;
+@item align reads to the corresponding reference genome;
+@item pre-process by convert pair-end reads into fragments, checking the mapping
+quality score, alingment and filtration;
+@item create the cell-by-bin matrix. @end itemize")
+    (license license:asl2.0)))
