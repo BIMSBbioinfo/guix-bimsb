@@ -3045,3 +3045,23 @@ recursive k-means partitioning.")
 Tool (BLAST) to search genetic sequence data bases.  This includes interfaces to
 @code{blastn}, @code{blastp}, @code{blastx}, and @code{makeblastdb}.")
       (license license:gpl3))))
+
+(define-public python-louvain
+  (package
+    (name "python-louvain")
+    (version "0.14")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "python-louvain" version))
+        (sha256
+          (base32 "0l89vxibnjw3dfp90vx4v9gfaql84sc6479arl859d473rx0r9g0"))))
+    (build-system python-build-system)
+    (propagated-inputs
+      `(("python-networkx" ,python-networkx)
+        ("python-numpy" ,python-numpy)))
+    (home-page "https://github.com/taynaud/python-louvain")
+    (synopsis "Louvain algorithm for community detection in large networks.")
+    (description "@code{Louvain} algorithm, based on modularity optimization,
+can extract the community structure of large networks.")
+    (license license:bsd-3)))
