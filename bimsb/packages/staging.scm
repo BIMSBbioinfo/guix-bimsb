@@ -472,14 +472,14 @@ structures.")
 (define-public python-progressbar
   (package
     (name "python-progressbar")
-    (version "2.3")
+    (version "2.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "progressbar" version))
        (sha256
         (base32
-         "0m0j93yfvbd8pw8cz2vdb9hyk9d0zkkd509k69jrw545jxr8mlxj"))))
+         "0qvckfpkdk7a35r9lc201rkwc18grb4ddbv276sj7qm2km9cp0ax"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-setuptools" ,python-setuptools)))
