@@ -786,79 +786,82 @@ data).")
     (license license:expat)))
 
 (define-public lammps
-  (package
-    (name "lammps")
-    (version "r15407")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/lammps/lammps.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "16x8xz68y3fxnk0g6dnq17fjf48a1pkd7s6jbywnnz8qprg5pblp"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; no check target
-       #:make-flags (list "CC=mpicc" "mpi"
-                          "LMP_INC=-DLAMMPS_GZIP \
+  (let ((commit "stable_3Mar2020"))
+	(package
+	  (name "lammps")
+	  (version (string-append "0." commit))
+	  (source
+	   (origin
+		 (method git-fetch)
+		 (uri (git-reference
+			   (url "https://github.com/lammps/lammps.git")
+			   (commit commit)))
+		 (file-name (git-file-name name version))
+		 (sha256
+		  (base32
+		   "1c4a8cjrfwk04342m04hwa72xr0xvvrd88rk4ana5qh6qsplnbmp"))))
+	  (build-system gnu-build-system)
+	  (arguments
+	   `(#:tests? #f ; no check target
+		 #:make-flags (list "CC=mpicc" "mpi"
+							"LMP_INC=-DLAMMPS_GZIP \
 -DLAMMPS_JPEG -DLAMMPS_PNG -DLAMMPS_FFMPEG -DLAMMPS_MEMALIGN=64"
-                          "LIB=-gz -ljpeg -lpng -lavcodec")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (substitute* "MAKE/Makefile.mpi"
-               (("SHELL =.*")
-                (string-append "SHELL=" (which "bash") "\n"))
-               (("cc ") "mpicc "))
-             (substitute* "Makefile"
-               (("SHELL =.*")
-                (string-append "SHELL=" (which "bash") "\n")))
-             #t))
-         (add-after 'configure 'configure-modules
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "../lib/h5md"
-               (invoke "make" (string-append "HDF5_PATH="
-                                             (assoc-ref inputs "hdf5"))))
-             (invoke "make"
-                     "yes-molecule"
-                     "yes-granular"
-                     "yes-user-h5md"
-                     "yes-user-misc")
-             #t))
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir "src") #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let*  ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (install-file "lmp_mpi" bin)
-               #t))))))
-    (inputs
-     `(("python" ,python-2)
-       ("gfortran" ,gfortran)
-       ("openmpi" ,openmpi)
-       ("ffmpeg" ,ffmpeg)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg)
-       ("hdf5" ,hdf5)
-       ("gzip" ,gzip)))
-    (native-inputs
-     `(("bc" ,bc)
-       ("gcc" ,gcc-4.9)))
-    (home-page "http://lammps.sandia.gov/")
-    (synopsis "Classical molecular dynamics simulator")
-    (description "LAMMPS is a classical molecular dynamics simulator
+							"LIB=-gz -ljpeg -lpng -lavcodec")
+		 #:phases
+		 (modify-phases %standard-phases
+		   (add-after 'unpack 'make-files-writable
+			 (lambda _
+               (map make-file-writable (find-files "." ".*"))
+               #t))
+		   (replace 'configure
+			 (lambda _
+			   (substitute* "MAKE/Makefile.mpi"
+				 (("SHELL =.*")
+				  (string-append "SHELL=" (which "bash") "\n"))
+				 (("cc ") "mpicc "))
+			   (substitute* "Makefile"
+				 (("SHELL =.*")
+				  (string-append "SHELL=" (which "bash") "\n")))
+			   #t))
+		   (add-after 'configure 'configure-modules
+			 (lambda* (#:key inputs #:allow-other-keys)
+			   (invoke "make"
+					   "yes-molecule"
+					   "yes-granular"
+
+					   "yes-user-misc"
+					   (string-append "HDF5_PATH="
+									  (assoc-ref inputs "hdf5")))
+			   #t))
+		   (add-after 'unpack 'enter-dir
+			 (lambda _ (chdir "src") #t))
+		   (replace 'install
+			 (lambda* (#:key outputs #:allow-other-keys)
+			   (let*  ((out (assoc-ref outputs "out"))
+					   (bin (string-append out "/bin")))
+				 (mkdir-p bin)
+				 (install-file "lmp_mpi" bin)
+				 #t))))))
+	  (inputs
+	   `(("python" ,python-wrapper)
+		 ("gfortran" ,gfortran)
+		 ("openmpi" ,openmpi)
+		 ("ffmpeg" ,ffmpeg)
+		 ("libpng" ,libpng)
+		 ("libjpeg" ,libjpeg-turbo)
+		 ("hdf5" ,hdf5)
+		 ("gzip" ,gzip)))
+	  (native-inputs
+	   `(("bc" ,bc)))
+	  (home-page "http://lammps.sandia.gov/")
+	  (synopsis "Classical molecular dynamics simulator")
+	  (description "LAMMPS is a classical molecular dynamics simulator
 designed to run efficiently on parallel computers.  LAMMPS has
 potentials for solid-state materials (metals, semiconductors), soft
 matter (biomolecules, polymers), and coarse-grained or mesoscopic
 systems.  It can be used to model atoms or, more generically, as a
 parallel particle simulator at the atomic, meso, or continuum scale.")
-    (license license:gpl2+)))
+	  (license license:gpl2+))))
 
 (define-public lammps-serial
   (package (inherit lammps)
