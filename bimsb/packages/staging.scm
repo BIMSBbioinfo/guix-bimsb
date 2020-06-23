@@ -1640,7 +1640,7 @@ dimensionality reduction and gene expression visualization.")
 (define-public mageck
   (package
     (name "mageck")
-    (version "0.5.9")
+    (version "0.5.9.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/mageck/"
@@ -1648,7 +1648,12 @@ dimensionality reduction and gene expression visualization.")
                                   "/mageck-" version ".tar.gz"))
               (sha256
                (base32
-                "1gcjm41q3s3fqs47fg16n5dn0x9niy3j8ls5bqdi7m6iqkzfjfx8"))))
+                "1rvbvwr1jsnijy6pplqgzcz0k05ksbparvl6zkdfxfxfg80142ql"))
+			  (snippet
+			   '(begin
+				  (delete-file "bin/RRA")
+				  (delete-file "bin/mageckGSEA")
+				  #t))))
     (build-system python-build-system)
     (arguments
      `(#:use-setuptools? #f
@@ -1658,6 +1663,18 @@ dimensionality reduction and gene expression visualization.")
                   (ice-9 match))
        #:phases
        (modify-phases %standard-phases
+		 (add-after 'unpack 'use-python3
+		   (lambda _
+			 (substitute* "bin/mageck"
+			   (("python2") "python"))
+			 #t))
+		 (add-before 'build 'build-rra-and-gsea
+		   (lambda _
+			 (with-directory-excursion "rra"
+			   (invoke "make"))
+			 (with-directory-excursion "gsea"
+			   (invoke "make"))
+			 #t))
          (delete 'check)
          (add-after 'wrap 'check
            (lambda* (#:key outputs #:allow-other-keys)
