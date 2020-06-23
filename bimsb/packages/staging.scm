@@ -1854,29 +1854,6 @@ different methods.")
 scripts for manipulating 3C/4C/5C/Hi-C data.")
     (license license:asl2.0)))
 
-(define-public perl-pdf-api2
-  (package
-    (name "perl-pdf-api2")
-    (version "2.033")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/S/SS/SSIMMS/"
-                           "PDF-API2-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1817knk32xrimks4nvv0rss06ncjwvdmqpyaz8xgflrh3bn6c24w"))))
-    (build-system perl-build-system)
-    (propagated-inputs
-     `(("perl-font-ttf" ,perl-font-ttf)
-       ("perl-test-exception" ,perl-test-exception)
-       ("perl-test-memory-cycle" ,perl-test-memory-cycle)))
-    (home-page "https://metacpan.org/release/PDF-API2")
-    (synopsis "Facilitates the creation and modification of PDF files")
-    (description "This module facilitates the creation and modification of
-PDF files.")
-    (license license:lgpl2.1+)))
-
 (define-public squid
   (package
     (name "squid")
