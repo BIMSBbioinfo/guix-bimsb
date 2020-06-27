@@ -3005,3 +3005,32 @@ can extract the community structure of large networks.")
 quality score, alingment and filtration;
 @item create the cell-by-bin matrix. @end itemize")
     (license license:asl2.0)))
+
+;; this package needs to be moved in guix/gnu/cran, it is here for temporary reasons
+;; it is requied by r-chromwar
+(define-public r-nabor
+  (package
+    (name "r-nabor")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nabor" version))
+       (sha256
+        (base32 "1nj39cdfwrmhgsi3cq8imxv3n6xzc1v6dzdb2cf2hybjk368v4s7"))))
+    (properties `((upstream-name . "nabor")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-bh" ,r-bh)
+       ("r-rcpp" ,r-rcpp)
+       ("r-rcppeigen" ,r-rcppeigen)))
+    (home-page "https://cran.r-project.org/web/packages/nabor/")
+    (synopsis "R wrapper for libnabo, which is a k nearest neighbour library")
+    (description
+     "This package is an R wrapper for @code{libnabo} library.  @code{Libnabo} is an
+exact or approximate k nearest neighbour library (@code{knn}) and it is optimised for
+low dimensional spaces.  @code{r-nabor} includes a knn function that is designed as a
+drop-in replacement for @code{rann} function nn2.  In addition, objects which include
+the k-d tree search structure can be returned to speed up repeated queries of the same
+set of target points.")
+    (license license:bsd-3)))
