@@ -255,7 +255,7 @@
        ;; yet support Boost.Signals2, so we need to use an older
        ;; version of Boost.
        ("boost" ,boost-1.68)
-       ("libuuid" ,util-linux)
+       ("libuuid" ,util-linux "lib")
        ("pandoc" ,ghc-pandoc)
        ("openssl" ,openssl)
        ("pam" ,linux-pam)
