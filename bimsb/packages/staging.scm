@@ -125,6 +125,11 @@
        #:tests? #f ; no tests
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'build-with-R-4
+           (lambda _
+             (substitute* "src/cpp/r/session/REmbeddedPosix.cpp"
+               (("R_Slave") "R_NoEcho"))
+             #t))
          (add-after 'unpack 'fix-type-error
            (lambda _
              (substitute* "src/cpp/core/DateTime.cpp"
