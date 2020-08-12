@@ -392,67 +392,6 @@ across a broad spectrum of applications.")
            (lambda* (#:key outputs make-flags #:allow-other-keys)
              (apply invoke "./b2" "install" make-flags))))))))
 
-(define-public boost-1.55
-  (package (inherit boost-1.58)
-    (name "boost")
-    (version "1.55.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/boost/boost/" version "/boost_"
-                    (string-map (lambda (x) (if (eq? x #\.) #\_ x)) version)
-                    ".tar.bz2"))
-              (sha256
-               (base32
-                "0lkv5dzssbl5fmh2nkaszi8x9qbj80pr4acf9i26sj3rvlih1w7z"))))
-    (arguments
-     `(#:tests? #f ; TODO
-       #:make-flags
-       (list "threading=multi" "link=shared"
-
-             ;; Set the RUNPATH to $libdir so that the libs find each other.
-             (string-append "linkflags=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib")
-
-             ;; Boost's 'context' library is not yet supported on mips64, so
-             ;; we disable it.  The 'coroutine' library depends on 'context',
-             ;; so we disable that too.
-             ,@(if (string-prefix? "mips64" (or (%current-target-system)
-                                                (%current-system)))
-                   '("--without-context"
-                     "--without-coroutine" "--without-coroutine2")
-                   '()))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* '("libs/config/configure"
-                              "libs/spirit/classic/phoenix/test/runtest.sh"
-                              "tools/build/v2/doc/bjam.qbk"
-                              "tools/build/v2/engine/execunix.c"
-                              "tools/build/v2/engine/Jambase"
-                              "tools/build/v2/engine/jambase.c")
-                 (("/bin/sh") (which "sh")))
-
-               (setenv "SHELL" (which "sh"))
-               (setenv "CONFIG_SHELL" (which "sh"))
-
-               (invoke "./bootstrap.sh"
-                       (string-append "--prefix=" out)
-                       "--with-toolset=gcc"))))
-         (replace 'build
-           (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (apply invoke "./b2"
-                    (format #f "-j~a" (parallel-job-count))
-                    make-flags)))
-         (replace 'install
-           (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (apply invoke "./b2" "install" make-flags))))))
-    (native-inputs
-     `(("gcc-4" ,gcc-4.9)))))
-
 ;; For Benedikt
 (define-public python-pysam-0.9
   (package (inherit python-pysam)
