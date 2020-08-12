@@ -440,7 +440,7 @@ including @code{SortedList}, @{SortedDict}, and @code{SortedSet}")
 (define-public python2-sortedcontainers
   (package-with-python2 python-sortedcontainers))
 
-(define-public python-intervaltree
+(define-public python-intervaltree-2
   (package
     (name "python-intervaltree")
     (version "2.1.0")
@@ -471,8 +471,8 @@ including @code{SortedList}, @{SortedDict}, and @code{SortedSet}")
 structures.")
     (license license:asl2.0)))
 
-(define-public python2-intervaltree
-  (package-with-python2 python-intervaltree))
+(define-public python2-intervaltree-2
+  (package-with-python2 python-intervaltree-2))
 
 (define-public python-progressbar
   (package
@@ -525,7 +525,7 @@ providing a visual cue that processing is underway.")
                ;; TODO: make this robust!
                (("0.10.1") ,(package-version python2-flask))
                (("0.6.8") ,(package-version python2-cmd2))
-               (("2.0.4") ,(package-version python2-intervaltree))
+               (("2.0.4") ,(package-version python2-intervaltree-2))
                (("2.5.1") ,(package-version python2-requests)))
              #t))
          (add-before 'build 'set-vars
@@ -547,7 +547,7 @@ providing a visual cue that processing is underway.")
              #t)))))
     (propagated-inputs
      `(("python2-cmd2" ,python2-cmd2)
-       ("python2-intervaltree" ,python2-intervaltree)
+       ("python2-intervaltree" ,python2-intervaltree-2)
        ("python2-flask" ,python2-flask)
        ("python2-progressbar" ,python2-progressbar)
        ("python2-requests" ,python2-requests)
