@@ -78,6 +78,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -584,41 +585,38 @@ and a @{parcel} client.")
 (define-public gdc-client
   (package
     (name "gdc-client")
-    (version "1.0.1")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/NCI-GDC/gdc-client.git")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10822bd1n75b7iqcf74ddx05izl3lz0cc5ckr6s7a7yrnzjvqzcx"))))
+         "1j064wwmna55jx7sz5ymgyvnzrjsa2wfsmwqyw43rpw8pjvs7hvr"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2
-       #:use-setuptools? #t
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
            (lambda _
-             (substitute* "setup.py"
-               (("(lxml==).*," _ pre)
-                (string-append pre ,(package-version python2-lxml) "',\n"))
-               (("(PyYAML==).*," _ pre)
-                (string-append pre ,(package-version python2-pyyaml) "',\n"))
-               (("(jsonschema==).*," _ pre)
-                (string-append pre ,(package-version python2-jsonschema) "',\n"))
-               (("setuptools==") "setuptools>="))
+             (substitute* "requirements.txt"
+               (("==") ">="))
              #t)))))
     (inputs
-     `(("python2-parcel" ,python2-parcel-for-gdc-client)
-       ("python2-jsonschema" ,python2-jsonschema)
-       ("python2-pyyaml" ,python2-pyyaml)
-       ("python2-lxml" ,python2-lxml)
-       ("python2-functools32" ,python2-functools32)
-       ("python2-setuptools" ,python2-setuptools)))
+     `(("python-cryptography" ,python-cryptography)
+       ("python-intervaltree" ,python-intervaltree)
+       ("python-jsonschema" ,python-jsonschema)
+       ("python-lxml" ,python-lxml)
+       ("python-ndg-httpsclient" ,python-ndg-httpsclient)
+       ("python-progressbar2" ,python-progressbar2)
+       ("python-pyasn1" ,python-pyasn1)
+       ("python-pyopenssl" ,python-pyopenssl)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-requests" ,python-requests)
+       ("python-termcolor" ,python-termcolor)))
     (home-page "https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool")
     (synopsis "GDC data transfer tool")
     (description "The gdc-client provides several convenience
