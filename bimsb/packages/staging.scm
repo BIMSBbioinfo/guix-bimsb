@@ -441,40 +441,6 @@ including @code{SortedList}, @{SortedDict}, and @code{SortedSet}")
 (define-public python2-sortedcontainers
   (package-with-python2 python-sortedcontainers))
 
-(define-public python-intervaltree-2
-  (package
-    (name "python-intervaltree")
-    (version "2.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "intervaltree" version))
-       (sha256
-        (base32
-         "02w191m9zxkcjqr1kv2slxvhymwhj3jnsyy3a28b837pi15q19dc"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; TODO: they fail, probably because the own lib dir is not in the PYTHONPATH?
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (assoc-ref %standard-phases 'check)))))
-    (native-inputs
-     `(("python-setuptools" ,python-setuptools)
-       ("python-pytest" ,python-pytest)))
-    (propagated-inputs
-     `(("python-sortedcontainers" ,python-sortedcontainers)))
-    (home-page "https://github.com/chaimleib/intervaltree")
-    (synopsis "Editable interval tree data structure for Python")
-    (description
-     "This package provides a module for editable interval tree data
-structures.")
-    (license license:asl2.0)))
-
-(define-public python2-intervaltree-2
-  (package-with-python2 python-intervaltree-2))
-
 (define-public python-progressbar
   (package
     (name "python-progressbar")
