@@ -1992,14 +1992,14 @@ next-generation genomic sequencing reads stored in SAM/BAM format.")
 (define-public splicegrapher
   (package
     (name "splicegrapher")
-    (version "0.2.6")
+    (version "0.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/splicegrapher/"
                                   "SpliceGrapher-" version ".tgz"))
               (sha256
                (base32
-                "1z5vwk7n1fa9g34qmz6dmc2s99qhk7s7zhaymyhzgc1mgpqlbq8q"))))
+                "1ds2fcy6jy2fbvsj4363d5ivrn30fw7g6ksm0jnhwvh99yifxplg"))))
     (build-system python-build-system)
     (arguments
      `(#:python ,python-2))
