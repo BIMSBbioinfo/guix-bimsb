@@ -441,31 +441,6 @@ including @code{SortedList}, @{SortedDict}, and @code{SortedSet}")
 (define-public python2-sortedcontainers
   (package-with-python2 python-sortedcontainers))
 
-(define-public python-progressbar
-  (package
-    (name "python-progressbar")
-    (version "2.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "progressbar" version))
-       (sha256
-        (base32
-         "0qvckfpkdk7a35r9lc201rkwc18grb4ddbv276sj7qm2km9cp0ax"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     `(("python-setuptools" ,python-setuptools)))
-    (home-page "http://code.google.com/p/python-progressbar")
-    (synopsis "Text progress bar library for Python")
-    (description "The @code{ProgressBar} class manages the current
-progress of a long running operation, and the format of a line
-providing a visual cue that processing is underway.")
-    ;; Either license may be used.
-    (license (list license:lgpl2.1+ license:bsd-3))))
-
-(define-public python2-progressbar
-  (package-with-python2 python-progressbar))
-
 (define-public python2-parcel
   (package
     (name "python2-parcel")
