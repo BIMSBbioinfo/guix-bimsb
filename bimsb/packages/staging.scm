@@ -564,24 +564,6 @@ interface.  Parcel's software is comprised of a @code{parcel-server}
 and a @{parcel} client.")
     (license license:asl2.0)))
 
-(define python2-parcel-for-gdc-client
-  (let ((commit "fddae5c09283ee5058fb9f43727a97a253de31fb")
-        (revision "1"))
-    (package
-      (inherit python2-parcel)
-      (version (string-append "0.1.13-" revision "."
-                              (string-take commit 9)))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/LabAdvComp/parcel.git")
-               (commit commit)))
-         (file-name (string-append (package-name python2-parcel) "-" version))
-         (sha256
-          (base32
-           "0z1jnbdcyn571b1md51z13ivyl7l5mypwdkbjxk0klk70dskrs7i")))))))
-
 (define-public gdc-client
   (package
     (name "gdc-client")
