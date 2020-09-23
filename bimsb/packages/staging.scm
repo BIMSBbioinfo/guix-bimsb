@@ -102,12 +102,10 @@
   #:use-module (bimsb packages variants)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
-;; We can't upgrade to 1.2.x because that depends on qtwebengine,
-;; which bundles Chromium.
 (define-public rstudio-server
   (package
     (name "rstudio-server")
-    (version "1.1.463")
+    (version "1.3.1093")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -116,44 +114,21 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "014g984znsczzy1fyn9y1ly3rbsngryfs674lfgciz60mqnl8im6"))))
+                "0zarhsm3cghz4fn4c53y2zy05z3cxqzp87h16ya8v7hyxapaqfy6"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DRSTUDIO_TARGET=Server")
+     `(#:configure-flags
+       '("-DRSTUDIO_TARGET=Server"
+         "-DCMAKE_BUILD_TYPE=Release"
+         ;; Force using Boost.Signals2 because our Boost package has
+         ;; removed Boost.Signals (it was deprecated in 1.69.0).
+         "-DRSTUDIO_BOOST_SIGNALS_VERSION=2")
        #:modules ((guix build cmake-build-system)
                   (guix build utils)
                   (ice-9 match))
        #:tests? #f ; no tests
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'build-with-R-4
-           (lambda _
-             (substitute* "src/cpp/r/session/REmbeddedPosix.cpp"
-               (("R_Slave") "R_NoEcho"))
-             #t))
-         (add-after 'unpack 'fix-type-error
-           (lambda _
-             (substitute* "src/cpp/core/DateTime.cpp"
-               (("return time_t_epoch \\+ seconds\\(sec\\);")
-                "return time_t_epoch + seconds(static_cast<long>(sec));"))
-             (substitute* "src/cpp/core/file_lock/FileLock.cpp"
-               (("= boost::posix_time::seconds\\((timeoutInterval|refreshRate)\\)" _ val)
-                (string-append "= boost::posix_time::seconds(static_cast<long>("
-                               val "))"))
-               (("FileLock::s_timeoutInterval\\(kDefaultTimeoutInterval\\)")
-                "FileLock::s_timeoutInterval(static_cast<long>(kDefaultTimeoutInterval))")
-               (("FileLock::s_refreshRate\\(kDefaultRefreshRate\\)")
-                "FileLock::s_refreshRate(static_cast<long>(kDefaultRefreshRate))"))
-             #t))
-         (add-after 'unpack 'override-tmpdir
-           (lambda _
-             ;; The location of the server cookie is hardcoded to
-             ;; /tmp/rstudio-server; this makes it impossible for
-             ;; different users on the same machine to use R Studio.
-             (substitute* "src/cpp/server/ServerSecureKeyFile.cpp"
-               (("\"/tmp/rstudio-server\"")
-                "getenv(\"HOME\")"))
-             #t))
          (add-before 'build 'set-environment-variables
            (lambda* (#:key inputs #:allow-other-keys)
              ;; This is needed for Java, obviously.
@@ -163,6 +138,7 @@
                 (setenv "RSTUDIO_VERSION_MAJOR" major)
                 (setenv "RSTUDIO_VERSION_MINOR" minor)
                 (setenv "RSTUDIO_VERSION_PATCH" patch)))
+             (setenv "PACKAGE_OS" "GNU Guix")
              #t))
          (add-after 'unpack 'fix-dependencies
            (lambda _
@@ -197,8 +173,8 @@
          (add-after 'unpack 'unpack-mathjax
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "dependencies/common"
-               (mkdir "mathjax-26")
-               (invoke "unzip" "-qd" "mathjax-26"
+               (mkdir "mathjax-27")
+               (invoke "unzip" "-qd" "mathjax-27"
                        (assoc-ref inputs "mathjax")))
              #t))
          (add-after 'unpack 'unpack-gin
@@ -243,9 +219,9 @@
        ("mathjax"
         ,(origin
            (method url-fetch)
-           (uri "https://s3.amazonaws.com/rstudio-buildtools/mathjax-26.zip")
+           (uri "https://s3.amazonaws.com/rstudio-buildtools/mathjax-27.zip")
            (sha256
-            (base32 "0wbcqb9rbfqqvvhqr1pbqax75wp8ydqdyhp91fbqfqp26xzjv6lk"))))
+            (base32 "0xj143xqijybf13jaq534rvgplhjqfimwazbpbyc20yfqjkblv65"))))
        ("dictionaries"
         ,(origin
            (method url-fetch)
@@ -256,11 +232,9 @@
      `(("r" ,r)
        ("r-rmarkdown" ,r-rmarkdown) ; TODO: must be linked to another location
        ;;("r-rsconnect" ,r-rsconnect) ; TODO: must be linked to another location
-       ("clang" ,clang-3.5)
-       ;; Boost 1.69 no longer offers Boost.Signals; Rstudio does not
-       ;; yet support Boost.Signals2, so we need to use an older
-       ;; version of Boost.
-       ("boost" ,boost-1.68)
+       ("clang" ,clang-3.7)
+       ("boost" ,boost)
+       ("boost-signals2" ,boost-signals2)
        ("libuuid" ,util-linux "lib")
        ("pandoc" ,ghc-pandoc)
        ("openssl" ,openssl)
@@ -317,7 +291,17 @@ of the @code{libR} shared library."))))
            (add-after 'unpack 'relax-qt-version
              (lambda _
                (substitute* "src/cpp/desktop/CMakeLists.txt"
-                 (("5\\.4") "5.7"))
+                 (("5\\.4") "5.9"))
+               #t))
+           (add-after 'install 'wrap-program
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin"))
+                      (qtwebengine-path (string-append
+                                         (assoc-ref inputs "qtwebengine")
+                                         "/lib/qt5/libexec/QtWebEngineProcess")))
+                 (wrap-program (string-append bin "/rstudio")
+                   `("QTWEBENGINEPROCESS_PATH" ":" = (,qtwebengine-path))))
                #t))))))
     (inputs
      `(("qtbase" ,qtbase)
@@ -326,8 +310,8 @@ of the @code{libR} shared library."))))
        ("qtsvg" ,qtsvg)
        ("qtsensors" ,qtsensors)
        ("qtxmlpatterns" ,qtxmlpatterns)
-       ("qtwebkit" ,qtwebkit)
        ("qtwebchannel" ,qtwebchannel)
+       ("qtwebengine" ,qtwebengine)
        ,@(package-inputs rstudio-server)))
     (synopsis "Integrated development environment (IDE) for R (desktop version)")))
 
