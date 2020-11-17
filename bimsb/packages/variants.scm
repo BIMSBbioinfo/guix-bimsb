@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2019 Marcel Schilling <marcel.schilling@mdc-berlin.de>
 ;;; Copyright © 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;;
@@ -804,7 +804,43 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                   (delete-file-recursively "bin/Linux_x86_64")
                   (delete-file-recursively "bin/Linux_x86_64_static")
                   (delete-file-recursively "source/htslib")
-                  #t))))))
+                  #t))))
+    (arguments
+     '(#:tests? #f                      ;no check target
+       #:make-flags '("STAR")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'enter-source-dir
+           (lambda _ (chdir "source") #t))
+         (add-after 'enter-source-dir 'make-reproducible
+           (lambda _
+             (substitute* "Makefile"
+               (("(COMPILATION_TIME_PLACE=\")(.*)(\")" _ pre mid post)
+                (string-append pre "Built with Guix" post)))
+             #t))
+         (add-after 'enter-source-dir 'do-not-use-bundled-htslib
+           (lambda _
+             (substitute* "Makefile"
+               (("(Depend.list: \\$\\(SOURCES\\) parametersDefault\\.xxd) htslib"
+                 _ prefix) prefix))
+             (substitute* '("BAMfunctions.cpp"
+                            "signalFromBAM.h"
+                            "bam_cat.h"
+                            "bam_cat.c"
+                            "STAR.cpp"
+                            "bamRemoveDuplicates.cpp")
+               (("#include \"htslib/([^\"]+\\.h)\"" _ header)
+                (string-append "#include <" header ">")))
+             (substitute* "IncludeDefine.h"
+               (("\"htslib/(htslib/[^\"]+.h)\"" _ header)
+                (string-append "<" header ">")))
+             #t))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
+               (install-file "STAR" bin))
+             #t))
+         (delete 'configure))))))
 
 (define-public jupyter-with-python2
   (package (inherit jupyter)
