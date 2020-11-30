@@ -236,7 +236,7 @@
        ("boost" ,boost)
        ("boost-signals2" ,boost-signals2)
        ("libuuid" ,util-linux "lib")
-       ("pandoc" ,ghc-pandoc)
+       ("pandoc" ,pandoc)
        ("openssl" ,openssl)
        ("pam" ,linux-pam)
        ("zlib" ,zlib)))
