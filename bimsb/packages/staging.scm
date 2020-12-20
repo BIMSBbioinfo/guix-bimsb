@@ -254,12 +254,12 @@ web browser.")
     (license license:agpl3+)))
 
 (define-public rstudio-server-bimsb
-  (let ((commit "v1.1.272-bimsb")
+  (let ((commit "v1.3.1093-multi-version")
         (revision "1"))
     (package
       (inherit rstudio-server)
       (name "rstudio-server-bimsb")
-      (version "1.1.272-bimsb")
+      (version "1.3.1093-multi-version")
       (source
        (origin
          (method git-fetch)
@@ -268,7 +268,7 @@ web browser.")
                (commit commit)))
          (sha256
           (base32
-           "0x22bk2kkj5w9qarhvjklz62h79fpfg0ll2bsy8by588vbh9svzd"))))
+           "1k99xdc3grd2mj6v5p4q3jn1dr4wa1gnx6q39hcx796cmy45bd8v"))))
       (description
        "This is the BIMSB fork of RStudio Server, a web IDE for the R
 programming language.  The fork adds a single feature: it allows users
