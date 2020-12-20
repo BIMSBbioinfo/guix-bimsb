@@ -177,6 +177,7 @@
                (invoke "unzip" "-qd" "mathjax-27"
                        (assoc-ref inputs "mathjax")))
              #t))
+         #;
          (add-after 'unpack 'unpack-gin
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "src/gwt"
@@ -184,7 +185,8 @@
                (mkdir-p "lib/gin/1.5")
                (invoke "unzip" "-qd" "lib/gin/1.5"
                        (assoc-ref inputs "gin")))
-             #t))
+         #t))
+         #;
          (add-after 'unpack 'unpack-gwt
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "src/gwt"
@@ -198,12 +200,14 @@
        ("unzip" ,unzip)
        ("ant" ,ant)
        ("jdk" ,icedtea "jdk")
+       #;
        ("gin"
         ,(origin
            (method url-fetch)
            (uri "https://s3.amazonaws.com/rstudio-buildtools/gin-1.5.zip")
            (sha256
             (base32 "155bjrgkf046b8ln6a55x06ryvm8agnnl7l8bkwwzqazbpmz8qgm"))))
+       #;
        ("gwt"
         ,(origin
            (method url-fetch)
