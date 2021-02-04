@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
 ;;; Copyright © 2018, 2019 Marcel Schilling <marcel.schilling@mdc-berlin.de>
 ;;; Copyright © 2019, 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -2782,3 +2782,28 @@ can extract the community structure of large networks.")
 quality score, alingment and filtration;
 @item create the cell-by-bin matrix. @end itemize")
     (license license:asl2.0)))
+
+;; This package contains a lot of minified JavaScript.
+(define-public r-shinywidgets
+  (package
+    (name "r-shinywidgets")
+    (version "0.5.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "shinyWidgets" version))
+       (sha256
+        (base32
+         "1468yw3kc058c8js4s8wf76jv5njgy52291drgbxwfmpmn6mqf7b"))))
+    (properties `((upstream-name . "shinyWidgets")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-htmltools" ,r-htmltools)
+       ("r-jsonlite" ,r-jsonlite)
+       ("r-shiny" ,r-shiny)))
+    (home-page "https://github.com/dreamRs/shinyWidgets")
+    (synopsis "Custom inputs widgets for Shiny")
+    (description
+     "This package is a collection of custom input controls and user interface
+components for R Shiny applications.")
+    (license license:gpl3)))
