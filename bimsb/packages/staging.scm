@@ -2890,3 +2890,32 @@ Shiny apps.")
 mechanism for single Shiny applications.  Credentials are stored in an
 encrypted SQLite database.")
     (license license:gpl3)))
+
+;; Lots of JavaScript that may be difficult to build from source.
+(define-public r-reactlog
+  (package
+    (name "r-reactlog")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "reactlog" version))
+       (sha256
+        (base32
+         "0vngy7fixiighhaa0db8xfr6962jmrfn3675qrn3hj7rfh7siagz"))))
+    (properties `((upstream-name . "reactlog")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-jsonlite" ,r-jsonlite)))
+    (native-inputs
+     `(("r-knitr" ,r-knitr)))
+    (home-page "https://rstudio.github.io/reactlog/")
+    (synopsis "Reactivity visualizer for Shiny")
+    (description
+     "Building interactive web applications with R is incredibly easy with
+Shiny.  Behind the scenes, Shiny builds a reactive graph that can quickly
+become intertwined and difficult to debug.  The reactlog package provides a
+visual insight into that black box of Shiny reactivity by constructing a
+directed dependency graph of the application's reactive state at any time
+point in a reactive recording.")
+    (license license:gpl3)))
