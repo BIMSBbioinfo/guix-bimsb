@@ -2807,3 +2807,52 @@ quality score, alingment and filtration;
      "This package is a collection of custom input controls and user interface
 components for R Shiny applications.")
     (license license:gpl3)))
+
+;; This package contains a lot of minified JavaScript and CSS
+(define-public r-billboarder
+  (package
+    (name "r-billboarder")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "billboarder" version))
+       (sha256
+        (base32
+         "1n51xildr8h3fqm3yhalgvq6pwlpzbcv230jg7skp8147wmwcmi7"))))
+    (properties `((upstream-name . "billboarder")))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-conflicting-vignette
+           (lambda _
+             (for-each delete-file
+                       ;; These files generate some of the same
+                       ;; outputs as billboarder.Rmd
+                       (append (find-files "inst/doc" "billboarder-.*.Rmd$")
+                               ;; Delete generated files.
+                               (find-files "inst/doc" "\\.(R|html)$")))
+             #t)))))
+    (propagated-inputs
+     `(("r-ggplot2" ,r-ggplot2)
+       ("r-htmltools" ,r-htmltools)
+       ("r-htmlwidgets" ,r-htmlwidgets)
+       ("r-jsonlite" ,r-jsonlite)
+       ("r-magrittr" ,r-magrittr)
+       ("r-scales" ,r-scales)
+       ("r-shiny" ,r-shiny)))
+    (native-inputs
+     `(("r-knitr" ,r-knitr)
+       ("r-rmarkdown" ,r-rmarkdown))) ; this is not mentioned in DESCRIPTION
+    (home-page "https://github.com/dreamRs/billboarder")
+    (synopsis "Create interactive charts with the JavaScript Billboard library")
+    (description
+     "This package provides an htmlwidgets interface to billboard.js,
+a re-usable easy interface JavaScript chart library, based on D3
+version 4 or later.  Chart types include line charts, scatterplots,
+bar/lollipop charts, histogram/density plots, pie/donut charts and
+gauge charts.  All charts are interactive, and a proxy method is
+implemented to smoothly update a chart without rendering it again in
+Shiny apps.")
+    (license license:expat)))
