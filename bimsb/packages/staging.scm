@@ -2970,3 +2970,31 @@ visual insight into that black box of Shiny reactivity by constructing a
 directed dependency graph of the application's reactive state at any time
 point in a reactive recording.")
     (license license:gpl3)))
+
+;; This contains a lot of minified JavaScript
+(define-public r-visnetwork
+  (package
+    (name "r-visnetwork")
+    (version "2.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "visNetwork" version))
+       (sha256
+        (base32
+         "0854r9znpjd9iy6j5bgrn20vj13dhp606gs3b6iy0rhym71ks2sy"))))
+    (properties `((upstream-name . "visNetwork")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-htmltools" ,r-htmltools)
+       ("r-htmlwidgets" ,r-htmlwidgets)
+       ("r-jsonlite" ,r-jsonlite)
+       ("r-magrittr" ,r-magrittr)))
+    (native-inputs `(("r-knitr" ,r-knitr)))
+    (home-page "https://datastorm-open.github.io/visNetwork/")
+    (synopsis "Network visualization using vis.js library")
+    (description
+     "This package provides an R interface to the vis.js JavaScript
+charting library.  It allows an interactive visualization of
+networks.")
+    (license license:expat)))
