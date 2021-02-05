@@ -2998,3 +2998,48 @@ point in a reactive recording.")
 charting library.  It allows an interactive visualization of
 networks.")
     (license license:expat)))
+
+;; This depends on r-visnetwork.
+;; It also contains a number of minified JavaScript libraries.
+(define-public r-diagrammer
+  (package
+    (name "r-diagrammer")
+    (version "1.0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "DiagrammeR" version))
+       (sha256
+        (base32
+         "0gb7ccdrh7jlyqafdk8zs465ygczxxd25s05whn914in1994qkmy"))))
+    (properties `((upstream-name . "DiagrammeR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-downloader" ,r-downloader)
+       ("r-dplyr" ,r-dplyr)
+       ("r-glue" ,r-glue)
+       ("r-htmltools" ,r-htmltools)
+       ("r-htmlwidgets" ,r-htmlwidgets)
+       ("r-igraph" ,r-igraph)
+       ("r-influencer" ,r-influencer)
+       ("r-magrittr" ,r-magrittr)
+       ("r-purrr" ,r-purrr)
+       ("r-rcolorbrewer" ,r-rcolorbrewer)
+       ("r-readr" ,r-readr)
+       ("r-rlang" ,r-rlang)
+       ("r-rstudioapi" ,r-rstudioapi)
+       ("r-scales" ,r-scales)
+       ("r-stringr" ,r-stringr)
+       ("r-tibble" ,r-tibble)
+       ("r-tidyr" ,r-tidyr)
+       ("r-viridis" ,r-viridis)
+       ("r-visnetwork" ,r-visnetwork)))
+    (native-inputs `(("r-knitr" ,r-knitr)))
+    (home-page "https://github.com/rich-iannone/DiagrammeR")
+    (synopsis "Graph/network visualization")
+    (description
+     "With the DiagrammeR package you can create, modify, analyze, and
+visualize network graph diagrams.  The output can be incorporated into
+R Markdown documents, integrated with Shiny web apps, converted to
+other graph formats, or exported as image files.")
+    (license license:expat)))
