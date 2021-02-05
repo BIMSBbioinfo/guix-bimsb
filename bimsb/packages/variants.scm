@@ -1007,21 +1007,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
            (native-inputs
             `(("python-pytest" ,python2-pytest)))))
 
-;; this is a temporary description; the python2-argcomplete from guix
-;; pythonxyz.scm doesn't build; also, this version has some tests with errors.
-(define-public python2-argcomplete-temp
-  (let
-      ((argcomplete
-        (package-with-python2
-         (strip-python2-variant python-argcomplete))))
-    (package
-     (inherit argcomplete)
-     (name "python2-argcomplete-temp")
-     (version "1.10.3")
-     (native-inputs
-      `(("python2-functools32" ,python2-functools32)
-        ,@(package-native-inputs argcomplete))))))
-
 (define-public python2-argh
   (package-with-python2 python-argh))
 
@@ -1029,14 +1014,13 @@ other types of unwanted sequence from high-throughput sequencing reads.")
   (package-with-python2 python-pyfaidx))
 
 (define-public python2-gffutils
-  (let
-      ((gffutils
-        (package-with-python2
-         (strip-python2-variant python-gffutils))))
+  (let ((gffutils
+         (package-with-python2
+          (strip-python2-variant python-gffutils))))
     (package
       (inherit gffutils)
       (propagated-inputs
-       `(("python2-argcomplete" ,python2-argcomplete-temp)
+       `(("python2-argcomplete" ,python2-argcomplete)
          ("python2-functools32" ,python2-functools32)
          ("python2-argh" ,python2-argh)
          ("python2-biopython" ,python2-biopython)
