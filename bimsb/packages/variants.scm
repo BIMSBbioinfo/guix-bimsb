@@ -1022,7 +1022,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
       (propagated-inputs
        `(("python2-argcomplete" ,python2-argcomplete)
          ("python2-functools32" ,python2-functools32)
-         ("python2-argh" ,python2-argh)
          ("python2-biopython" ,python2-biopython)
          ("python2-pybedtools" ,python2-pybedtools)
          ("python2-pyfaidx" ,python2-pyfaidx)
