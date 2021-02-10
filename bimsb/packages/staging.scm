@@ -3126,3 +3126,28 @@ Bootstrap 4.")
 library to create web-based interactive tables and spreadsheets
 compatible with Excel or any other spreadsheet software.")
     (license license:expat)))
+
+;; This package contains a number of minified JavaScript files, some
+;; without original source code.
+(define-public r-argonr
+  (package
+    (name "r-argonr")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "argonR" version))
+       (sha256
+        (base32
+         "15hlvansqnky9bnq4r7xza3hb1hzylmhz8117wxz9lxa1wiky2is"))))
+    (properties `((upstream-name . "argonR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-htmltools" ,r-htmltools)
+       ("r-rstudioapi" ,r-rstudioapi)))
+    (native-inputs `(("r-knitr" ,r-knitr)))
+    (home-page "https://github.com/RinteRface/argonR")
+    (synopsis "R interface to Argon HTML design")
+    (description
+     "This package provides an R wrapper around the argon library.")
+    (license license:gpl2)))
