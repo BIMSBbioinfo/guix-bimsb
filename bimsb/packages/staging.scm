@@ -3198,3 +3198,29 @@ compatible with Excel or any other spreadsheet software.")
      "The xlsxjars package collects all the external jars required for
 the xlxs package.  This release corresponds to POI 3.10.1.")
     (license license:gpl3)))
+
+;; This depends on xlsxjars, which needs work.
+(define-public r-xlsx
+  (package
+    (name "r-xlsx")
+    (version "0.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "xlsx" version))
+       (sha256
+        (base32
+         "01r1ngdm51w18bdan8h94r91m731knkf04zal4g67mx3fpa5x31p"))))
+    (properties `((upstream-name . "xlsx")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-rjava" ,r-rjava)
+       ("r-xlsxjars" ,r-xlsxjars)))
+    (native-inputs
+     `(("r-knitr" ,r-knitr)))
+    (home-page "https://github.com/colearendt/xlsx")
+    (synopsis "Read, write, and format Excel files")
+    (description
+     "This package provides R functions to read/write/format Excel
+2007 and Excel 97/2000/XP/2003 file formats.")
+    (license license:gpl3)))
