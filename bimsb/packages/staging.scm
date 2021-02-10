@@ -3175,3 +3175,26 @@ compatible with Excel or any other spreadsheet software.")
     (description
      "Create Bootstrap 4 dashboards powered by Argon.")
     (license license:gpl2)))
+
+;; This package contains pre-compiled Jars.
+(define-public r-xlsxjars
+  (package
+    (name "r-xlsxjars")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "xlsxjars" version))
+       (sha256
+        (base32
+         "1rka5smm7yqnhhlblpihhciydfap4i6kjaa4a7isdg7qjmzm3h9p"))))
+    (properties `((upstream-name . "xlsxjars")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-rjava" ,r-rjava)))
+    (home-page "https://cran.r-project.org/package=xlsxjars")
+    (synopsis "Package required POI jars for the xlsx package")
+    (description
+     "The xlsxjars package collects all the external jars required for
+the xlxs package.  This release corresponds to POI 3.10.1.")
+    (license license:gpl3)))
