@@ -3074,3 +3074,30 @@ boxes, add timelines and a lot more.")
     ;; Version 2 of the GPL or any later version.  It includes code
     ;; under other compatible licenses, such as the Expat license.
     (license license:gpl2+)))
+
+;; This contains minified JavaScript
+(define-public r-bs4dash
+  (package
+    (name "r-bs4dash")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bs4Dash" version))
+       (sha256
+        (base32
+         "1y75i6bsdy1bsbzwjblsnimw1zzk0zl3qnzqfq9zcnf6q2ghi3r2"))))
+    (properties `((upstream-name . "bs4Dash")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-htmltools" ,r-htmltools)
+       ("r-shiny" ,r-shiny)))
+    (native-inputs
+     `(("r-knitr" ,r-knitr)))
+    (home-page "https://rinterface.github.io/bs4Dash/index.html")
+    (synopsis "Bootstrap 4 variant of shinydashboard")
+    (description
+     "This package lets you build Bootstrap 4 dashboards with R Shiny.
+Use the full power of AdminLTE3, a dashboard template built on top of
+Bootstrap 4.")
+    (license license:gpl2+)))
