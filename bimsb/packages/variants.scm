@@ -842,22 +842,6 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
              #t))
          (delete 'configure))))))
 
-(define-public jupyter-with-python2
-  (package (inherit jupyter)
-    (name "jupyter-python2")
-    (build-system python-build-system)
-    ;; FIXME: it's not clear how to run the tests.
-    (arguments `(#:tests? #f
-                 #:python ,python-2))
-    (propagated-inputs
-     `(("python-ipykernel" ,python2-ipykernel)
-       ("python-ipywidgets" ,python2-ipywidgets)
-       ("python-jupyter-console" ,python2-jupyter-console)
-       ("python-nbconvert" ,python2-nbconvert)
-       ("python-notebook" ,python2-notebook)
-       ;; TODO: this should be propagated by tornado
-       ("python-certifi" ,python2-certifi)))))
-
 (define-public python2-cutadapt
   (package
     (name "python2-cutadapt")
