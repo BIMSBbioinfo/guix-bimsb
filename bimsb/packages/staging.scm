@@ -2216,7 +2216,7 @@ across several packages maintained by the Tanay lab.")
     (license license:gpl3)))
 
 (define-public ensembl-vep
-  (let* ((api-version "92")
+  (let* ((api-version "103")
          (api-module
           (lambda (name hash)
             (origin (method git-fetch)
@@ -2237,7 +2237,7 @@ across several packages maintained by the Tanay lab.")
                (commit (string-append "release/" version))))
          (sha256
           (base32
-           "0qsqjvbvcapfkhadicr95npkg98fp0c60zm2jafw6z4v79174cs5"))))
+           "1iq7p72cv9b38jz2v8a4slzy2n8y0md487943180ym9xc8qvw09c"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -2254,7 +2254,7 @@ across several packages maintained by the Tanay lab.")
                (let* ((modules '(("ensembl" "/")
                                  ("ensembl-variation" "/Variation")
                                  ("ensembl-funcgen"   "/Funcgen")
-                                 ("ensembl-io"        "/IO")))
+                                 ("ensembl-io"        "/")))
                       (scripts '(("convert_cache.pl" "vep_convert_cache.pl")
                                  ("INSTALL.pl"       "vep_install.pl")
                                  ("haplo"            #f)
@@ -2322,18 +2322,19 @@ across several packages maintained by the Tanay lab.")
        `(("kentutils" ,kentutils)))
       (native-inputs
        `(("unzip" ,unzip)
+         ("perl" ,perl)
          ("api-module-ensembl"
           ,(api-module "ensembl"
-                       "106yz0kg38zqxxdsrppisbw6d4gx0r9bn7nh4xvh3h0pmlc21smj"))
+                       "0s59rj905g72hljzfpvnx5nxwz925b917y4jp912i23f5gwxh14v"))
          ("api-module-ensembl-variation"
           ,(api-module "ensembl-variation"
-                       "0vxsigcgqqdg9jdzrsl48g1gd97ps25a7nas9bckfwj8qjvrg9ni"))
+                       "1dvwdzzfjhzymq02b6n4p6j3a9q4jgq0g89hs7hj1apd7zhirgkq"))
          ("api-module-ensembl-funcgen"
           ,(api-module "ensembl-funcgen"
-                       "0hhzvam51gcywr0s7pamw23nniag2wby4vnpql83mzwlnlrsrf98"))
+                       "1x23pv38dmv0w0gby6rv3wds50qghb4v3v1mf43vk55msfxzry8n"))
          ("api-module-ensembl-io"
           ,(api-module "ensembl-io"
-                       "1gylvpik0npgarfppccxw0kmrz9lw30rgzz7vbdb2x4b2cxygbkz"))
+                       "14adb2x934lzsq20035mazdkhrkcw0qzb0xhz6zps9vk4wixwaix"))
          ("perl-test-harness" ,perl-test-harness)
          ("perl-test-exception" ,perl-test-exception)))
       (home-page "http://www.ensembl.org/vep")
