@@ -275,10 +275,9 @@ web browser.")
            "1k99xdc3grd2mj6v5p4q3jn1dr4wa1gnx6q39hcx796cmy45bd8v"))))
       (description
        "This is the BIMSB fork of RStudio Server, a web IDE for the R
-programming language.  The fork adds a single feature: it allows users
-to switch R versions by placing a script in
-@code{~/.rstudio/rsession-wrapper} which preloads a different version
-of the @code{libR} shared library."))))
+programming language.  The fork reads @code{~/.rstudio/r-versions} to
+allow users to specify different R versions that can be selected from
+the toolbar and the project settings."))))
 
 (define-public rstudio
   (package (inherit rstudio-server)
