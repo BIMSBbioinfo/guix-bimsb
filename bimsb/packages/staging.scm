@@ -3031,3 +3031,31 @@ pseudo-random number generators for statistical distributions, a general
 purpose Metropolis sampling algorithm, and tools for visualization are
 provided.")
     (license license:gpl3)))
+
+(define-public r-music
+  (let ((commit "963d32474b937a1954a654caf09b7e92f23a0445")
+        (revision "1"))
+    (package
+      (name "r-music")
+      (version (string-append "0-" revision "." (string-take commit 9)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/xuranw/MuSiC.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0m882yqmj1ihm3s8lny6qj4aww63dmb2ixgad778z5fhphvbnmgy"))))
+      (build-system r-build-system)
+      (propagated-inputs
+       `(("r-ggplot2" ,r-ggplot2)
+         ("r-plyr" ,r-plyr)
+         ("r-mcmcpack" ,r-mcmcpack)
+         ("r-nnls" ,r-nnls)
+         ("r-xbioc" ,r-xbioc)))
+      (home-page "https://github.com/xuranw/MuSiC")
+      (synopsis "Multi-subject Single Cell deconvolution")
+      (description
+       "MuSiC is a deconvolution method that utilizes cross-subject scRNA-seq
+to estimate cell type proportions in bulk RNA-seq data.")
+      (license license:gpl3))))
