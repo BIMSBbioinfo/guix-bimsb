@@ -3033,8 +3033,8 @@ provided.")
     (license license:gpl3)))
 
 (define-public r-music
-  (let ((commit "963d32474b937a1954a654caf09b7e92f23a0445")
-        (revision "1"))
+  (let ((commit "7c5834830223957f5d8134c86d6acf653bfff4e7")
+        (revision "2"))
     (package
       (name "r-music")
       (version (string-append "0-" revision "." (string-take commit 9)))
@@ -3045,7 +3045,7 @@ provided.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0m882yqmj1ihm3s8lny6qj4aww63dmb2ixgad778z5fhphvbnmgy"))))
+                  "098bv7v4phg8iv5h5c27ql4pzc7mcala82mcd4i1y91cf68d0grz"))))
       (build-system r-build-system)
       (propagated-inputs
        `(("r-ggplot2" ,r-ggplot2)
