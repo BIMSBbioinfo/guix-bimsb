@@ -596,20 +596,20 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
                 "02x5dqps8v31djr38s4akq8q3hk6xf8x5knk5454awyvjipkry2j"))))))
 
 (define-public r-methylkit-devel
-  (let ((commit "46c8556f34eea9f068f2225e36adf11ba7ea6d07")
+  (let ((commit "ab60a62e0bd610718fcbb76e9505957c8c3ec15f")
         (revision "1"))
     (package (inherit r-methylkit)
       (name "r-methylkit-devel")
-      (version (string-append "1.3.3-" revision "." (string-take commit 9)))
+      (version (git-version "1.17.5" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/al2na/methylKit.git")
                       (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "061yx5lgm5c37v9asnvbl4wxay04791cbxs52ar16x0a0gd13p53")))))))
+                  "1a8rrjvm9nrzbbbkawixhq4vdy3q72b43h0xb28q43p0fl2j0jz9")))))))
 
 (define-public star-2.5.2
   (package (inherit star)
