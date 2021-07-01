@@ -766,20 +766,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
 (define-public dune-grid-agfalke
   (deprecated-package "dune-grid-agfalke" dune-grid-agfalcke))
 
-(define-public kallisto-with-bus
-  (package (inherit kallisto)
-    (name "kallisto")
-    (version "0.46.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pachterlab/kallisto.git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "162jkrm3jpz8hkccjbzx3vgifg8z780awkapyrggp46iidmyydll"))))))
-
 (define-public python2-dill
   (package-with-python2 python-dill))
 
