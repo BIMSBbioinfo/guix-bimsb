@@ -3024,3 +3024,27 @@ the xlxs package.  This release corresponds to POI 3.10.1.")
        "MuSiC is a deconvolution method that utilizes cross-subject scRNA-seq
 to estimate cell type proportions in bulk RNA-seq data.")
       (license license:gpl3))))
+
+(define-public r-dsa
+  (let ((commit "f181f549fd86feb58955f11e53ee38da67ac4f5e")
+        (revision "1"))
+    (package
+      (name "r-dsa")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method url-fetch)
+                (uri (string-append
+                      "https://github.com/zhandong/DSA/raw/" commit "/"
+                      "Package/version_" version "/"
+                      "DSA_" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "1m2g760lwyxzqm7vxp5j1haw2qldgysbfj86w27h15adj604129z"))))
+      (build-system r-build-system)
+      (home-page "https://github.com/zhandong/DSA")
+      (synopsis "Digital sorting algorithm")
+      (description
+       "This package provides functions to implement the @dfn{Digital sorting
+algorithm} (DSA) for extracting cell-type specific gene expression profiles
+from mixed tissue samples.")
+      (license license:gpl2))))
