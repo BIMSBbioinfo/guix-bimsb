@@ -101,6 +101,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (bimsb packages variants)
+  #:use-module (guix-science packages rstudio)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 (define-public rstudio-server
