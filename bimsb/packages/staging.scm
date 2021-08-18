@@ -2839,3 +2839,24 @@ to estimate cell type proportions in bulk RNA-seq data.")
 algorithm} (DSA) for extracting cell-type specific gene expression profiles
 from mixed tissue samples.")
       (license license:gpl2))))
+
+(define-public r-mhg
+  (package
+    (name "r-mhg")
+    (version "1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "mHG" version))
+        (sha256
+          (base32
+            "1rz5ncrvvv9h9grls15apa63v2nh9j87fmp4mwjjil37jx6a5zki"))))
+    (properties `((upstream-name . "mHG")))
+    (build-system r-build-system)
+    (home-page
+     "https://cran.r-project.org/package=mHG")
+    (synopsis "Minimum-Hypergeometric Test")
+    (description
+     "Runs a minimum-hypergeometric (mHG) test as described in: Eden, E.
+(2007).  Discovering Motifs in Ranked Lists of DNA Sequences.  Haifa.")
+    (license license:gpl2)))
