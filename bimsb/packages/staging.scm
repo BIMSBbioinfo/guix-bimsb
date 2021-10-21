@@ -991,44 +991,6 @@ routines available online as well as original implementations of
 various other algorithms.")
     (license license:lgpl2.1+)))
 
-(define-public r-misha
-  (package
-    (name "r-misha")
-    (version "4.0.6")
-    (source
-     (origin
-       (method hg-fetch)
-       (uri (hg-reference
-             (url "https://bitbucket.org/tanaylab/misha-package")
-             (changeset version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0xir6msfs3snn300ms1ywnxy5bld21l4zn6caf8nd1r195fqilrw"))
-       ;; Delete bundled executable.
-       (snippet
-        '(begin
-           (delete-file "exec/bigWigToWig") #t))))
-    (build-system r-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-use-bundled-bigWigToWig
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "R/misha.R"
-               (("get\\(\".GLIBDIR\"\\), \"/exec/bigWigToWig")
-                (string-append "\""
-                               (assoc-ref inputs "kentutils")
-                               "/bin/bigWigToWig")))
-             #t)))))
-    (inputs
-     `(("kentutils" ,kentutils)))
-    (home-page "https://bitbucket.org/tanaylab/misha-package")
-    (synopsis "Toolkit for analysis of genomic data")
-    (description "This package is intended to help users to
-efficiently analyze genomic data resulting from various experiments.")
-    (license license:gpl2)))
-
 (define-public r-shaman
   (let ((commit "52d5edefc1709aa03cd282e00cb703ffd98ea3eb")
         (release "2.0")
