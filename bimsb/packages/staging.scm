@@ -45,6 +45,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages cran)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages bioconductor)
@@ -1283,7 +1284,7 @@ different from MFE computed with random sequences.")
 (define-public qtltools
   (package
     (name "qtltools")
-    (version "1.1")
+    (version "1.3.1")
     (source (origin
               (method url-fetch/tarbomb)
               (uri (string-append "https://qtltools.github.io/qtltools/"
@@ -1291,7 +1292,7 @@ different from MFE computed with random sequences.")
                                   "_source.tar.gz"))
               (sha256
                (base32
-                "1vgr9kbah1cfgcln4mwafnr5x5akjzq3q0gx8vh3yzgn6lmln1d6"))))
+                "13gdry5l43abn3464fmk8qzrxgxnxah2612r66p9dzhhl92j30cd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests included
@@ -1314,25 +1315,39 @@ different from MFE computed with random sequences.")
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-linkage
            (lambda _
-             (substitute* "Makefile"
+             (substitute* "qtltools/Makefile"
                (("libboost_iostreams.a")
                 "libboost_iostreams.so")
                (("libboost_program_options.a")
                 "libboost_program_options.so")
-               (("-lblas") "-lopenblas"))
-             #t))
-         (delete 'configure)
+               (("-lblas") "-lopenblas"))))
+         (add-before 'build 'chdir
+           (lambda _ (chdir "qtltools")))
+         (replace 'configure
+           (lambda _
+             (substitute* "qtltools/Makefile"
+               (("LIB_FLAGS=-lz")
+                "LIB_FLAGS=-lz -lcrypto -lssl")
+               (("LIB_FILES=\\$\\(RMATH_LIB\\)/libRmath.a \
+\\$\\(HTSLD_LIB\\)/libhts.a \
+\\$\\(BOOST_LIB\\)/libboost_iostreams.a \
+\\$\\(BOOST_LIB\\)/libboost_program_options.a")
+                "LIB_FILES=$(RMATH_LIB)/libRmath.so \
+$(HTSLD_LIB)/libhts.so \
+$(BOOST_LIB)/libboost_iostreams.so \
+$(BOOST_LIB)/libboost_program_options.so"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
                (mkdir-p bin)
-               (install-file "bin/QTLtools" bin)
-               #t))))))
+               (install-file "bin/QTLtools" bin)))))))
     (inputs
-     `(("gsl" ,gsl)
+     `(("curl" ,curl)
+       ("gsl" ,gsl)
        ("boost" ,boost)
        ("rmath-standalone" ,rmath-standalone)
        ("htslib" ,htslib-1.3)
+       ("openssl" ,openssl)
        ("openblas" ,openblas)
        ("zlib" ,zlib)))
     (home-page "https://qtltools.github.io/qtltools/")
@@ -1354,7 +1369,14 @@ easy-to-perform steps.")
                                   "_source.tar.gz"))
               (sha256
                (base32
-                "1drckp02jgpl8lswa09w10xa6fyd7r8nlg08yhg6c5hls0zbm277"))))))
+                "1drckp02jgpl8lswa09w10xa6fyd7r8nlg08yhg6c5hls0zbm277"))))
+    (inputs
+     `(("gsl" ,gsl)
+       ("boost" ,boost)
+       ("rmath-standalone" ,rmath-standalone)
+       ("htslib" ,htslib-1.3)
+       ("openblas" ,openblas)
+       ("zlib" ,zlib)))))
 
 (define-public python2-pyml
   (package
