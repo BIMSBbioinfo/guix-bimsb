@@ -991,50 +991,6 @@ routines available online as well as original implementations of
 various other algorithms.")
     (license license:lgpl2.1+)))
 
-(define-public r-shaman
-  (let ((commit "52d5edefc1709aa03cd282e00cb703ffd98ea3eb")
-        (release "2.0")
-        (revision "1"))
-    (package
-      (name "r-shaman")
-      (version (git-version release revision commit))
-      (source (origin
-                (method hg-fetch)
-                (uri (hg-reference
-                      (url "https://bitbucket.org/tanaylab/shaman")
-                      (changeset commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "1g31f3lj9r87bx9mnr0jjcl9nixzkbk8djh6r7z6cpylv7ap8p8v"))
-                (snippet
-                 ;; This file will be generated.
-                 '(begin (delete-file "inst/doc/shaman-package.R") #t))))
-      (build-system r-build-system)
-      (propagated-inputs
-       `(("r-misha" ,r-misha)
-         ("r-rcpp" ,r-rcpp)
-         ("r-rann" ,r-rann)
-         ("r-data-table" ,r-data-table)
-         ("r-ggplot2" ,r-ggplot2)
-         ("r-reshape2" ,r-reshape2)
-         ("r-gviz" ,r-gviz)
-         ("r-plyr" ,r-plyr)
-         ("r-domc" ,r-domc)
-         ;; For vignettes
-         ("r-rmarkdown" ,r-rmarkdown)
-         ("r-knitr" ,r-knitr)))
-      (home-page "https://tanaylab.bitbucket.io/shaman/")
-      (synopsis "Sampling HiC contact matrices for a-parametric normalization")
-      (description "The Shaman package implements functions for
-resampling Hi-C matrices in order to generate expected contact
-distributions given constraints on marginal coverage and
-contact-distance probability distributions.  The package also provides
-support for visualizing normalized matrices and statistical analysis
-of contact distributions around selected landmarks.")
-      ;; Any version of the GPL
-      (license license:gpl3+))))
-
 (define-public pacbio-htslib
   (let ((commit "6b6c81388e699c0c0cf2d1f7fe59c5da60fb7b9a")
         (revision "1"))
