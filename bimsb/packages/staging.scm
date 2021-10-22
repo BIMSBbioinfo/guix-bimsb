@@ -1293,12 +1293,60 @@ different from MFE computed with random sequences.")
               (sha256
                (base32
                 "1drckp02jgpl8lswa09w10xa6fyd7r8nlg08yhg6c5hls0zbm277"))))
+    (arguments
+     `(#:tests? #f                      ; no tests included
+       #:make-flags
+       (list (string-append "BOOST_INC="
+                            (assoc-ref %build-inputs "boost") "/include")
+             (string-append "BOOST_LIB="
+                            (assoc-ref %build-inputs "boost") "/lib")
+             (string-append "HTSLD_INC="
+                            (assoc-ref %build-inputs "htslib") "/include")
+             (string-append "HTSLD_LIB="
+                            (assoc-ref %build-inputs "htslib") "/lib")
+             (string-append "RMATH_INC="
+                            (assoc-ref %build-inputs "rmath-standalone")
+                            "/include")
+             (string-append "RMATH_LIB="
+                            (assoc-ref %build-inputs "rmath-standalone")
+                            "/lib"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-linkage
+           (lambda _
+             (substitute* "Makefile"
+               (("-Wl,-Bstatic ") "")
+               (("-Wl,-Bdynamic ") "")
+               (("libboost_iostreams.a")
+                "libboost_iostreams.so")
+               (("libboost_program_options.a")
+                "libboost_program_options.so")
+               (("-lblas") "-lopenblas"))
+             (substitute* "Makefile"
+               (("LIB_FLAGS=-lz")
+                "LIB_FLAGS=-lz -lcrypto -lssl -lcurl")
+               (("LIB_FILES=\\$\\(RMATH_LIB\\)/libRmath.a \
+\\$\\(HTSLD_LIB\\)/libhts.a \
+\\$\\(BOOST_LIB\\)/libboost_iostreams.a \
+\\$\\(BOOST_LIB\\)/libboost_program_options.a")
+                "LIB_FILES=$(RMATH_LIB)/libRmath.so \
+$(HTSLD_LIB)/libhts.so \
+$(BOOST_LIB)/libboost_iostreams.so \
+$(BOOST_LIB)/libboost_program_options.so"))))
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+               (mkdir-p bin)
+               (install-file "bin/QTLtools" bin)))))))
     (inputs
      `(("gsl" ,gsl)
        ("boost" ,boost)
+       ("curl" ,curl)
        ("rmath-standalone" ,rmath-standalone)
        ("htslib" ,htslib-1.3)
        ("openblas" ,openblas)
+       ("openssl" ,openssl)
        ("zlib" ,zlib)))))
 
 (define-public python2-pyml
