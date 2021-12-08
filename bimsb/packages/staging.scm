@@ -2665,3 +2665,35 @@ to estimate cell type proportions in bulk RNA-seq data.")
 algorithm} (DSA) for extracting cell-type specific gene expression profiles
 from mixed tissue samples.")
       (license license:gpl2))))
+
+(define-public r-dearseq
+  (package
+    (name "r-dearseq")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://bioconductor.org/packages/release/bioc/src/contrib/"
+             "dearseq_" version ".tar.gz"))
+       (sha256
+        (base32
+         "07vr27rv3z86ajd62c0ilvfgz9z35qsiwwi5pv4sygbhnnjwh3rc"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-ggplot2" ,r-ggplot2)
+       ("r-kernsmooth" ,r-kernsmooth)
+       ("r-matrixstats" ,r-matrixstats)
+       ("r-patchwork" ,r-patchwork)
+       ("r-pbapply" ,r-pbapply)
+       ("r-statmod" ,r-statmod)
+       ("r-survey" ,r-survey)
+       ("r-viridislite" ,r-kernsmooth)))
+    (home-page "https://github.com/borishejblum/dearseq")
+    (synopsis "DEA for RNA-seq data through a robust variance component test")
+    (description
+      "Differential Expression Analysis RNA-seq data with variance component
+score test accounting for data heteroscedasticity through precision weights.
+Perform both gene-wise and gene set analyses, and can deal with repeated or
+longitudinal data.")
+    (license license:gpl2)))
