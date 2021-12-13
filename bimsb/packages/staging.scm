@@ -1779,14 +1779,13 @@ detect alternative splicing events from RNA-seq data.")
          (replace 'configure
            (lambda _
              (setenv "SHELL" (which "sh"))
-             (setenv "CONFIG_SHELL" (which "sh"))
-             #t))
+             (setenv "CONFIG_SHELL" (which "sh"))))
          (add-after 'build 'build-plugins
            (lambda _
              ;; Run this in the subdirectory to avoid running the
              ;; tests right here.
              (with-directory-excursion "trinity-plugins"
-               (invoke "make" "plugins")) #t))
+               (invoke "make" "plugins"))))
          ;; The install script uses rsync, provides no overrides for
          ;; the default location at /usr/local/bin, and patching it
          ;; would change all lines that do something.
@@ -1811,14 +1810,12 @@ detect alternative splicing events from RNA-seq data.")
                                          (string-append dir "/bin")))
                                       inputs))))
                (symlink (string-append share "Trinity")
-                        (string-append bin "Trinity")))
-             #t))
+                        (string-append bin "Trinity")))))
          (add-before 'reset-gzip-timestamps 'make-gzip-archive-writable
            (lambda* (#:key outputs #:allow-other-keys)
              (map (lambda (file)
                     (make-file-writable file))
-                  (find-files (assoc-ref outputs "out") ".*\\.gz$"))
-             #t)))))
+                  (find-files (assoc-ref outputs "out") ".*\\.gz$")))))))
     (inputs
      `(("perl" ,perl)
        ("perl-uri-escape" ,(@ (gnu packages perl-web) perl-uri-escape))
