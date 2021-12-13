@@ -1587,6 +1587,20 @@ downstream analysis with sleuth.")
                (base32
                 "1zk9y8llv8s751lc37smzlk8q8f980l67j3pmnxqmmw9f4v1lm51"))))
     (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; rhd5f stopped exporting h5write.default which is not used, but
+         ;; imported anyways by sleuth breaking the build.
+         ;; While waiting for an upstream fix (see
+         ;; https://github.com/pachterlab/sleuth/issues/259 and
+         ;; https://github.com/pachterlab/sleuth/pull/260), this can be worked
+         ;; around by commenting out the superfluous import statement.
+         (add-after 'unpack 'patch-NAMESPACE
+           (lambda _
+             (substitute* "NAMESPACE"
+               (("^importFrom\\(rhdf5,h5write\\.default\\)" line)
+                (string-append "#" line))))))))
     (propagated-inputs
      `(("r-aggregation" ,r-aggregation)
        ("r-ggplot2" ,r-ggplot2)
