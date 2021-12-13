@@ -1646,9 +1646,33 @@ visualization.")
         (base32
          "0n5j8l7dys3bqfyz6vkryhc2gjlwbmymc41xjf8vqlq2m5gxf25b"))))
     (build-system python-build-system)
-    ;; The tests cannot be run even after setting PYTHONPATH.  That's
-    ;; because of relative module imports.
-    (arguments `(#:tests? #f))
+    (arguments
+     `(#:tests? #false  ; there are two errors
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'python3.9-compat
+           (lambda _
+             (substitute* "pyfasta/__init__.py"
+               (("from fasta import")
+                "from pyfasta.fasta import")
+               (("from records import")
+                "from pyfasta.records import")
+               (("from split_fasta import")
+                "from pyfasta.split_fasta import"))
+             (substitute* "pyfasta/fasta.py"
+               (("from records import")
+                "from pyfasta.records import"))
+             (substitute* "pyfasta/records.py"
+               (("cPickle") "pickle")
+               (("\\(int, long\\)")
+                "(int, int)"))
+             (substitute* "pyfasta/split_fasta.py"
+               (("from cStringIO import")
+                "from io import"))
+             (substitute* "tests/test_all.py"
+               (("for k in f.iterkeys\\(\\)") "for k in iter(f.keys())")
+               (("tests/data/" m)
+                (string-append (getcwd) "/" m))))))))
     (propagated-inputs
      `(("python-numpy" ,python-numpy)))
     (native-inputs
