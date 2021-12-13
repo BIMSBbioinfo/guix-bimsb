@@ -578,17 +578,14 @@ image generation capabilities.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-import-in-executable
+         (add-after 'unpack 'patch-imports
            (lambda _
              (substitute* "circ/CIRCexplorer.py"
                (("from genomic_interval import Interval")
                 "from circ.genomic_interval import Interval"))
-             #t))
-         (add-before 'check 'set-PYTHONPATH
-           (lambda _
-             (setenv "PYTHONPATH" (string-append (getcwd) "/test:"
-                                                 (getenv "PYTHONPATH")))
-             #t)))))
+             (substitute* (find-files "test" "\\.py")
+               (("from utils import")
+                "from .utils import")))))))
     (inputs
      `(("python-pysam" ,python-pysam)
        ("python-docopt" ,python-docopt)))
