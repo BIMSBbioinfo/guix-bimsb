@@ -406,7 +406,7 @@ across a broad spectrum of applications.")
                                                     (srfi srfi-1)
                                                     (srfi srfi-26))
                                          ,@(package-arguments samtools))
-           ((#:make-flags flags)
+           ((#:make-flags flags ''())
             `(cons "LIBCURSES=-lncurses" ,flags))
            ((#:phases phases)
             `(modify-phases ,phases
