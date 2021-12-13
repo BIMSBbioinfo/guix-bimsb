@@ -1802,7 +1802,7 @@ detect alternative splicing events from RNA-seq data.")
                (wrap-program (string-append share "Trinity")
                  `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))
                  `("PERL5LIB"    ":" = (,(getenv "PERL5LIB")))
-                 `("PYTHONPATH"  ":" = (,(getenv "PYTHONPATH")))
+                 `("PYTHONPATH"  ":" = (,(getenv "GUIX_PYTHONPATH")))
                  `("PATH"        ":" =
                    ,(cons (string-append out "share/trinity/trinity-plugins/BIN")
                           (filter-map (match-lambda
@@ -1810,12 +1810,7 @@ detect alternative splicing events from RNA-seq data.")
                                          (string-append dir "/bin")))
                                       inputs))))
                (symlink (string-append share "Trinity")
-                        (string-append bin "Trinity")))))
-         (add-before 'reset-gzip-timestamps 'make-gzip-archive-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (map (lambda (file)
-                    (make-file-writable file))
-                  (find-files (assoc-ref outputs "out") ".*\\.gz$")))))))
+                        (string-append bin "Trinity"))))))))
     (inputs
      `(("perl" ,perl)
        ("perl-uri-escape" ,(@ (gnu packages perl-web) perl-uri-escape))
