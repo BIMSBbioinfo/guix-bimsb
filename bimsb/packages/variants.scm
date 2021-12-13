@@ -795,10 +795,10 @@ other types of unwanted sequence from high-throughput sequencing reads.")
               #:phases
               (modify-phases %standard-phases
                 (replace 'check
-                  (lambda _
-                    (setenv "PYTHONPATH"
-                            (string-append (getcwd) ":" (getenv "PYTHONPATH")))
-                    (invoke "python2" "./tests/__main__.py"))))))
+                  (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                    (when tests?
+                      (add-installed-pythonpath inputs outputs)
+                      (invoke "python2" "./tests/__main__.py")))))))
            (propagated-inputs
             `(("python-dill" ,python2-dill)
               ("python-multiprocess" ,python2-multiprocess)
