@@ -690,19 +690,11 @@ LIBRARY DESTINATION \"lib/bamtools\")")))
      `(#:python ,python-2
        #:phases
        (modify-phases %standard-phases
-         ;; The tests must be run after installation.
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (setenv "PYTHONPATH"
-                     (string-append
-                      (getenv "PYTHONPATH")
-                      ":" (assoc-ref outputs "out")
-                      "/lib/python"
-                      (string-take (string-take-right
-                                    (assoc-ref inputs "python") 5) 3)
-                      "/site-packages"))
-             (invoke "nosetests" "-P" "tests"))))))
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "nosetests" "-P" "tests")))))))
     (propagated-inputs
      `(("python2-xopen" ,python2-xopen)))
     (native-inputs
