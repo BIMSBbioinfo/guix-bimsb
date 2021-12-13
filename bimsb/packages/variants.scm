@@ -808,7 +808,13 @@ other types of unwanted sequence from high-throughput sequencing reads.")
             `(("python-pytest" ,python2-pytest)))))
 
 (define-public python2-argh
-  (package-with-python2 python-argh))
+  (package
+    (inherit (package-with-python2 python-argh))
+    (propagated-inputs
+     `(("python-iocapture" ,(package-with-python2 python-iocapture))
+       ("python-mock" ,python2-mock)
+       ("python-pytest" ,python2-pytest)
+       ("python-pytest-cov" ,python2-pytest-cov)))))
 
 (define-public python2-pyfaidx
   (package-with-python2 python-pyfaidx))
