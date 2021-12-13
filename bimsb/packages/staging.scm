@@ -678,7 +678,7 @@ users give the program invalid arguments.")
         (revision "1"))
     (package
       (name "crispresso")
-      (version (string-append "0-" revision "." (string-take commit 9)))
+      (version (git-version "0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -750,8 +750,7 @@ CRISPResso automatizes and performs the following steps:
         (revision "1"))
     (package
       (name "isolator")
-      (version (string-append "0.0.2-"
-                              revision "." (string-take commit 9)))
+      (version (git-version "0.0.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -955,7 +954,7 @@ various other algorithms.")
         (revision "1"))
     (package (inherit htslib-1.1)
       (name "pacbio-htslib")
-      (version (string-append "1.1-" revision "." (string-take commit 9)))
+      (version (git-version "1.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -983,7 +982,7 @@ various other algorithms.")
         (revision "1"))
     (package
       (name "lsgkm")
-      (version (string-append "0-" revision "." (string-take commit 9)))
+      (version (git-version "0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1379,7 +1378,7 @@ classifier performance.")
         (revision "1"))
     (package
       (name "python-multicore-tsne")
-      (version (string-append "0-" revision "." (string-take commit 9)))
+      (version (git-version "0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1550,7 +1549,7 @@ evidence from next-generation sequencing and EST alignments.")
         (revision "1"))
     (package
       (name "r-wasabi")
-      (version (string-append "0.2-" revision "." (string-take commit 9)))
+      (version (git-version "0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -2619,7 +2618,7 @@ the xlxs package.  This release corresponds to POI 3.10.1.")
         (revision "2"))
     (package
       (name "r-music")
-      (version (string-append "0-" revision "." (string-take commit 9)))
+      (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
