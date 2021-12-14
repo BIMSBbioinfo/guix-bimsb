@@ -471,8 +471,7 @@ across a broad spectrum of applications.")
                   (substitute* "src/CMakeLists.txt"
                     (("add_subdirectory \\(third_party\\)") ""))
                   (substitute* "src/toolkit/bamtools_filter.cpp"
-                    (("jsoncpp/json.h") "json/json.h"))
-                  #t))))
+                    (("jsoncpp/json.h") "json/json.h"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments bamtools)
        ((#:phases phases)
@@ -482,8 +481,7 @@ across a broad spectrum of applications.")
                (substitute* "src/utils/CMakeLists.txt"
                  (("target_link_libraries.*" line)
                   (string-append line "\ninstall(TARGETS BamTools-utils \
-LIBRARY DESTINATION \"lib/bamtools\")")))
-               #t))))))
+LIBRARY DESTINATION \"lib/bamtools\")")))))))))
     (inputs
      `(("jsoncpp" ,jsoncpp)
        ,@(package-inputs bamtools)))))
