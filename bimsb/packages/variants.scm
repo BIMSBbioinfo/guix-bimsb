@@ -476,6 +476,12 @@ across a broad spectrum of applications.")
      (substitute-keyword-arguments (package-arguments bamtools)
        ((#:phases phases)
         `(modify-phases ,phases
+           ;; See https://github.com/pezmaster31/bamtools/pull/150
+           (add-after 'unpack 'fix-building-with-c++11
+             (lambda _
+               (substitute* "src/toolkit/bamtools_resolve.cpp"
+                 (("make_pair<string, ?(bool|ReadGroupResolver)>")
+                  "make_pair"))))
            (add-after 'unpack 'add-install-target-for-utils-library
              (lambda* (#:key outputs #:allow-other-keys)
                (substitute* "src/utils/CMakeLists.txt"
