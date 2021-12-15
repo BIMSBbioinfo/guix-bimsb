@@ -1780,16 +1780,17 @@ detect alternative splicing events from RNA-seq data.")
 (define-public trinityrnaseq
   (package
     (name "trinityrnaseq")
-    (version "2.8.5")
+    (version "2.13.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/trinityrnaseq/trinityrnaseq.git")
-                    (commit (string-append "Trinity-v" version))))
+                    (commit (string-append "Trinity-v" version))
+                    (recursive? #true)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ikf1ndwfnd43g5g2bvh372gfhvndld7aaaqy0x95jrf5my10320"))))
+                "1qszrxqbx4q5pavpgm4rkrh1z1v1mf7qx83vv3fnlqdmncnsf1gv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -1803,7 +1804,12 @@ detect alternative splicing events from RNA-seq data.")
          (replace 'configure
            (lambda _
              (setenv "SHELL" (which "sh"))
-             (setenv "CONFIG_SHELL" (which "sh"))))
+             (setenv "CONFIG_SHELL" (which "sh"))
+             ;; Do not require version.h, which triggers a local build
+             ;; of a vendored htslib.
+             (substitute* "trinity-plugins/bamsifter/Makefile"
+               (("sift_bam_max_cov.cpp htslib/version.h")
+                "sift_bam_max_cov.cpp"))))
          (add-after 'build 'build-plugins
            (lambda _
              ;; Run this in the subdirectory to avoid running the
@@ -1866,6 +1872,7 @@ detect alternative splicing events from RNA-seq data.")
        ("jellyfish" ,jellyfish)
        ("star" ,star)
        ("hisat" ,hisat)
+       ("htslib" ,htslib)
        ("salmon" ,salmon)
        ("fastqc" ,fastqc)
        ("blast+" ,blast+)
