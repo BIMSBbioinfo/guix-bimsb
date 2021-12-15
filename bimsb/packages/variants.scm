@@ -539,54 +539,6 @@ LIBRARY DESTINATION \"lib/bamtools\")")))))))))
        ("gsl" ,gsl)
        ("zlib" ,zlib)))))
 
-(define-public r-3.3.1
-  (package (inherit r-minimal)
-    (version "3.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://cran/src/base/R-"
-                                  (version-prefix version 1) "/R-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1qm9znh8akfy9fkzzi6f1vz2w1dd0chsr6qn7kw80lqzhgjrmi9x"))))))
-
-(define-public r-3.3.2
-  (package (inherit r-minimal)
-    (version "3.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://cran/src/base/R-"
-                                  (version-prefix version 1) "/R-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0k2i9qdd83g09fcpls2198q4ykxkii5skczb514gnx7mx4hsv56j"))))))
-
-(define-public r-3.3.3
-  (package (inherit r-minimal)
-    (version "3.3.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://cran/src/base/R-"
-                                  (version-prefix version 1) "/R-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0v7wpj89b0i3ad3fi1wak5c93hywmbxv8sdnixhq8l17782nidss"))))))
-
-(define-public r-minimal-3.4.2
-  (package (inherit r-minimal)
-    (version "3.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://cran/src/base/R-"
-                                  (version-prefix version 1) "/R-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0r0cv2kc3x5z9xycpnxx6fbvv22psw2m342jhpslbxkc8g1307lp"))))))
-
 (define-public r-devel
   (package (inherit r-minimal)
     (name "r-devel")
