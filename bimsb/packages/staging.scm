@@ -2641,6 +2641,43 @@ datasets, which increases the analytical flexibility and the statistical power
 of the analyses while minimizing technical noise.")
       (license license:expat))))
 
+;; It doesn't have a system of releases.
+(define-public r-cytobackbone
+  (let ((commit "4c1a0a35cc5ae1f8f516127cec92351d96fe26e7") (revision "1"))
+    (package
+      (name "r-cytobackbone")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tchitchek-lab/CytoBackBone")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ahiad14zcgdk42xzw5xryic2ibn2l8lkrcdvl2b5sz2js028yb3"))))
+      (properties `((upstream-name #{.}# "CytoBackBone")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-flowcore r-flowutils r-fnn r-ggplot2
+                               r-preprocesscore))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/tchitchek-lab/CytoBackBone")
+      (synopsis
+       "Merging of phenotype information from different cytometric profiles")
+      (description
+       "Single-cell technologies are the most suitable techniques for the
+characterization of cells by the differential expression of the molecules that
+define their roles and functions in tissues.  Among these techniques, mass
+cytometry represents a leap forward by increasing the number of available
+measurements to approximately 40 cell markers.  Thanks to this technology,
+detailed immune responses were described in several diseases.  However, the
+study of immune responses, such as that due to viral infections or auto-immune
+diseases, could be further improved by increasing the number of simultaneously
+measurable markers.  To increase this number, we designed an algorithm, named
+@code{CytoBackBone}, which combines phenotypic information of different
+cytometric profiles obtained from different cytometry panels.")
+      (license license:gpl2))))
+
 ;; This package contains pre-compiled Jars.
 (define-public r-xlsxjars
   (package
