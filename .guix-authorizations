@@ -1,4 +1,6 @@
 (authorizations
  (version 0)
  (("BCA6 89B6 3655 3801 C3C6  2150 197A 5888 235F ACAC"
-   (name "rekado"))))
+   (name "rekado"))
+  ("B8B0 62FA E91A D201 4C72 F177 A989 845C 7266 B8FC"
+   (name "pimi"))))
