@@ -2425,44 +2425,44 @@ charting library.  It allows an interactive visualization of networks.")
 (define-public r-diagrammer
   (package
     (name "r-diagrammer")
-    (version "1.0.6.1")
+    (version "1.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DiagrammeR" version))
        (sha256
         (base32
-         "0gb7ccdrh7jlyqafdk8zs465ygczxxd25s05whn914in1994qkmy"))))
+         "1gqaqk7jdh37zzadv0aymr9yb8lpqgj3l8n1n3cds38i4zz2d934"))))
     (properties `((upstream-name . "DiagrammeR")))
     (build-system r-build-system)
     (propagated-inputs
-     `(("r-downloader" ,r-downloader)
-       ("r-dplyr" ,r-dplyr)
-       ("r-glue" ,r-glue)
-       ("r-htmltools" ,r-htmltools)
-       ("r-htmlwidgets" ,r-htmlwidgets)
-       ("r-igraph" ,r-igraph)
-       ("r-influencer" ,r-influencer)
-       ("r-magrittr" ,r-magrittr)
-       ("r-purrr" ,r-purrr)
-       ("r-rcolorbrewer" ,r-rcolorbrewer)
-       ("r-readr" ,r-readr)
-       ("r-rlang" ,r-rlang)
-       ("r-rstudioapi" ,r-rstudioapi)
-       ("r-scales" ,r-scales)
-       ("r-stringr" ,r-stringr)
-       ("r-tibble" ,r-tibble)
-       ("r-tidyr" ,r-tidyr)
-       ("r-viridis" ,r-viridis)
-       ("r-visnetwork" ,r-visnetwork)))
-    (native-inputs `(("r-knitr" ,r-knitr)))
+      (list r-downloader
+            r-dplyr
+            r-glue
+            r-htmltools
+            r-htmlwidgets
+            r-igraph
+            r-influencer
+            r-magrittr
+            r-purrr
+            r-rcolorbrewer
+            r-readr
+            r-rlang
+            r-rstudioapi
+            r-scales
+            r-stringr
+            r-tibble
+            r-tidyr
+            r-viridis
+            r-visnetwork))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/rich-iannone/DiagrammeR")
     (synopsis "Graph/network visualization")
     (description
-     "With the DiagrammeR package you can create, modify, analyze, and
-visualize network graph diagrams.  The output can be incorporated into
-R Markdown documents, integrated with Shiny web apps, converted to
-other graph formats, or exported as image files.")
+     "With the @code{DiagrammeR} package you can create, modify, analyze, and
+visualize network graph diagrams.  The output can be incorporated into @code{R Markdown}
+documents, integrated with Shiny web apps, converted to other graph
+formats, or exported as image files.")
     (license license:expat)))
 
 (define-public r-shinydashboardplus
