@@ -27,6 +27,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system r)
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
   #:use-module (past packages boost)
@@ -458,6 +459,56 @@ LIBRARY DESTINATION \"lib/bamtools\")")))))))))
      `(("htslib" ,htslib-latest)
        ("gsl" ,gsl)
        ("zlib" ,zlib)))))
+
+;; This version is not a master release and it is a separate branch.
+;; It need to be removed from here when an official release will be  announced.
+(define-public r-archr
+  (let ((commit "3075f1f034d8c5a9d7dcdfd6b6990814733fbf87")
+        (revision "2"))
+    (package
+      (name "r-archr")
+      (version (git-version "1.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/GreenleafLab/ArchR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zkjr60hi0p6abszp4g2zn80b1xp52a20vkdd8dcchbpyjm515ar"))))
+      (properties `((upstream-name . "ArchR")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocgenerics
+             r-biostrings
+             r-chromvar
+             r-complexheatmap
+             r-data-table
+             r-genomicranges
+             r-ggplot2
+             r-ggrepel
+             r-gridextra
+             r-gtable
+             r-gtools
+             r-magrittr
+             r-matrix
+             r-matrixstats
+             r-motifmatchr
+             r-nabor
+             r-plyr
+             r-rcpp
+             r-rhdf5
+             r-rsamtools
+             r-s4vectors
+             r-stringr
+             r-summarizedexperiment
+             r-uwot))
+      (home-page "https://github.com/GreenleafLab/ArchR")
+      (synopsis "Analyze single-cell regulatory chromatin in R")
+      (description
+       "This package is designed to streamline scATAC analyses in R.")
+      (license license:gpl2+))))
 
 (define-public r-devel
   (package (inherit r-minimal)
