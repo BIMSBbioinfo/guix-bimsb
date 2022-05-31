@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2019 Marcel Schilling <marcel.schilling@mdc-berlin.de>
 ;;; Copyright © 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;;
@@ -113,9 +113,6 @@ OTHER-PERL instead of \"perl-\", when applicable."
               (setenv "CFLAGS" "-D_CURSES_LIB=1")
               #t))
           (delete 'check))))))
-
-(define-public python2-pysam-0.9
-  (package-with-python2 python-pysam-0.9))
 
 (define-public htslib-1.0
   (package (inherit htslib)
@@ -637,75 +634,6 @@ LIBRARY DESTINATION \"lib/bamtools\")")))))))))
 
 (define-public dune-grid-agfalke
   (deprecated-package "dune-grid-agfalke" dune-grid-agfalcke))
-
-(define-public python2-dill
-  (package-with-python2 python-dill))
-
-(define-public python2-multiprocess
-  (package (inherit python-multiprocess)
-    (name "python2-multiprocess")
-    (build-system python-build-system)
-    ;; FIXME: it's not clear how to run the tests.
-    (arguments
-     `(#:python ,python-2
-       #:tests? #f))
-    (propagated-inputs
-     `(("python-dill" ,python2-dill)))))
-
-(define-public python2-pox
-  (package-with-python2 python-pox))
-
-(define-public python2-ppft
-  (package-with-python2 python-ppft))
-
-(define-public python2-pathos
-  (package (inherit python-pathos)
-           (name "python2-pathos")
-           (build-system python-build-system)
-           (arguments
-            `(#:python ,python-2
-              #:phases
-              (modify-phases %standard-phases
-                (replace 'check
-                  (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                    (when tests?
-                      (add-installed-pythonpath inputs outputs)
-                      (invoke "python2" "./tests/__main__.py")))))))
-           (propagated-inputs
-            `(("python-dill" ,python2-dill)
-              ("python-multiprocess" ,python2-multiprocess)
-              ("python-pox" ,python2-pox)
-              ("python-ppft" ,python2-ppft)))
-           (native-inputs
-            `(("python-pytest" ,python2-pytest)))))
-
-(define-public python2-argh
-  (package
-    (inherit (package-with-python2 python-argh))
-    (propagated-inputs
-     `(("python-iocapture" ,(package-with-python2 python-iocapture))
-       ("python-mock" ,python2-mock)
-       ("python-pytest" ,python2-pytest)
-       ("python-pytest-cov" ,python2-pytest-cov)))))
-
-(define-public python2-pyfaidx
-  (package-with-python2 python-pyfaidx))
-
-(define-public python2-gffutils
-  (let ((gffutils
-         (package-with-python2
-          (strip-python2-variant python-gffutils))))
-    (package
-      (inherit gffutils)
-      (propagated-inputs
-       `(("python2-argcomplete" ,python2-argcomplete)
-         ("python2-argh" ,python2-argh)
-         ("python2-functools32" ,python2-functools32)
-         ("python2-biopython" ,python2-biopython)
-         ("python2-pybedtools" ,python2-pybedtools)
-         ("python2-pyfaidx" ,python2-pyfaidx)
-         ("python2-simplejson" ,python2-simplejson)
-         ("python2-six" ,python2-six))))))
 
 (define-public jamm-prerelease
   (package (inherit jamm)

@@ -113,63 +113,6 @@
 (define-public rstudio
   (@ (guix-science packages rstudio) rstudio))
 
-;; This version of WebLogo is required by MEDICC.
-(define-public weblogo-3.3
-  (package
-    (name "weblogo")
-    (version "3.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/WebLogo/weblogo.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "14hpkpzrm5prgd392c047r15p674912d9mg79scvzs2rkf8ayp6n"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:tests? #f ; there is no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'replace-svn-variables
-           (lambda _
-             (substitute* "corebio/_version.py"
-               (("date =.*") "date = \"Guix\"\n")
-               (("revision =.*") ""))
-             (substitute* "weblogolib/__init__.py"
-               (("release_build = .*") "")
-               (("release_date =.*") "release_date = \"Guix\"\n"))
-             #t)))))
-    (propagated-inputs
-     `(("python2-numpy" ,python2-numpy)))
-    (inputs
-     `(;; TODO: ("pdf2svg" ,pdf2svg)
-       ("ghostscript" ,ghostscript)))
-    (home-page "http://weblogo.threeplusone.com/")
-    (synopsis "Generate nucleotide sequence logos")
-    (description
-     "WebLogo is an application designed to make the generation of
-nucleotide sequence logos easy.  It can create output in several
-common graphics formats, including the bitmap formats GIF and PNG,
-suitable for on-screen display, and the vector formats EPS and PDF,
-more suitable for printing, publication, and further editing.
-Additional graphics options include bitmap resolution, titles,
-optional axis, and axis labels, antialiasing, error bars, and
-alternative symbol formats.
-
-A sequence logo is a graphical representation of an amino acid or
-nucleic acid multiple sequence alignment.  Each logo consists of
-stacks of symbols, one stack for each position in the sequence.  The
-overall height of the stack indicates the sequence conservation at
-that position, while the height of symbols within the stack indicates
-the relative frequency of each amino or nucleic acid at that position.
-The width of the stack is proportional to the fraction of valid
-symbols in that position.")
-    (license license:bsd-3)))
-
 (define-public metal
   (package
     (name "metal")
@@ -287,52 +230,6 @@ into account in order to predict evolutionarily conserved
 secondary-structure elements, which may span both coding and
 non-coding regions.")
     (license license:gpl3+)))
-
-(define-public nucleoatac
-  (package
-    (name "nucleoatac")
-    (version "0.3.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/GreenleafLab/NucleoATAC.git")
-             (commit (string-append "v" version))))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "00mmyyiyagviksqs9rk12saa3949wxy25bllwhvia0sqj56v6shn"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           ;; The tests need a valid HOME directory
-           (lambda _ (setenv "HOME" (getcwd)) #t))
-         ;; The default check phase just tells us to run "python
-         ;; tests.py", so that's what we're doing.
-         (replace 'check
-           (lambda _ (invoke "python" "tests.py"))))))
-    (inputs
-     `(("python-pandas" ,python2-pandas)
-       ("python-numpy" ,python2-numpy)
-       ("python-scipy" ,python2-scipy)
-       ("python-matplotlib" ,python2-matplotlib)
-       ("python-pysam" ,python2-pysam)))
-    (native-inputs
-     `(("python-setuptools" ,python2-setuptools)
-       ("python-nose" ,python2-nose)
-       ("python-pytz" ,python2-pytz)
-       ("python-mock" ,python2-mock)
-       ("python-cython" ,python2-cython)))
-    (home-page "https://github.com/GreenleafLab/NucleoATAC")
-    (synopsis "Nucleosome calling using ATAC-seq data")
-    (description "This package provides tools for calling nucleosomes
-using ATAC-Seq data.  It also includes general scripts for working
-with paired-end ATAC-Seq data (or potentially other paired-end
-data).")
-    (license license:expat)))
 
 (define-public lammps
   (let ((commit "stable_3Mar2020"))
@@ -638,110 +535,6 @@ assemblies.  They can also improve transcriptome assembly when FLASH
 is used to merge RNA-seq data.")
     (license license:gpl3+)))
 
-(define-public python-argparse
-  (package
-    (name "python-argparse")
-    (version "1.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "argparse" version))
-       (sha256
-        (base32
-         "1r6nznp64j68ih1k537wms7h57nvppq0szmwsaf99n71bfjqkc32"))))
-    (properties `((python2-variant . ,(delay python2-argparse))))
-    (build-system python-build-system)
-    (home-page "https://pypi.python.org/pypi/argparse/")
-    (synopsis "Command-line parsing library")
-    (description "The @code{argparse} module makes it easy to write
-user friendly command line interfaces.  The program defines what
-arguments it requires, and @code{argparse} will figure out how to
-parse those out of @code{sys.argv}.  The @code{argparse} module also
-automatically generates help and usage messages and issues errors when
-users give the program invalid arguments.")
-    (license (package-license python))))
-
-;; This is really needed for crispresso.  If the argparse module isn't
-;; available at runtime the tool will fail, even though it builds fine
-;; without it.
-(define-public python2-argparse
-  (package (inherit (package-with-python2
-                     (strip-python2-variant python-argparse)))
-    (native-inputs
-     `(("python2-setuptools" ,python2-setuptools)))))
-
-(define-public crispresso
-  (let ((commit "9c53ef0af863833013b88592d0c7118c5d5d5c33")
-        (revision "1"))
-    (package
-      (name "crispresso")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/lucapinello/CRISPResso.git")
-               (commit commit)))
-         (sha256
-          (base32
-           "0lbsrwkmnwcix3yvy234js4gkfv236g0kdsnm02q3v0n865hf1j7"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:python ,python-2
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'do-not-install-dependencies
-             (lambda _
-               (substitute* "setup.py"
-                 (("=='install'") "=='skip_this'"))
-               #t))
-           (add-after 'unpack 'use-full-paths-to-tools
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "CRISPResso/CRISPRessoCORE.py"
-                 (("'flash %s")
-                  (string-append "'" (which "flash") " %s"))
-                 ((" needle -")
-                  (string-append " " (which "needle") " -"))
-                 (("'java -")
-                  (string-append "'" (which "java") " -"))
-                 (("^check_program\\(" line)
-                  (string-append "#" line)))
-               #t)))))
-      ;; FIXME: this package includes the trimmomatic binary (jar)
-      (inputs
-       `(("emboss" ,emboss)
-         ("flash" ,flash)
-         ("jre" ,icedtea)
-         ("python2-numpy" ,python2-numpy)
-         ("python2-pandas" ,python2-pandas)
-         ("python2-matplotlib" ,python2-matplotlib)
-         ("python2-biopython" ,python2-biopython)
-         ("python2-argparse" ,python2-argparse)))
-      (native-inputs
-       `(("python2-setuptools" ,python2-setuptools)
-         ("python2-mock" ,python2-mock)
-         ("python2-pytz" ,python2-pytz)))
-      (home-page "https://github.com/lucapinello/CRISPResso")
-      (synopsis "Analysis tool for CRISPR-Cas9 genome editing outcomes")
-      (description "CRISPResso is a software pipeline for the analysis
-of targeted CRISPR-Cas9 sequencing data.  This algorithm allows for
-the quantification of both @dfn{non-homologous end joining} (NHEJ) and
-@dfn{homologous directed repair} (HDR) occurrences.
-
-CRISPResso automatizes and performs the following steps:
-
-@itemize
-@item filters low quality reads,
-@item trims adapters,
-@item aligns the reads to a reference amplicon,
-@item quantifies the proportion of HDR and NHEJ outcomes,
-@item quantifies frameshift/inframe mutations (if applicable) and
- identifies affected splice sites,
-@item produces a graphical report to visualize and quantify the indels
- distribution and position.
-@end itemize\n")
-      (license license:agpl3+))))
-
 (define-public isolator
   (let ((commit "24bafc0a102dce213bfc2b5b9744136ceadaba03")
         (revision "1"))
@@ -778,45 +571,6 @@ MCMC approaches, it is exceedingly efficient, though generally slower
 that modern maximum likelihood approaches.")
       (license license:expat))))
 
-(define-public iclipro
-  (package
-    (name "iclipro")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://www.biolab.si/iCLIPro/dist/"
-                           "iCLIPro-" version ".tar.gz"))
-       (sha256
-        (base32
-         "05sql0150rq1w0d6pn5jcq0ag0rrlsg1wfgc9b5la6zvsp43xwxz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (propagated-inputs
-     `(("python-matplotlib" ,python2-matplotlib)
-       ("python-pysam" ,python2-pysam)))
-    (native-inputs
-     `(("python-setuptools" ,python2-setuptools)))
-    (home-page "http://www.biolab.si/iCLIPro")
-    (synopsis "Control for systematic misassignments in iCLIP data")
-    (description "A typical (i)CLIP experiment may result in the
-detection of RNA fragments of different lengths.  Under the
-assumptions of conventional iCLIP, the start sites of iCLIP fragments
-should coincide at the cross-linking position in a fragment
-length-independent fashion.  This interpretation may not hold for some
-iCLIP libraries (e.g., substantial read-through, binding to long RNA
-stretches etc).  In summary, we identified a previously unrecognized
-effect of iCLIP fragment length on the position of fragment start
-sites and thus assigned binding sites for some RBPs.
-
-iCLIPro is a robust analysis approach that examines this effect and
-thus can improve the assignment of binding sites from iCLIP
-data. iCLIPro’s main function is to visualize coinciding and
-non-coinciding fragment start sites in order to examine the best way
-how to analyze iCLIP data.")
-    (license license:gpl3+)))
-
 (define-public python-fastcluster
   (package
     (inherit r-fastcluster)
@@ -830,9 +584,6 @@ how to analyze iCLIP data.")
            (lambda _ (chdir "src/python") #t)))))
     (propagated-inputs
      `(("python-numpy" ,python-numpy)))))
-
-(define-public python2-fastcluster
-  (package-with-python2 python-fastcluster))
 
 (define-public bbmap
   (package
@@ -1345,31 +1096,6 @@ $(BOOST_LIB)/libboost_program_options.so"))))
        ("openssl" ,openssl)
        ("zlib" ,zlib)))))
 
-(define-public python2-pyml
-  (package
-    (name "python2-pyml")
-    (version "0.7.14")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/pyml/PyML-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1p8y0b597x1jb6q9b4k8q6r8wv8wbja9lav3bwi4mwdaa3pcjql4"))))
-    (build-system python-build-system)
-    (arguments `(#:python ,python-2))   ; python2 only
-    (inputs
-     `(("python2-numpy" ,python2-numpy)))
-    (home-page "http://pyml.sourceforge.net")
-    (synopsis "Interactive object oriented framework for machine learning")
-    (description "PyML is an interactive object oriented framework for
-machine learning written in Python.  PyML is focused on kernel-methods
-for classification and regression, including Support Vector
-Machines (SVM).  It provides tools for feature selection, model
-selection, syntax for combining classifiers and methods for assessing
-classifier performance.")
-    (license license:gpl2+)))
-
 (define-public python-multicore-tsne
   (let ((commit "e1a40182068d4815e7fbe523db266caab20773ff")
         (revision "1"))
@@ -1516,31 +1242,6 @@ much faster and also easier to use.")
 next-generation genomic sequencing reads stored in SAM/BAM format.")
     (license license:gpl3+)))
 
-(define-public splicegrapher
-  (package
-    (name "splicegrapher")
-    (version "0.2.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/splicegrapher/"
-                                  "SpliceGrapher-" version ".tgz"))
-              (sha256
-               (base32
-                "1ds2fcy6jy2fbvsj4363d5ivrn30fw7g6ksm0jnhwvh99yifxplg"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2))
-    (propagated-inputs
-     `(("python2-pyml" ,python2-pyml)
-       ("python2-matplotlib" ,python2-matplotlib)))
-    (home-page "http://splicegrapher.sourceforge.net/")
-    (synopsis "Predict alternative splicing patterns")
-    (description "SpliceGrapher predicts alternative splicing patterns
-and produces splice graphs that capture in a single structure the ways
-a gene's exons may be assembled.  It enhances gene models using
-evidence from next-generation sequencing and EST alignments.")
-    (license license:lgpl2.1+)))
-
 (define-public r-wasabi
   (let ((commit "f31c73eed6bcb9d0be43b607c14211dd899e5a6c")
         (revision "1"))
@@ -1622,32 +1323,6 @@ allows testing in the context of experiments with complex designs, and
 supports interactive exploratory data analysis via sleuth live.")
     (license license:gpl3)))
 
-(define-public python2-nanoraw
-  (package
-    (name "python2-nanoraw")
-    (version "0.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "nanoraw" version))
-       (sha256
-        (base32
-         "1y974jjzb8w9q2y2vc0lijncp0qpzqqkrfwrsa18nglgq4n6dzj4"))))
-    (build-system python-build-system)
-    (arguments `(#:python ,python-2))
-    (propagated-inputs
-     `(("python2-numpy" ,python2-numpy)
-       ("python2-scipy" ,python2-scipy)
-       ("python2-h5py" ,python2-h5py)))
-    (native-inputs
-     `(("python2-nose2" ,python2-nose2)))
-    (home-page "https://github.com/marcus1487/nanoraw")
-    (synopsis "Analysis of nanopore sequencing data")
-    (description "This package provides tools for the analysis of raw
-nanopore sequencing data, including correction of basecalls and
-visualization.")
-    (license license:bsd-3)))
-
 (define-public python-pyfasta
   (package
     (name "python-pyfasta")
@@ -1704,9 +1379,6 @@ memory.  It saves a pickle (@code{.gdx}) of the start and stop (for
 for internal use.")
     (license license:expat)))
 
-(define-public python2-pyfasta
-  (package-with-python2 python-pyfasta))
-
 (define-public python-ont-tombo
   (package
     (name "python-ont-tombo")
@@ -1737,9 +1409,6 @@ identification of modified nucleotides from nanopore sequencing
 data. Tombo also provides tools for the analysis and visualization of
 raw nanopore signal.")
     (license license:mpl2.0)))
-
-(define-public python2-ont-tombo
-  (package-with-python2 python-ont-tombo))
 
 (define-public r-tgutil
   (package
