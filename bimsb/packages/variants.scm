@@ -587,41 +587,6 @@ LIBRARY DESTINATION \"lib/bamtools\")")))))))))
              #t))
          (delete 'configure))))))
 
-(define-public python2-cutadapt
-  (package
-    (name "python2-cutadapt")
-    (version "1.12")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/marcelm/cutadapt/archive/v"
-                    version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "19smhh6444ikn4jlmyhvffw4m5aw7yg07rqsk7arg8dkwyga1i4v"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "nosetests" "-P" "tests")))))))
-    (propagated-inputs
-     `(("python2-xopen" ,python2-xopen)))
-    (native-inputs
-     `(("python2-cython" ,python2-cython)
-       ("python2-nose" ,python2-nose)))
-    (home-page "https://cutadapt.readthedocs.io/en/stable/")
-    (synopsis "Remove adapter sequences from nucleotide sequencing reads")
-    (description
-     "Cutadapt finds and removes adapter sequences, primers, poly-A tails and
-other types of unwanted sequence from high-throughput sequencing reads.")
-    (license license:expat)))
-
 (define-public cmake-3.7.2
   (package (inherit cmake)
     (version "3.7.2")
