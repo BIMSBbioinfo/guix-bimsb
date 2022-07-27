@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
 ;;; Copyright © 2018, 2019, 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
-;;; Copyright © 2019, 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2019, 2020, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;;
 ;;; This file is NOT part of GNU Guix, but is supposed to be used with GNU
 ;;; Guix and thus has the same license.
@@ -1223,6 +1223,41 @@ easier to use.")
     (description "SAMStat displays various properties of
 next-generation genomic sequencing reads stored in SAM/BAM format.")
     (license license:gpl3+)))
+
+(define-public r-millefy
+  (package
+    (name "r-millefy")
+    (version "0.1.9-beta")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuifu/millefy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0z2y0x99f761pxvg6n37cmnyrnj699jhjk43pvk05sa86iykgizl"))))
+    (properties `((upstream-name . "millefy")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-data-table
+           r-destiny
+           r-dplyr
+           r-genomicranges
+           r-iranges
+           r-magrittr
+           r-rsamtools
+           r-rtracklayer
+           r-tidyr))
+    (home-page "https://github.com/yuifu/millefy")
+    (synopsis "Make millefy plot with single-cell RNA-seq data")
+    (description "@code{Millefy} is a tool for visualizing read coverage of
+@dfn{scRNA-seq}(single-cell RNA sequencing) datasets in genomic contexts.  By
+dynamically and automatically reorder single cells based on locus-specific
+pseudo time, @code{Millefy} highlights cell-to-cell heterogeneity in read coverage
+of scRNA-seq data.")
+    (license license:expat)))
 
 (define-public r-wasabi
   (let ((commit "f31c73eed6bcb9d0be43b607c14211dd899e5a6c")
