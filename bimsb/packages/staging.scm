@@ -485,10 +485,9 @@ image generation capabilities.")
                (("from utils import")
                 "from .utils import")))))))
     (inputs
-     `(("python-pysam" ,python-pysam)
-       ("python-docopt" ,python-docopt)))
+     (list python-pysam python-docopt))
     (native-inputs
-     `(("python-setuptools" ,python-setuptools)))
+     (list python-setuptools))
     (home-page "https://github.com/YangLab/CIRCexplorer")
     (synopsis "Tool to identify circular RNAs")
     (description "CIRCexplorer implements a combined strategy to
