@@ -780,10 +780,9 @@ higher accuracy than the original gkm-SVM.")
          "0jgxny74ppy7va96szvh04nrzkvy866hygki3imivg9kb9pzjdm2"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-pandas" ,python-pandas)))
+     (list python-numpy python-pandas))
     (native-inputs
-     `(("python-setuptools" ,python-setuptools)))
+     (list python-setuptools))
     (home-page "https://github.com/eyurtsev/fcsparser")
     (synopsis "Tools for reading raw fcs files")
     (description
