@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
 ;;; Copyright © 2018, 2019, 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2019, 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -80,6 +80,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
