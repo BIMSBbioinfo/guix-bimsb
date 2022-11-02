@@ -880,14 +880,14 @@ dimensionality reduction and gene expression visualization.")
                                (invoke "bash" script))))
                           tests)))))))
     (inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-scipy" ,python-scipy)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-statsmodels" ,python-statsmodels)
-       ("python-pyqt" ,python-pyqt)
-       ("r-minimal" ,r-minimal)
-       ("r-xtable" ,r-xtable)
-       ("r-gplots" ,r-gplots)))
+     (list python-numpy
+           python-scipy
+           python-matplotlib
+           python-statsmodels
+           python-pyqt
+           r-minimal
+           r-xtable
+           r-gplots))
     (home-page "http://mageck.sourceforge.net")
     (synopsis "Model-based analysis of genome-wide CRISPR-Cas9 Knockout")
     (description
