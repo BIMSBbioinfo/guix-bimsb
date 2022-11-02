@@ -23,6 +23,7 @@
 (define-module (bimsb packages staging)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -842,46 +843,42 @@ dimensionality reduction and gene expression visualization.")
 			  (snippet
 			   '(begin
 				  (delete-file "bin/RRA")
-				  (delete-file "bin/mageckGSEA")
-				  #t))))
+				  (delete-file "bin/mageckGSEA")))))
     (build-system python-build-system)
     (arguments
-     `(#:use-setuptools? #f
-       #:modules ((guix build python-build-system)
+     (list
+      #:use-setuptools? #f
+      #:modules '((guix build python-build-system)
                   (guix build utils)
                   (srfi srfi-1)
                   (ice-9 match))
-       #:phases
-       (modify-phases %standard-phases
-		 (add-after 'unpack 'use-python3
-		   (lambda _
-			 (substitute* "bin/mageck"
-			   (("python2") "python"))
-			 #t))
-		 (add-before 'build 'build-rra-and-gsea
-		   (lambda _
-			 (with-directory-excursion "rra"
-			   (invoke "make"))
-			 (with-directory-excursion "gsea"
-			   (invoke "make"))
-			 #t))
-         (delete 'check)
-         (add-after 'wrap 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (tests '(("demo1" "run.sh")
-                            ("demo2" "runmageck.sh")
-                            ("demo3" "run.sh")
-                            ("demo4" "run.sh"))))
-               (setenv "PATH"
-                       (string-append out "/bin:"
-                                      (getenv "PATH")))
-               (for-each (match-lambda
-                           ((dir script)
-                            (with-directory-excursion (string-append "demo/" dir)
-                              (invoke "bash" script))))
-                         tests)
-               #t))))))
+      #:phases
+      #~(modify-phases %standard-phases
+		  (add-after 'unpack 'use-python3
+		    (lambda _
+			  (substitute* "bin/mageck"
+			    (("python2") "python"))))
+		  (add-before 'build 'build-rra-and-gsea
+		    (lambda _
+			  (with-directory-excursion "rra"
+			    (invoke "make"))
+			  (with-directory-excursion "gsea"
+			    (invoke "make"))))
+          (delete 'check)
+          (add-after 'wrap 'check
+            (lambda _
+              (let ((tests '(("demo1" "run.sh")
+                             ("demo2" "runmageck.sh")
+                             ("demo3" "run.sh")
+                             ("demo4" "run.sh"))))
+                (setenv "PATH"
+                        (string-append #$output "/bin:"
+                                       (getenv "PATH")))
+                (for-each (match-lambda
+                            ((dir script)
+                             (with-directory-excursion (string-append "demo/" dir)
+                               (invoke "bash" script))))
+                          tests)))))))
     (inputs
      `(("python-numpy" ,python-numpy)
        ("python-scipy" ,python-scipy)
