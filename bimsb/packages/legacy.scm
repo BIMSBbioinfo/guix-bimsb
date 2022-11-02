@@ -48,20 +48,18 @@
                   "15s3755f17lnayx1vrpr9pd5wra9kc083f1d8s2qivww5gdxim6q"))))
       (build-system python-build-system)
       (arguments '(#:tests? #f)) ; tests expect additional test data
-      (inputs
-       `(("hdf5" ,hdf5)))      ; FIXME: probably should be propagated by h5py
+      (inputs (list hdf5)) ; FIXME: probably should be propagated by h5py
       (propagated-inputs
-       `(("python-biopython" ,python-biopython)
-         ("python-joblib" ,python-joblib)
-         ("python-bx-python" ,python-bx-python)
-         ("python-numpy" ,python-numpy)
-         ("python-scipy" ,python-scipy)
-         ("python-pysam" ,python-pysam)
-         ("python-matplotlib" ,python-matplotlib)
-         ("python-h5py" ,python-h5py)))
+       (list python-biopython
+             python-joblib
+             python-bx-python
+             python-numpy
+             python-scipy
+             python-pysam
+             python-matplotlib
+             python-h5py))
       (native-inputs
-       `(("python-cython" ,python-cython)
-         ("python-setuptools" ,python-setuptools)))
+       (list python-cython python-setuptools))
       (home-page "https://github.com/mirnylab/mirnylib-legacy")
       (synopsis "Libraries shared between different mirnylab projects")
       (description
