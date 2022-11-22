@@ -389,14 +389,14 @@ OTHER-PERL instead of \"perl-\", when applicable."
                  (("make_pair<string, ?(bool|ReadGroupResolver)>")
                   "make_pair"))))
            (add-after 'unpack 'add-install-target-for-utils-library
-             (lambda* (#:key outputs #:allow-other-keys)
+             (lambda _
                (substitute* "src/utils/CMakeLists.txt"
                  (("target_link_libraries.*" line)
                   (string-append line "\ninstall(TARGETS BamTools-utils \
 LIBRARY DESTINATION \"lib/bamtools\")")))))))))
     (inputs
-     `(("jsoncpp" ,jsoncpp)
-       ,@(package-inputs bamtools)))))
+     (modify-inputs (package-inputs bamtools)
+       (prepend jsoncpp)))))
 
 (define-public htslib-latest
   (package (inherit htslib)
