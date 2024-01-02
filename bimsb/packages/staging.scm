@@ -1653,57 +1653,6 @@ quality score, alingment and filtration;
 @item create the cell-by-bin matrix. @end itemize")
     (license license:asl2.0)))
 
-;; This depends on r-shinywidgets
-(define-public r-isee
-  (package
-    (name "r-isee")
-    (version "2.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "iSEE" version))
-       (sha256
-        (base32
-         "04q13y3xbm0lz83apwfz2c54r91lfx69p722yw07p4hc9a1l6crh"))))
-    (properties `((upstream-name . "iSEE")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-biocgenerics" ,r-biocgenerics)
-       ("r-circlize" ,r-circlize)
-       ("r-colourpicker" ,r-colourpicker)
-       ("r-complexheatmap" ,r-complexheatmap)
-       ("r-dt" ,r-dt)
-       ("r-ggplot2" ,r-ggplot2)
-       ("r-ggrepel" ,r-ggrepel)
-       ("r-igraph" ,r-igraph)
-       ("r-mgcv" ,r-mgcv)
-       ("r-rintrojs" ,r-rintrojs)
-       ("r-s4vectors" ,r-s4vectors)
-       ("r-shiny" ,r-shiny)
-       ("r-shinyace" ,r-shinyace)
-       ("r-shinydashboard" ,r-shinydashboard)
-       ("r-shinyjs" ,r-shinyjs)
-       ("r-shinywidgets" ,r-shinywidgets)
-       ("r-singlecellexperiment" ,r-singlecellexperiment)
-       ("r-summarizedexperiment" ,r-summarizedexperiment)
-       ("r-vipor" ,r-vipor)
-       ("r-viridislite" ,r-viridislite)))
-    (native-inputs
-     `(("r-knitr" ,r-knitr)))
-    (home-page "https://github.com/iSEE/iSEE")
-    (synopsis "Interactive SummarizedExperiment explorer")
-    (description
-     "This package lets you create an interactive Shiny-based
-graphical user interface for exploring data stored in
-SummarizedExperiment objects, including row- and column-level
-metadata.  The interface supports transmission of selections between
-plots and tables, code tracking, interactive tours, interactive or
-programmatic initialization, preservation of app state, and
-extensibility to new panel types via S4 classes.  Special attention is
-given to single-cell data in a SingleCellExperiment object with
-visualization of dimensionality reduction results.")
-    (license license:expat)))
-
 (define-public r-shinydashboardplus
   (package
     (name "r-shinydashboardplus")
