@@ -964,33 +964,6 @@ footprints in ATAC-seq or DNase-seq data.")
     ;; TODO: there is no license!
     (license license:gpl3+)))
 
-(define-public cpat
-  (package
-    (name "cpat")
-    (version "3.0.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "CPAT" version))
-              (sha256
-               (base32
-                "0dfrwwbhv1n4nh2a903d1qfb30fgxgya89sa70aci3wzf8h2z0vd"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy python-pysam))
-    (native-inputs
-     (list python-nose))
-    (home-page "https://wlcb.oit.uci.edu/cpat")
-    (synopsis "Alignment-free distinction between coding and noncoding RNA")
-    (description
-     "CPAT is a method to distinguish coding and noncoding RNA by using a
-logistic regression model based on four pure sequence-based,
-linguistic features: ORF size, ORF coverage, Ficket TESTCODE, and
-Hexamer usage bias.  Linguistic features based method does not require
-other genomes or protein databases to perform alignment and is more
-robust.  Because it is alignment-free, it runs much faster and also
-easier to use.")
-    (license license:gpl2+)))
-
 (define-public samstat
   (package
     (name "samstat")
