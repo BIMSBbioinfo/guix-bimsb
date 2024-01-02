@@ -1653,37 +1653,6 @@ quality score, alingment and filtration;
 @item create the cell-by-bin matrix. @end itemize")
     (license license:asl2.0)))
 
-(define-public r-shinydashboardplus
-  (package
-    (name "r-shinydashboardplus")
-    (version "0.7.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "shinydashboardPlus" version))
-       (sha256
-        (base32
-         "0g0cw07z7dlpc7q2abis0cdgwk6vlya0im5lxai82v21r60i5biy"))))
-    (properties
-     `((upstream-name . "shinydashboardPlus")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-htmltools" ,r-htmltools)
-       ("r-shiny" ,r-shiny)
-       ("r-shinydashboard" ,r-shinydashboard)))
-    (native-inputs
-     `(("r-knitr" ,r-knitr)))
-    (home-page "https://github.com/RinteRface/shinydashboardPlus")
-    (synopsis "AdminLTE2 components for shinydashboard")
-    (description
-     "This package extends shinydashboard with AdminLTE2 components.
-AdminLTE2 is a Bootstrap 3 dashboard template.  You can customize
-boxes, add timelines and a lot more.")
-    ;; The shinydashboardPlus package as a whole is distributed under
-    ;; Version 2 of the GPL or any later version.  It includes code
-    ;; under other compatible licenses, such as the Expat license.
-    (license license:gpl2+)))
-
 ;; This package contains minified JavaScript
 (define-public r-excelr
   (package
