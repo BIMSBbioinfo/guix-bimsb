@@ -1161,34 +1161,6 @@ data. Tombo also provides tools for the analysis and visualization of
 raw nanopore signal.")
     (license license:mpl2.0)))
 
-(define-public r-tgutil
-  (package
-    (name "r-tgutil")
-    (version "0.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://tanaylab.bitbucket.io/repo/src/"
-                           "contrib/tgutil_" version ".tar.gz"))
-       (sha256
-        (base32
-         "1qgrywkdr4a2dzmki9vyaj0nbcqm0x80d5m7g385wh92xrpvvipy"))))
-    (build-system r-build-system)
-    (inputs
-     `(("hdf5" ,hdf5)))
-    (propagated-inputs
-     `(("r-rcpp" ,r-rcpp)
-       ("r-tibble" ,r-tibble)
-       ("r-matrixstats" ,r-matrixstats)
-       ("r-data-table" ,r-data-table)
-       ("r-broom" ,r-broom)))
-    (home-page "https://bitbucket.org/tanaylab/tgutil/")
-    (synopsis "Utility functions for packages maintained by the Tanay lab")
-    (description
-     "This package provides simple utility functions that are shared
-across several packages maintained by the Tanay lab.")
-    (license license:gpl3)))
-
 (define-public kissplice
   (package
     (name "kissplice")
