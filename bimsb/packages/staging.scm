@@ -1729,40 +1729,6 @@ given to single-cell data in a SingleCellExperiment object with
 visualization of dimensionality reduction results.")
     (license license:expat)))
 
-;; This depends on billboarder
-(define-public r-shinymanager
-  (package
-    (name "r-shinymanager")
-    (version "1.0.300")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "shinymanager" version))
-       (sha256
-        (base32
-         "1zv8rrplp3cknyk51m5cfmkr992k9cbjh89pmrbb8c24izqilq2a"))))
-    (properties `((upstream-name . "shinymanager")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-billboarder" ,r-billboarder)
-       ("r-dbi" ,r-dbi)
-       ("r-dt" ,r-dt)
-       ("r-htmltools" ,r-htmltools)
-       ("r-openssl" ,r-openssl)
-       ("r-r-utils" ,r-r-utils)
-       ("r-r6" ,r-r6)
-       ("r-rsqlite" ,r-rsqlite)
-       ("r-scrypt" ,r-scrypt)
-       ("r-shiny" ,r-shiny)))
-    (native-inputs `(("r-knitr" ,r-knitr)))
-    (home-page "https://github.com/datastorm-open/shinymanager")
-    (synopsis "Authentication management for Shiny applications")
-    (description
-     "This package provides a simple and secure authentification
-mechanism for single Shiny applications.  Credentials are stored in an
-encrypted SQLite database.")
-    (license license:gpl3)))
-
 (define-public r-shinydashboardplus
   (package
     (name "r-shinydashboardplus")
