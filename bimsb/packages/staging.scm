@@ -1841,51 +1841,6 @@ directed dependency graph of the application's reactive state at any time
 point in a reactive recording.")
     (license license:gpl3)))
 
-;; This depends on r-visnetwork.
-;; It also contains a number of minified JavaScript libraries.
-(define-public r-diagrammer
-  (package
-    (name "r-diagrammer")
-    (version "1.0.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "DiagrammeR" version))
-       (sha256
-        (base32
-         "1gqaqk7jdh37zzadv0aymr9yb8lpqgj3l8n1n3cds38i4zz2d934"))))
-    (properties `((upstream-name . "DiagrammeR")))
-    (build-system r-build-system)
-    (propagated-inputs
-      (list r-downloader
-            r-dplyr
-            r-glue
-            r-htmltools
-            r-htmlwidgets
-            r-igraph
-            r-influencer
-            r-magrittr
-            r-purrr
-            r-rcolorbrewer
-            r-readr
-            r-rlang
-            r-rstudioapi
-            r-scales
-            r-stringr
-            r-tibble
-            r-tidyr
-            r-viridis
-            r-visnetwork))
-    (native-inputs (list r-knitr))
-    (home-page "https://github.com/rich-iannone/DiagrammeR")
-    (synopsis "Graph/network visualization")
-    (description
-     "With the @code{DiagrammeR} package you can create, modify, analyze, and
-visualize network graph diagrams.  The output can be incorporated into @code{R Markdown}
-documents, integrated with Shiny web apps, converted to other graph
-formats, or exported as image files.")
-    (license license:expat)))
-
 (define-public r-diagrammersvg
   (package
     (name "r-diagrammersvg")
