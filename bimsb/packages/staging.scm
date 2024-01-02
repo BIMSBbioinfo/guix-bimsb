@@ -1653,34 +1653,6 @@ quality score, alingment and filtration;
 @item create the cell-by-bin matrix. @end itemize")
     (license license:asl2.0)))
 
-(define-public r-music
-  (let ((commit "7c5834830223957f5d8134c86d6acf653bfff4e7")
-        (revision "2"))
-    (package
-      (name "r-music")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/xuranw/MuSiC.git")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "098bv7v4phg8iv5h5c27ql4pzc7mcala82mcd4i1y91cf68d0grz"))))
-      (build-system r-build-system)
-      (propagated-inputs
-       `(("r-ggplot2" ,r-ggplot2)
-         ("r-plyr" ,r-plyr)
-         ("r-mcmcpack" ,r-mcmcpack)
-         ("r-nnls" ,r-nnls)
-         ("r-xbioc" ,r-xbioc)))
-      (home-page "https://github.com/xuranw/MuSiC")
-      (synopsis "Multi-subject Single Cell deconvolution")
-      (description
-       "MuSiC is a deconvolution method that utilizes cross-subject scRNA-seq
-to estimate cell type proportions in bulk RNA-seq data.")
-      (license license:gpl3))))
-
 (define-public r-dsa
   (let ((commit "f181f549fd86feb58955f11e53ee38da67ac4f5e")
         (revision "1"))
