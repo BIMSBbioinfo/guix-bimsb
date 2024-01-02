@@ -1841,33 +1841,6 @@ directed dependency graph of the application's reactive state at any time
 point in a reactive recording.")
     (license license:gpl3)))
 
-;; This contains a lot of minified JavaScript
-(define-public r-visnetwork
-  (package
-    (name "r-visnetwork")
-    (version "2.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "visNetwork" version))
-       (sha256
-        (base32
-         "0bqmy5m6b5hda4vzlwnpgabsbg60v68wicm556cqml6rpdzixfd2"))))
-    (properties `((upstream-name . "visNetwork")))
-    (build-system r-build-system)
-    (propagated-inputs
-      (list r-htmltools
-            r-htmlwidgets
-            r-jsonlite
-            r-magrittr))
-    (native-inputs (list r-knitr))
-    (home-page "https://datastorm-open.github.io/visNetwork/")
-    (synopsis "Network visualization using vis.js library")
-    (description
-     "This package provides an @code{R} interface to the @code{vis.js JavaScript}
-charting library.  It allows an interactive visualization of networks.")
-    (license license:expat)))
-
 ;; This depends on r-visnetwork.
 ;; It also contains a number of minified JavaScript libraries.
 (define-public r-diagrammer
