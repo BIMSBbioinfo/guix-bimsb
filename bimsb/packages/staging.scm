@@ -1653,31 +1653,6 @@ quality score, alingment and filtration;
 @item create the cell-by-bin matrix. @end itemize")
     (license license:asl2.0)))
 
-;; This package contains minified JavaScript
-(define-public r-excelr
-  (package
-    (name "r-excelr")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "excelR" version))
-       (sha256
-        (base32
-         "1pb4sy54zjv5vrh7gjjv7qlpab74km6mfsmfyl0yhmr0jx01hrw0"))))
-    (properties `((upstream-name . "excelR")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-htmlwidgets" ,r-htmlwidgets)
-       ("r-jsonlite" ,r-jsonlite)))
-    (home-page "https://github.com/Swechhya/excelR")
-    (synopsis "Wrapper of the JavaScript library jExcel")
-    (description
-     "This package provides an R interface to the jExcel JavaScript
-library to create web-based interactive tables and spreadsheets
-compatible with Excel or any other spreadsheet software.")
-    (license license:expat)))
-
 (define-public r-music
   (let ((commit "7c5834830223957f5d8134c86d6acf653bfff4e7")
         (revision "2"))
