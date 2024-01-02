@@ -1021,59 +1021,6 @@ easier to use.")
 next-generation genomic sequencing reads stored in SAM/BAM format.")
     (license license:gpl3+)))
 
-(define-public r-sleuth
-  (package
-    (name "r-sleuth")
-    (version "0.30.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pachterlab/sleuth.git")
-                    (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1zk9y8llv8s751lc37smzlk8q8f980l67j3pmnxqmmw9f4v1lm51"))))
-    (build-system r-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; rhd5f stopped exporting h5write.default which is not used, but
-         ;; imported anyways by sleuth breaking the build.
-         ;; While waiting for an upstream fix (see
-         ;; https://github.com/pachterlab/sleuth/issues/259 and
-         ;; https://github.com/pachterlab/sleuth/pull/260), this can be worked
-         ;; around by commenting out the superfluous import statement.
-         (add-after 'unpack 'patch-NAMESPACE
-           (lambda _
-             (substitute* "NAMESPACE"
-               (("^importFrom\\(rhdf5,h5write\\.default\\)" line)
-                (string-append "#" line))))))))
-    (propagated-inputs
-     `(("r-aggregation" ,r-aggregation)
-       ("r-ggplot2" ,r-ggplot2)
-       ("r-pheatmap" ,r-pheatmap)
-       ("r-dplyr" ,r-dplyr)
-       ("r-data-table" ,r-data-table)
-       ("r-tidyr" ,r-tidyr)
-       ("r-reshape2" ,r-reshape2)
-       ("r-rhdf5" ,r-rhdf5)
-       ("r-lazyeval" ,r-lazyeval)
-       ("r-matrixstats" ,r-matrixstats)
-       ("r-shiny" ,r-shiny)
-       ("r-mass" ,r-mass)
-       ("r-testthat" ,r-testthat)
-       ("r-knitr" ,r-knitr)))
-    (home-page "https://pachterlab.github.io/sleuth")
-    (synopsis "Differential analysis of RNA-Seq data")
-    (description
-     "Sleuth is a program for differential analysis of RNA-Seq data.
-It makes use of quantification uncertainty estimates obtained via
-Kallisto for accurate differential analysis of isoforms or genes,
-allows testing in the context of experiments with complex designs, and
-supports interactive exploratory data analysis via sleuth live.")
-    (license license:gpl3)))
-
 (define-public python-pyfasta
   (package
     (name "python-pyfasta")
