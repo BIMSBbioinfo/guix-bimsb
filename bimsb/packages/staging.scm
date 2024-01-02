@@ -1522,57 +1522,6 @@ UMIs, produce gene count or transcript compatibility count matrices, and is usef
 for many other tasks.")
     (license license:bsd-2)))
 
-(define-public r-snapatac
-  (let ((commit "c3ab177558f0fe9c47cbd68969df7b06de5b07d9")
-        (revision "1"))
-    (package
-      (name "r-snapatac")
-      (version (git-version "1.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/r3fang/SnapATAC")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "037jzlbl436fi7lkpq7d83i2vd1crnrik3vac2x6xj75dbikb2av"))))
-      (properties `((upstream-name . "SnapATAC")))
-      (build-system r-build-system)
-      (propagated-inputs
-       `(("r-bigmemory" ,r-bigmemory)
-         ("r-doparallel" ,r-doparallel)
-         ("r-dosnow" ,r-dosnow)
-         ("r-edger" ,r-edger)
-         ("r-foreach" ,r-foreach)
-         ("r-genomicranges" ,r-genomicranges)
-         ("r-igraph" ,r-igraph)
-         ("r-iranges" ,r-iranges)
-         ("r-irlba" ,r-irlba)
-         ("r-matrix" ,r-matrix)
-         ("r-plot3d" ,r-plot3d)
-         ("r-plyr" ,r-plyr)
-         ("r-rann" ,r-rann)
-         ("r-raster" ,r-raster)
-         ("r-rcolorbrewer" ,r-rcolorbrewer)
-         ("r-rhdf5" ,r-rhdf5)
-         ("r-rtsne" ,r-rtsne)
-         ("r-scales" ,r-scales)
-         ("r-viridis" ,r-viridis)))
-      (home-page "https://github.com/r3fang/SnapATAC")
-      (synopsis "Single nucleus analysis package for ATAC-Seq")
-      (description
-       "This package provide a analysis toolkit for single cell data.  The
-analysis is designed to be used for Assay for Transposase-Accessible Chromatin
-using sequencing (ATAC-seq) tehnique.  Single cell ATAC-seq can resolve the
-heterogeneity of a complex tissue and reveal cell-type specific regulatory
-landscapes.  However, the exceeding data sparsity has posed unique challenges
-for the data analysis.  SnapATAC is a end-to-end bioinformatics pipeline for
-analyzing large-scale single cell ATAC-seq data which includes quality control,
-normalization, clustering analysis, differential analysis, motif inference and
-exploration of single cell ATAC-seq sequencing data.")
-      (license license:gpl3))))
-
 (define-public r-rblast
   (let ((commit
          "7e792877edd9c04defbcd3928d950870d0299082")
