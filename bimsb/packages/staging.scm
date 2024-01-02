@@ -1522,35 +1522,6 @@ UMIs, produce gene count or transcript compatibility count matrices, and is usef
 for many other tasks.")
     (license license:bsd-2)))
 
-(define-public r-rblast
-  (let ((commit
-         "7e792877edd9c04defbcd3928d950870d0299082")
-        (revision "1"))
-    (package
-      (name "r-rblast")
-      (version (git-version "0.99.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mhahsler/rBLAST")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0xk5bm1sg3020nkqwf12dxs3ji99q9gc7k1xzkr152ds4wx82s9a"))))
-      (properties `((upstream-name . "rBLAST")))
-      (build-system r-build-system)
-      (inputs `(("blast+" ,blast+)))
-      (propagated-inputs `(("r-biostrings" ,r-biostrings)))
-      (native-inputs `(("gfortran" ,gfortran)))
-      (home-page "https://github.com/mhahsler/rBLAST/")
-      (synopsis "Interface to the Basic Local Alignment Search Tool (BLAST)")
-      (description
-       "This package provides an interface for the Basic Local Alignment Search
-Tool (BLAST) to search genetic sequence data bases.  This includes interfaces to
-@code{blastn}, @code{blastp}, @code{blastx}, and @code{makeblastdb}.")
-      (license license:gpl3))))
-
 (define-public python-louvain
   (package
     (name "python-louvain")
