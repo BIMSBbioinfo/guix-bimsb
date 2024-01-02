@@ -1653,31 +1653,6 @@ quality score, alingment and filtration;
 @item create the cell-by-bin matrix. @end itemize")
     (license license:asl2.0)))
 
-;; This package contains a lot of minified JavaScript.
-(define-public r-shinywidgets
-  (package
-    (name "r-shinywidgets")
-    (version "0.5.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "shinyWidgets" version))
-       (sha256
-        (base32
-         "1468yw3kc058c8js4s8wf76jv5njgy52291drgbxwfmpmn6mqf7b"))))
-    (properties `((upstream-name . "shinyWidgets")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-htmltools" ,r-htmltools)
-       ("r-jsonlite" ,r-jsonlite)
-       ("r-shiny" ,r-shiny)))
-    (home-page "https://github.com/dreamRs/shinyWidgets")
-    (synopsis "Custom inputs widgets for Shiny")
-    (description
-     "This package is a collection of custom input controls and user interface
-components for R Shiny applications.")
-    (license license:gpl3)))
-
 ;; This depends on r-shinywidgets
 (define-public r-isee
   (package
