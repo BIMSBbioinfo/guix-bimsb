@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
+;;; Copyright © 2015-2024 Ricardo Wurmus <ricardo.wurmus@mdc-berlin.de>
 ;;; Copyright © 2017 CM Massimo <carlomaria.massimo@mdc-berlin.de>
 ;;; Copyright © 2018, 2019, 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2019, 2020 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -35,6 +35,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -995,52 +996,67 @@ next-generation genomic sequencing reads stored in SAM/BAM format.")
     (license license:gpl3+)))
 
 (define-public python-pyfasta
-  (package
-    (name "python-pyfasta")
-    (version "0.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyfasta" version))
-       (sha256
-        (base32
-         "0n5j8l7dys3bqfyz6vkryhc2gjlwbmymc41xjf8vqlq2m5gxf25b"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #false  ; there are two errors
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'python3.9-compat
-           (lambda _
-             (substitute* "pyfasta/__init__.py"
-               (("from fasta import")
-                "from pyfasta.fasta import")
-               (("from records import")
-                "from pyfasta.records import")
-               (("from split_fasta import")
-                "from pyfasta.split_fasta import"))
-             (substitute* "pyfasta/fasta.py"
-               (("from records import")
-                "from pyfasta.records import"))
-             (substitute* "pyfasta/records.py"
-               (("cPickle") "pickle")
-               (("\\(int, long\\)")
-                "(int, int)"))
-             (substitute* "pyfasta/split_fasta.py"
-               (("from cStringIO import")
-                "from io import"))
-             (substitute* "tests/test_all.py"
-               (("for k in f.iterkeys\\(\\)") "for k in iter(f.keys())")
-               (("tests/data/" m)
-                (string-append (getcwd) "/" m))))))))
-    (propagated-inputs
-     `(("python-numpy" ,python-numpy)))
-    (native-inputs
-     `(("python-nose" ,python-nose)))
-    (home-page "https://github.com/brentp/pyfasta/")
-    (synopsis "Pythonic access to fasta sequence files")
-    (description
-     "This library provides fast, memory-efficient, pythonic (and
+  ;; The release on pypi does not contain the test data files.
+  (let ((commit "c2f0611c5311f1b1466f2d56560447898b4a8b03")
+        (revision "1"))
+    (package
+      (name "python-pyfasta")
+      (version (git-version "0.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/brentp/pyfasta")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0a189id3fbv88gssyk6adbmz2ll1mqpmyw8vxmx3fi955gvaq9j7"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'python3.10-compat
+             (lambda _
+               (substitute* "pyfasta/__init__.py"
+                 (("from fasta import")
+                  "from pyfasta.fasta import")
+                 (("from records import")
+                  "from pyfasta.records import")
+                 (("from split_fasta import")
+                  "from pyfasta.split_fasta import")
+                 (("in f.iteritems")
+                  "in f.items"))
+               (substitute* "pyfasta/fasta.py"
+                 (("from collections import Mapping")
+                  "from collections.abc import Mapping")
+                 (("from records import")
+                  "from pyfasta.records import"))
+               (substitute* "pyfasta/records.py"
+                 (("cPickle") "pickle")
+                 (("\\(int, long\\)")
+                  "(int, int)")
+                 ;; XXX: it's not clear if this is really correct.
+                 (("buffer\\(self\\)")
+                  "memoryview(bytes(str(self), encoding='utf-8'))")
+                 (("sys.maxint") "sys.maxsize"))
+               (substitute* "pyfasta/split_fasta.py"
+                 (("from cStringIO import")
+                  "from io import")
+                 (("in lens.iteritems") "in lens.items"))
+               (substitute* "tests/test_all.py"
+                 (("f.keys\\(\\)\\) == \\['a-extra'")
+                  "list(f.keys())) == ['a-extra'")
+                 (("f.iterkeys\\(\\)") "iter(f.keys())")
+                 (("tests/data/" m)
+                  (string-append (getcwd) "/" m))))))))
+      (propagated-inputs (list python-numpy))
+      (native-inputs (list python-nose))
+      (home-page "https://github.com/brentp/pyfasta/")
+      (synopsis "Pythonic access to fasta sequence files")
+      (description
+       "This library provides fast, memory-efficient, pythonic (and
 command-line) access to fasta sequence files.  It stores a flattened
 version of a fasta sequence file without spaces or headers and uses
 either a @code{mmap} in numpy binary format or
@@ -1048,7 +1064,7 @@ either a @code{mmap} in numpy binary format or
 memory.  It saves a pickle (@code{.gdx}) of the start and stop (for
 @code{fseek}/@code{mmap}) locations of each header in the fasta file
 for internal use.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-ont-tombo
   (package
