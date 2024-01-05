@@ -714,39 +714,6 @@ technology.  Its features include:
     ;; license text is included.
     (license license:bsd-3)))
 
-(define-public python-louvain-igraph
-  (package
-    (name "python-louvain-igraph")
-    (version "0.6.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/vtraag/louvain-igraph.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0w31537sifkf65sck1iaip5i6d8g64pa3wdwad83d6p9jwkck57k"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     `(("python-igraph" ,python-igraph)))
-    (inputs
-     `(("igraph" ,igraph)))
-    (native-inputs
-     `(("python-ddt" ,python-ddt)
-       ("pkg-config" ,pkg-config)))
-    (home-page "https://github.com/vtraag/louvain-igraph")
-    (synopsis "Implementation of the Louvain algorithm")
-    (description "This package implements the Louvain algorithm for
-community detection in C++ and exposes it to Python.  Besides the
-relative flexibility of the implementation, it also scales well, and
-can be run on graphs of millions of nodes (as long as they can fit in
-memory).  The core function is @code{find_partition} which finds the
-optimal partition using the louvain algorithm for a number of
-different methods.")
-    (license license:gpl3+)))
-
 (define-public squid
   (package
     (name "squid")
