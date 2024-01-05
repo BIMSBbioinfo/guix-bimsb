@@ -1198,29 +1198,6 @@ interfaces in parallel environments.")
        ("psm2" ,psm2)
        ,@(alist-delete "psm" (package-inputs openmpi))))))
 
-(define-public bustools
-  (package
-    (name "bustools")
-    (version "0.39.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/BUStools/bustools")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "111crf85g4gsickylqs99r5pqd5x851sfdylksl29xzypfsqmh3h"))))
-    (build-system cmake-build-system)
-    (arguments `(#:tests? #f))  ; no tests
-    (home-page "https://bustools.github.io")
-    (synopsis "Tools for working with BUS files")
-    (description "bustools is a program for manipulating BUS files for single
-cell RNA-Seq datasets.  It can be used to error correct barcodes, collapse
-UMIs, produce gene count or transcript compatibility count matrices, and is useful
-for many other tasks.")
-    (license license:bsd-2)))
-
 (define-public r-dsa
   (let ((commit "f181f549fd86feb58955f11e53ee38da67ac4f5e")
         (revision "1"))
