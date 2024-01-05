@@ -1254,26 +1254,6 @@ UMIs, produce gene count or transcript compatibility count matrices, and is usef
 for many other tasks.")
     (license license:bsd-2)))
 
-(define-public python-louvain
-  (package
-    (name "python-louvain")
-    (version "0.14")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-louvain" version))
-        (sha256
-          (base32 "0l89vxibnjw3dfp90vx4v9gfaql84sc6479arl859d473rx0r9g0"))))
-    (build-system python-build-system)
-    (propagated-inputs
-      `(("python-networkx" ,python-networkx)
-        ("python-numpy" ,python-numpy)))
-    (home-page "https://github.com/taynaud/python-louvain")
-    (synopsis "Louvain algorithm for community detection in large networks.")
-    (description "@code{Louvain} algorithm, based on modularity optimization,
-can extract the community structure of large networks.")
-    (license license:bsd-3)))
-
 (define-public r-dsa
   (let ((commit "f181f549fd86feb58955f11e53ee38da67ac4f5e")
         (revision "1"))
