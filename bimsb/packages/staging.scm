@@ -590,42 +590,6 @@ technology.  Its features include:
 (define-public squid
   (deprecated-package "squid" eddylab-squid))
 
-(define-public randfold
-  (package
-    (name "randfold")
-    (version "2.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://bioinformatics.psb.ugent.be/"
-                           "supplementary_data/erbon/nov2003/downloads/"
-                           "randfold-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0gqixl4ncaibrxmn25d6lm2hrw4ml2fj13nrc9q1kilsxdfi91mj"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ;; no tests provided
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let*  ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (install-file "randfold" bin)
-               #t))))))
-    (inputs
-     `(("squid" ,squid)))
-    (home-page (string-append "http://bioinformatics.psb.ugent.be/"
-                              "supplementary_data/erbon/nov2003"))
-    (synopsis "Minimum free energy of folding randomization test software")
-    (description "randfold computes the probability that, for a given
-sequence, the Minimum Free Energy (MFE) of the secondary structure is
-different from MFE computed with random sequences.")
-    (license license:gpl2)))
-
 (define-public qtltools-old
   (package (inherit qtltools)
     (name "qtltools")
