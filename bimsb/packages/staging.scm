@@ -104,7 +104,7 @@
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (bimsb packages variants)
+  #:use-module (past packages bioinformatics)
   #:use-module (guix-science packages rstudio)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 

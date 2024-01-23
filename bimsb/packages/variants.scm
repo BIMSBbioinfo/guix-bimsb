@@ -33,6 +33,7 @@
   #:use-module (past packages boost)
   #:use-module (gnu packages bioconductor)
   #:use-module (gnu packages bioinformatics)
+  #:use-module (past packages bioinformatics)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -114,58 +115,6 @@ OTHER-PERL instead of \"perl-\", when applicable."
               #t))
           (delete 'check))))))
 
-(define-public htslib-1.0
-  (package (inherit htslib)
-    (name "htslib")
-    (version "1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/samtools/htslib/"
-                                  "archive/" version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1a483cqlhs9k8gjdyb78jkrpilhz2qyyvgrgr8bhy11mpki8vflk"))))
-    (arguments
-     `(#:make-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* "test/test.pl"
-               (("/bin/bash") (which "bash")))
-             #t)))))))
-
-;; Needed for pacbio-htslib
-(define-public htslib-1.1
-  (package (inherit htslib-1.0)
-    (name "htslib")
-    (version "1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/samtools/htslib/"
-                                  "archive/" version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0gwj4mzrys5bs7r8h3fl7w2qfzwbvbby6qmgzj552di3hqc7j2pb"))))))
-
-(define-public htslib-1.2.1
-  (package (inherit htslib)
-    (name "htslib")
-    (version "1.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/samtools/htslib/"
-                                  "releases/download/"
-                                  version "/htslib-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "1c32ssscbnjwfw3dra140fq7riarp2x990qxybh34nr1p5r17nxx"))))))
-
 ;; A different version of MACS2 for Rebecca
 (define-public macs/rebecca
   (package (inherit macs)
@@ -235,109 +184,6 @@ OTHER-PERL instead of \"perl-\", when applicable."
                          (find-files "bin" ".*")))
              #t)))))))
 
-(define-public samtools-1.1
-  (package
-    (inherit samtools-0.1)
-    (version "1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/samtools/samtools/"
-                           version "/samtools-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "1y5p2hs4gif891b4ik20275a8xf3qrr1zh9wpysp4g8m0g1jckf2"))))))
-
-(define-public htslib-1.3
-  (package
-    (inherit htslib)
-    (version "1.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/samtools/htslib/releases/download/"
-                    version "/htslib-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1rja282fwdc25ql6izkhdyh8ppw8x2fs0w0js78zgkmqjlikmma9"))))))
-
-(define-public htslib-1.4
-  (package
-    (inherit htslib)
-    (version "1.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/samtools/htslib/releases/download/"
-                    version "/htslib-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1crkk79kgxcmrkmh5f58c4k93w4rz6lp97sfsq3s6556zxcxvll5"))))))
-
-(define-public samtools-1.3
-  (package
-    (inherit samtools)
-    (version "1.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/samtools/samtools/"
-                           version "/samtools-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "0znnnxc467jbf1as2dpskrjhfh8mbll760j6w6rdkwlwbqsp8gbc"))))
-    (inputs
-     `(("htslib" ,htslib-1.3)
-       ,@(package-inputs samtools)))))
-
-(define-public samtools-1.4
-  (package (inherit samtools)
-    (version "1.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/samtools/samtools/"
-                           version "/samtools-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "0vzxjm5vkgvzynl7cssm1l560rqs2amdaib1x8sp2ch9b7bxx9xx"))))
-    (inputs
-     `(("htslib" ,htslib-1.4)
-       ,@(package-inputs samtools)))))
-
-(define-public samtools-0
-  (package (inherit samtools)
-    (version "0.1.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/samtools/samtools/"
-                       version "/samtools-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "16js559vg13zz7rxsj4kz2l96gkly8kdk8wgj9jhrqwgdh7jq9iv"))))
-    (arguments
-     `(#:tests? #f ;no "check" target
-       ,@(substitute-keyword-arguments `(#:modules ((guix build gnu-build-system)
-                                                    (guix build utils)
-                                                    (srfi srfi-1)
-                                                    (srfi srfi-26))
-                                         ,@(package-arguments samtools))
-           ((#:make-flags flags ''())
-            `(cons "LIBCURSES=-lncurses" ,flags))
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (delete 'patch-tests)
-               (delete 'configure)
-               (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((bin (string-append
-                               (assoc-ref outputs "out") "/bin")))
-                     (mkdir-p bin)
-                     (copy-file "samtools" (string-append bin "/samtools-" ,version)))
-                   #t)))))))))
-
 ;; Fixed version of ParDRe for Harm.
 (define-public pardre/fixed
   (package (inherit pardre)
@@ -397,53 +243,6 @@ LIBRARY DESTINATION \"lib/bamtools\")")))))))))
     (inputs
      (modify-inputs (package-inputs bamtools)
        (prepend jsoncpp)))))
-
-(define-public htslib-latest
-  (package (inherit htslib)
-    (version "1.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/samtools/htslib/releases/download/"
-                    version "/htslib-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0bcjmnbwp2bib1z1bkrp95w9v2syzdwdfqww10mkb1hxlmg52ax0"))))))
-
-(define-public bcftools-latest
-  (package (inherit bcftools)
-    (version "1.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/samtools/bcftools/releases/download/"
-                    version "/bcftools-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0093hkkvxmbwfaa7905s6185jymynvg42kq6sxv7fili11l5mxwz"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Delete bundled htslib.
-               '(delete-file-recursively "htslib-1.5"))))
-    (arguments
-     `(#:test-target "test"
-       #:configure-flags
-       (list "--enable-libgsl"
-             (string-append "--with-htslib="
-                            (assoc-ref %build-inputs "htslib")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute* "test/test.pl"
-               (("/bin/bash") (which "bash")))
-             #t)))))
-    (native-inputs
-     `(("perl" ,perl)))
-    (inputs
-     `(("htslib" ,htslib-latest)
-       ("gsl" ,gsl)
-       ("zlib" ,zlib)))))
 
 ;; This version is not a master release and it is a separate branch.
 ;; It need to be removed from here when an official release will be  announced.
