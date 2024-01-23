@@ -723,57 +723,6 @@ thresholds based on reproducibility.  This package provides the
 original implementation of a pipeline using this method.")
     (license license:gpl2+)))
 
-(define-public psm/patched
-  (package
-    (name "psm")
-    (version "3.3.20170428")
-    (home-page "https://github.com/intel/psm")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url home-page)
-                           (commit "604758e76dc31e68d1de736ccf5ddf16cb22355b")))
-       (file-name (string-append "psm-" version ".tar.gz"))
-       (sha256
-        (base32 "0nsb325dmhn5ia3d2cnksqr0gdvrrx2hmvlylfgvmaqdpq76zm85"))
-       (patches (search-patches
-                 "psm-arch.patch"     ; uname -p returns "unknown" on Debian 9
-                 "psm-ldflags.patch"  ; build shared lib with LDFLAGS
-                 "psm-repro.patch"))))  ; reproducibility
-    (build-system gnu-build-system)
-    (inputs `(("libuuid" ,util-linux)))
-    (arguments
-     '(#:make-flags `("PSM_USE_SYS_UUID=1" "CC=gcc" "WERROR="
-                      ,(string-append "INSTALL_PREFIX=" %output)
-                      ,(string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'unpack 'patch-/usr/include
-                    (lambda _
-                      (substitute* "Makefile"
-                        (("\\$\\{DESTDIR}/usr/include")
-                         (string-append %output "/include")))
-                      (substitute* "Makefile"
-                        (("/lib64") "/lib"))
-                      #t))
-                  (add-after 'unpack 'patch-sysmacros
-                    (lambda _
-                      (substitute* "ipath/ipath_proto.c"
-                        (("#include <sys/poll.h>" m)
-                         (string-append m "\n"
-                                        "#include <sys/sysmacros.h>")))
-                      #t)))))
-    (synopsis "Intel Performance Scaled Messaging (PSM) Libraries")
-    (description
-     "The PSM Messaging API, or PSM API, is Intel's low-level user-level
-communications interface for the True Scale family of products.  PSM users are
-enabled with mechanisms necessary to implement higher level communications
-interfaces in parallel environments.")
-    ;; Only Intel-compatable processors are supported.
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (license (list license:bsd-2 license:gpl2))))
-
 (define-public openmpi-with-hwloc2
   (package (inherit openmpi)
     (name "openmpi-with-hwloc2")
