@@ -206,44 +206,6 @@ OTHER-PERL instead of \"perl-\", when applicable."
      ;; getopts.pl.
      `(#:tests? #f))))
 
-(define-public bamtools-2.0
-  (package (inherit bamtools)
-    (version "2.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/pezmaster31/bamtools/"
-                                  "archive/v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1s95gjhnlfd91mr692xp14gmirfwq55dsj1jir9fa06m1lk4iw1n"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file-recursively "src/third_party/")
-                  (substitute* "src/CMakeLists.txt"
-                    (("add_subdirectory \\(third_party\\)") ""))
-                  (substitute* "src/toolkit/bamtools_filter.cpp"
-                    (("jsoncpp/json.h") "json/json.h"))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments bamtools)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           ;; See https://github.com/pezmaster31/bamtools/pull/150
-           (add-after 'unpack 'fix-building-with-c++11
-             (lambda _
-               (substitute* "src/toolkit/bamtools_resolve.cpp"
-                 (("make_pair<string, ?(bool|ReadGroupResolver)>")
-                  "make_pair"))))
-           (add-after 'unpack 'add-install-target-for-utils-library
-             (lambda _
-               (substitute* "src/utils/CMakeLists.txt"
-                 (("target_link_libraries.*" line)
-                  (string-append line "\ninstall(TARGETS BamTools-utils \
-LIBRARY DESTINATION \"lib/bamtools\")")))))))))
-    (inputs
-     (modify-inputs (package-inputs bamtools)
-       (prepend jsoncpp)))))
-
 ;; This version is not a master release and it is a separate branch.
 ;; It need to be removed from here when an official release will be  announced.
 (define-public r-archr
