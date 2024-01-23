@@ -593,42 +593,8 @@ higher accuracy than the original gkm-SVM.")
 files.")
     (license license:expat)))
 
-;; python-magic already exists, so we need to give this a different
-;; name.
 (define-public python-biomagic
-  (package
-    (name "python-biomagic")
-    (version "0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pkathail/magic.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0ll9m7ivcfb56n6yhzww03x37kpmr3jd9a50nvjh342hjd4zhqpk"))))
-    (build-system python-build-system)
-    ;; No tests included.
-    (arguments `(#:tests? #f))
-    (propagated-inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-pandas" ,python-pandas)
-       ("python-scipy" ,python-scipy)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-seaborn" ,python-seaborn)
-       ("python-scikit-learn" ,python-scikit-learn)
-       ("python-networkx" ,python-networkx)
-       ("python-fcsparser" ,python-fcsparser)
-       ("python-statsmodels" ,python-statsmodels)))
-    (home-page "https://github.com/pkathail/magic")
-    (synopsis "Markov affinity-based graph imputation of cells")
-    (description "MAGIC is an interactive tool to impute missing
-values in single-cell sequencing data and to restore the structure of
-the data.  It also provides data pre-processing functionality such as
-dimensionality reduction and gene expression visualization.")
-    (license license:gpl2+)))
+  (deprecated-package "python-biomagic" python-magic-impute))
 
 (define-public mageck
   (package
