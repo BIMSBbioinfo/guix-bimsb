@@ -500,48 +500,6 @@ routines available online as well as original implementations of
 various other algorithms.")
     (license license:lgpl2.1+)))
 
-(define-public lsgkm
-  (let ((commit "164a4a48f6387e67b5d955db932f8a403de6c321")
-        (revision "1"))
-    (package
-      (name "lsgkm")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/Dongwon-Lee/lsgkm.git")
-               (commit commit)))
-         (sha256
-          (base32
-           "0zxji94c30q4zg5lw35n4jpwfx1p6rwdsi7h0bi5ldarh6jfpn52"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:make-flags (list "-C" "src")
-         #:tests? #f ; there are no tests
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((bin (string-append (assoc-ref outputs "out")
-                                         "/bin")))
-                 (mkdir-p bin)
-                 (for-each (lambda (file)
-                             (install-file file bin))
-                           '("src/gkmtrain"
-                             "src/gkmpredict"))
-                 #t))))))
-      (home-page "https://github.com/Dongwon-Lee/lsgkm")
-      (synopsis "Predict regulatory DNA elements in large-scale data")
-      (description "gkm-SVM, a sequence-based method for predicting
-regulatory DNA elements, is a useful tool for studying gene regulatory
-mechanisms.  LS-GKM is an effort to improve the method.  It offers
-much better scalability and provides further advanced gapped k-mer
-based kernel functions.  As a result, LS-GKM achieves considerably
-higher accuracy than the original gkm-SVM.")
-      (license license:gpl3+))))
-
 (define-public python-fcsparser
   (package
     (name "python-fcsparser")
