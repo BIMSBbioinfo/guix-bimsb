@@ -583,44 +583,51 @@ the t-SNE algorithm.  The implementation is described here:
 (define-public footprint-pipeline
   (package
     (name "footprint-pipeline")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "http://bimsbstatic.mdc-berlin.de/"
-                                  "ohler/asli/footprint-pipeline-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aslihankarabacak/FootprintPipeline/")
+                    (commit "6ff3646e71203e1147f0c9e99dab930905fb6763")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0aws3r67f04sfg0gsji4k29k7v2k9k4m0dyyw2lahkjwlvya5isx"))))
+                "1bzl5v09jz1lxlp6nhc3cnfg9kl74gs90vrdyj51l02jzcxahx4f"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'fix-broken-shebang
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "run_footprinting.R.in"
-               (("@RSCRIPT@") (which "Rscript")))
-             #t))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/find_footprints.sh")
-                 `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-system
+            (lambda _
+              ;; The checks for R packages fail.
+              (substitute* "configure.ac"
+                (("AX_R_PACKAGE.*") "echo skip\n"))
+              (delete-file "configure")
+              (with-output-to-file "VERSION"
+                (lambda () (display #$version)))))
+          (add-after 'configure 'fix-broken-shebang
+            (lambda _
+              (substitute* "run_footprinting.R.in"
+                (("@RSCRIPT@") (which "Rscript")))))
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (wrap-program (string-append #$output "/bin/find_footprints.sh")
+                `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))))))
     (inputs
-     `(("r-minimal" ,r-minimal)
-       ("r-mixtools" ,r-mixtools)
-       ("r-gtools" ,r-gtools)
-       ("r-genomicranges" ,r-genomicranges)
-       ("perl" ,perl)
-       ("samtools" ,samtools-1.1)
-       ("bedtools" ,bedtools-2.18)))
+     (list r-minimal
+           r-mixtools
+           r-gtools
+           r-genomicranges
+           perl
+           samtools-1.1
+           bedtools-2.18))
+    (native-inputs (list autoconf automake))
     (home-page "https://ohlerlab.mdc-berlin.de/software/Reproducible_footprinting_139/")
     (synopsis "Find transcription factor footprints in ATAC-seq or DNase-seq data")
     (description "This is a pipeline to find transcription factor
 footprints in ATAC-seq or DNase-seq data.")
-    ;; TODO: there is no license!
-    (license license:gpl3+)))
+    (license license:gpl2+)))
 
 (define-public samstat
   (package
