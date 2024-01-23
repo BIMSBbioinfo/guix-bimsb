@@ -116,45 +116,6 @@
 (define-public rstudio
   (@ (guix-science packages rstudio) rstudio))
 
-(define-public metal
-  (package
-    (name "metal")
-    (version "2011-03-25")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://csg.sph.umich.edu/abecasis/Metal/"
-                           "download/generic-metal-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1bk00hc0xagmq0mabmbb8bykl75qd4kfyirba869h4x6hmn4a0f3"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f
-       #:make-flags
-       (list (string-append "INSTALLDIR="
-                            (assoc-ref %outputs "out") "/bin")
-             "all")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
-    (inputs
-     `(("zlib" ,zlib)))
-    (home-page "http://csg.sph.umich.edu/abecasis/Metal")
-    (synopsis "Facilitate meta-analysis of large datasets")
-    (description "METAL is a tool for meta-analysis genomewide
-association scans.  METAL can combine either test statistics and
-standard errors or p-values across studies (taking sample size and
-direction of effect into account).  METAL analysis is a convenient
-alternative to a direct analysis of merged data from multiple studies.
-It is especially appropriate when data from the individual studies
-cannot be analyzed together because of differences in ethnicity,
-phenotype distribution, gender or constraints in sharing of individual
-level data imposed.  Meta-analysis results in little or no loss of
-efficiency compared to analysis of a combined dataset including data
-from all individual studies.")
-    (license license:bsd-3)))
-
 (define-public transat
   (package
     (name "transat")
