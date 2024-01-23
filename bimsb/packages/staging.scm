@@ -348,46 +348,6 @@ identify genomic junction reads from back spliced exons and intron
 lariats.")
     (license license:expat)))
 
-(define-public flash
-  (package
-    (name "flash")
-    (version "1.2.11")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/flashpage/FLASH-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "1b1ns9ghbcxy92xwa2a53ikqacvnyhvca0zfv0s7986xzvvscp38"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags '("CC=gcc")
-       #:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; No configure script
-         (delete 'configure)
-         ;; No install target
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out")
-                                       "/bin")))
-               (install-file "flash" bin)
-               #t))))))
-    (inputs
-     `(("zlib" ,zlib)))
-    (home-page "http://ccb.jhu.edu/software/FLASH/")
-    (synopsis "Merge paired-end nucleotide reads from NGS experiments")
-    (description "FLASH (Fast Length Adjustment of SHort reads) is a
-tool to merge paired-end reads from next-generation sequencing
-experiments.  FLASH is designed to merge pairs of reads when the
-original DNA fragments are shorter than twice the length of reads.
-The resulting longer reads can significantly improve genome
-assemblies.  They can also improve transcriptome assembly when FLASH
-is used to merge RNA-seq data.")
-    (license license:gpl3+)))
-
 (define-public python-fastcluster
   (package
     (inherit r-fastcluster)
