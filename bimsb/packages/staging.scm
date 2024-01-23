@@ -500,29 +500,6 @@ routines available online as well as original implementations of
 various other algorithms.")
     (license license:lgpl2.1+)))
 
-(define-public python-fcsparser
-  (package
-    (name "python-fcsparser")
-    (version "0.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fcsparser" version ".tar.gz"))
-       (sha256
-        (base32
-         "0jgxny74ppy7va96szvh04nrzkvy866hygki3imivg9kb9pzjdm2"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy python-pandas))
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/eyurtsev/fcsparser")
-    (synopsis "Tools for reading raw fcs files")
-    (description
-     "This package provides a Python module for reading raw fcs
-files.")
-    (license license:expat)))
-
 (define-public python-biomagic
   (deprecated-package "python-biomagic" python-magic-impute))
 
