@@ -500,34 +500,6 @@ routines available online as well as original implementations of
 various other algorithms.")
     (license license:lgpl2.1+)))
 
-(define-public pacbio-htslib
-  (let ((commit "6b6c81388e699c0c0cf2d1f7fe59c5da60fb7b9a")
-        (revision "1"))
-    (package (inherit htslib-1.1)
-      (name "pacbio-htslib")
-      (version (git-version "1.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/PacificBiosciences/htslib.git")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1zynj7na8iypzzaryhpsczd2603facj8nskvfk6il0zcjrgn4rnj"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments htslib-1.1)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'install 'install-cram-headers
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let ((cram (string-append (assoc-ref outputs "out")
-                                            "/include/cram")))
-                   (mkdir-p cram)
-                   (for-each (lambda (file)
-                               (install-file file cram))
-                             (find-files "cram" "\\.h$"))
-                   #t))))))))))
-
 (define-public lsgkm
   (let ((commit "164a4a48f6387e67b5d955db932f8a403de6c321")
         (revision "1"))
