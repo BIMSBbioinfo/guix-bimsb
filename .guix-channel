@@ -3,7 +3,7 @@
  (dependencies
   (channel
    (name guix-past)
-   (url "https://gitlab.inria.fr/guix-hpc/guix-past"))
+   (url "https://codeberg.org/guix-science/guix-past"))
   (channel
    (name guix-science)
-   (url "https://github.com/guix-science/guix-science.git"))))
+   (url "https://codeberg.org/guix-science/guix-science"))))
