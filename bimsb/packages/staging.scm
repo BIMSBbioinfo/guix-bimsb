@@ -452,35 +452,6 @@ technology.  Its features include:
 (define-public squid
   (deprecated-package "squid" eddylab-squid))
 
-(define-public python-multicore-tsne
-  (let ((commit "e1a40182068d4815e7fbe523db266caab20773ff")
-        (revision "1"))
-    (package
-      (name "python-multicore-tsne")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/DmitryUlyanov/Multicore-TSNE.git")
-               (commit commit)))
-         (sha256
-          (base32
-           "1k5vvsak19ap75rvanll0k71j5fi4kpyj83rl1006v4h04hwv1x6"))))
-      (build-system python-build-system)
-      ;; Tests need python-cffi and pypi/psutils (the latter not in
-      ;; guix)
-      (arguments `(#:tests? #f))
-      (native-inputs
-       `(("cmake" ,cmake)))
-      (home-page "https://github.com/DmitryUlyanov/Multicore-TSNE")
-      (synopsis "Parallel t-SNE implementation with Python and Torch wrappers")
-      (description
-       "This package contains a multicore Barnes-Hut implementation of
-the t-SNE algorithm.  The implementation is described here:
-@url{http://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf}.")
-      (license license:bsd-3))))
-
 (define-public footprint-pipeline
   (package
     (name "footprint-pipeline")
